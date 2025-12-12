@@ -730,7 +730,8 @@ struct CharterTradewindsCompounderTests {
 
     // MARK: - Multi-Chain Claiming Tests
 
-    @Test("Compounder - Claims from multiple chains and bridges to swap network")
+    // TODO: Re-enable when multi-chain reward compounding is supported
+    @Test("Compounder - Claims from multiple chains and bridges to swap network", .disabled("Cross-chain reward compounding not yet supported"))
     func testCompounderMultiChainClaimWithBridge() {
         runFlowTest(
             ChartTestCase(
@@ -1315,6 +1316,52 @@ struct CharterTradewindsCompounderTests {
                         ),
                     ],
                     maxFlow: "0.0406e18"
+                )
+            )
+        )
+    }
+
+    @Test("Compounder - Error: Cross-chain with non-bridgeable supply asset")
+    func testCompounderCrossChainNonBridgeableAsset() {
+        runFlowTest(
+            ChartTestCase(
+                name: "Compounder - Cross-chain non-bridgeable asset fails",
+                givens: [
+                    .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
+                ],
+                intent: .compounder(
+                    Charter.CompounderIntent(
+                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                            claimer: TestHelpers.Account.alice.address,
+                            assetSymbol: "USDC"
+                        ),
+                        swapIntent: Charter.SwapIntent(
+                            chainId: Number(BaseNetwork.chainId),
+                            sellToken: BaseNetwork.Assets.USDC.assetAddress,
+                            sellAmount: Number.MAX_UINT_256,
+                            buyToken: Token.cbbtc.address(network: .base)!,
+                            buyAmount: "0.001e8",
+                            swapQuoteSellAmount: "100e6",
+                            swapQuoteBuyAmount: "0.001e8",
+                            feeToken: BaseNetwork.Assets.USDC.assetAddress,
+                            feeAmount: "0",
+                            sender: TestHelpers.Account.alice.address,
+                            isExactOut: false,
+                            isBuy: false
+                        ),
+                        supplyIntent: .morpho(
+                            Charter.MorphoVaultSupplyIntent(
+                                amount: Number.MAX_UINT_256,
+                                assetSymbol: "cbBTC",
+                                morphoVault: MorphoVault.wbtc.address(network: .ethereum),
+                                sender: TestHelpers.Account.alice.address,
+                                chainId: Number(EthereumNetwork.chainId)
+                            )
+                        )
+                    )
+                ),
+                expect: .charterFailure(
+                    Charter.CharterError.error("Cross-chain compounding into cbBTC is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply.")
                 )
             )
         )

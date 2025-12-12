@@ -473,7 +473,8 @@ struct CompounderTests {
         )
     }
 
-    @Test("Alice compounds rewards from multiple chains with bridge")
+    // TODO: Re-enable when multi-chain reward compounding is supported
+    @Test("Alice compounds rewards from multiple chains with bridge", .disabled("Cross-chain reward compounding not yet supported"))
     func testCompounderMultipleRewardsMultiChain() async throws {
         try await testAcceptanceTests(
             test: .init(
@@ -787,8 +788,8 @@ struct CompounderTests {
     }
 
 
-    @Test("Alice compounds with rewards on different chain but no bridge fails")
-    func testCompounderRewardsNoBridgeFails() async throws {
+    @Test("Alice compounds with rewards on different chain than swap fails")
+    func testCompounderRewardsDifferentChainFails() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -810,7 +811,34 @@ struct CompounderTests {
                         on: .base
                     )
                 ),
-                expect: .failure(.error("insufficientResources(target: .max, max: 0)"))
+                expect: .failure(.error("All rewards must be on the same chain as the swap. Cross-chain reward compounding is not yet supported."))
+            )
+        )
+    }
+
+    @Test("Alice compounds cross-chain with non-bridgeable supply asset fails")
+    func testCompounderCrossChainNonBridgeableFails() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
+                ],
+                when: .compounder(
+                    claim: (from: .alice, assetSymbol: "USDC"),
+                    swap: (
+                        from: .alice,
+                        sellAmount: .max(.usdc),
+                        buyAmount: .amt(0.001, .cbbtc),
+                        swapQuoteSellAmount: .amt(100, .usdc),
+                        swapQuoteBuyAmount: .amt(0.001, .cbbtc),
+                        on: .base
+                    ),
+                    supply: (
+                        from: .alice, market: .morpho(.wbtc), amount: .max(.cbbtc),
+                        on: .ethereum
+                    )
+                ),
+                expect: .failure(.error("Cross-chain compounding into cbBTC is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply."))
             )
         )
     }

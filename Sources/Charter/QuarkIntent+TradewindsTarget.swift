@@ -2953,6 +2953,19 @@ extension Charter.QuarkIntent.Type_ {
                     return .failure(.noClaimableRewardsFound(symbol: claimIntent.assetSymbol))
                 }
 
+                // Require all rewards to be on the swap network. Cross-chain reward claiming is not yet supported.
+                // TODO: Support multiple swap quotes on each chain to enable non-bridgeable cross-chain compounding.
+                let rewardNetworks = Set(rewardBalances.map { $0.rewardType.underlyingSymbolAndNetwork.1 })
+                if !rewardNetworks.allSatisfy({ $0 == swapNetwork }) {
+                    return .failure(.error("All rewards must be on the same chain as the swap. Cross-chain reward compounding is not yet supported."))
+                }
+
+                // If supply is on a different chain than swap, the supply asset must be bridgeable.
+                let bridgeableSymbols: Set<String> = ["USDC", "ETH", "WETH"]
+                if swapNetwork != supplyNetwork, !bridgeableSymbols.contains(supplyAsset.symbol) {
+                    return .failure(.error("Cross-chain compounding into \(supplyIntent.assetSymbol) is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply."))
+                }
+
                 // Build graph in three phases:
                 // Phase A: Claim rewards (from reward markets to token balances)
                 // Phase B: Swap claimed tokens (bridges if cross-chain, then swap)
