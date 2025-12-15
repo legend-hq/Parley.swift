@@ -1388,13 +1388,13 @@ public enum Tradewinds {
         }
 
         let routeMap = Dictionary(uniqueKeysWithValues: routes.map { ($0.id, $0) })
-        let unsortedFlows = flowAmounts.compactMap { id, amount -> Flow<Node, ID>? in
-            guard let route = routeMap[id] else { return nil }
+        let flows = flowAmounts.keys.sorted().compactMap { id -> Flow<Node, ID>? in
+            guard let route = routeMap[id], let amount = flowAmounts[id] else { return nil }
             return Flow(route: route, amount: amount)
         }
 
-        // Use topological sort to respect execution dependencies
-        let finalFlows = topologicalSort(unsortedFlows)
+        // Topological sort respects execution dependencies while preserving deterministic order
+        let finalFlows = topologicalSort(flows)
 
         return FlowResult<Node, ID>(
             flows: finalFlows,

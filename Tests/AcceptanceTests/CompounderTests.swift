@@ -20,15 +20,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -194,15 +194,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "WETH"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "WETH")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.weth),
                         buyAmount: .amt(3840, .usdc),
                         swapQuoteSellAmount: .amt(1, .weth),
                         swapQuoteBuyAmount: .amt(3840, .usdc),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .morpho(.usdc), amount: .max(.usdc),
                         on: .base
@@ -263,15 +263,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "WETH"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "WETH")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.weth),
                         buyAmount: .amt(3840, .usdc),
                         swapQuoteSellAmount: .amt(1, .weth),
                         swapQuoteBuyAmount: .amt(3840, .usdc),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .aave(.baseV3), amount: .max(.usdc),
                         on: .base
@@ -332,15 +332,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "WETH"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "WETH")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.weth),
                         buyAmount: .amt(1920, .usdc),
                         swapQuoteSellAmount: .amt(0.5, .weth),
                         swapQuoteBuyAmount: .amt(1920, .usdc),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cusdcv3), amount: .max(.usdc),
                         on: .base
@@ -402,15 +402,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -473,8 +473,7 @@ struct CompounderTests {
         )
     }
 
-    // TODO: Re-enable when multi-chain reward compounding is supported
-    @Test("Alice compounds rewards from multiple chains with bridge", .disabled("Cross-chain reward compounding not yet supported"))
+    @Test("Alice compounds rewards from multiple chains with bridge")
     func testCompounderMultipleRewardsMultiChain() async throws {
         try await testAcceptanceTests(
             test: .init(
@@ -482,18 +481,248 @@ struct CompounderTests {
                     .cometReward(.alice, .amt(80, .usdc), .cusdcv3, .usdcReward, .base),
                     .cometReward(.alice, .amt(40, .usdc), .cusdcv3, .usdcReward, .ethereum),
                     .quote(.basic),
-                    .acrossQuote(.amt(10, .usdc), 0.01),
+                    .acrossQuote(.amt(0.001, .weth), 0.01),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
-                        from: .alice,
-                        sellAmount: .max(.usdc),
-                        buyAmount: .amt(0.0256, .weth),
-                        swapQuoteSellAmount: .amt(120, .usdc),
-                        swapQuoteBuyAmount: .amt(0.0256, .weth),
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [
+                        // Swap on Base for 80 USDC rewards
+                        (
+                            from: .alice,
+                            sellAmount: .max(.usdc),
+                            buyAmount: .amt(0.017066, .weth),
+                            swapQuoteSellAmount: .amt(80, .usdc),
+                            swapQuoteBuyAmount: .amt(0.017066, .weth),
+                            on: .base
+                        ),
+                        // Swap on Ethereum for 40 USDC rewards (output bridges to Base)
+                        (
+                            from: .alice,
+                            sellAmount: .max(.usdc),
+                            buyAmount: .amt(0.008533, .weth),
+                            swapQuoteSellAmount: .amt(40, .usdc),
+                            swapQuoteBuyAmount: .amt(0.008533, .weth),
+                            on: .ethereum
+                        ),
+                    ],
+                    supply: (
+                        from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
-                    ),
+                    )
+                ),
+                expect: .success(
+                    .multi([
+                        // Ethereum operation: claim → swap → bridge WETH to Base
+                        .multicall(
+                            [
+                                .claimCometRewards(
+                                    cometRewards: [.usdcReward],
+                                    comets: [.cusdcv3],
+                                    accounts: [.alice],
+                                    network: .ethereum
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.1, .usdc),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .swap(
+                                    filler: .filler,
+                                    sellAmount: .amt(39.9, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("8511667500000000"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("12767501250000"), ofToken: .weth),
+                                    feeRecipient: .stax,
+                                    cappedMax: true,
+                                    network: .ethereum
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.000025, .weth),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                // 39.9 * (0.008533/40) * 1.015 - 0.000025 = ~0.008614 WETH (rate scaled to actual flow)
+                                .bridge(
+                                    bridge: "Across",
+                                    srcNetwork: .ethereum,
+                                    destinationNetwork: .base,
+                                    inputTokenAmount: TokenAmount(fromWei: Number("8614342512500001"), ofToken: .weth),
+                                    outputTokenAmount: TokenAmount(fromWei: Number("7528199087375000"), ofToken: .weth),
+                                    cappedMax: true
+                                ),
+                            ],
+                            executionType: .immediate
+                        ),
+                        // Base operation: claim → swap → wrap bridged ETH → supply combined WETH to Comet
+                        .multicall(
+                            [
+                                .claimCometRewards(
+                                    cometRewards: [.usdcReward],
+                                    comets: [.cusdcv3],
+                                    accounts: [.alice],
+                                    network: .base
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.02, .usdc),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .swap(
+                                    filler: .filler,
+                                    sellAmount: .amt(79.98, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("17061733500000001"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("25592600250000"), ofToken: .weth),
+                                    feeRecipient: .stax,
+                                    cappedMax: true,
+                                    network: .base
+                                ),
+                                .wrapAsset(.eth),
+                                .quotePay(
+                                    payment: .amt(0.000005, .weth),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                // 79.98 * (0.017066/80) * 1.015 - 0.000005 (quote pay) + 0.007528 (bridged) = ~0.02484 WETH
+                                .supplyToComet(
+                                    tokenAmount: TokenAmount(
+                                        fromWei: Number("24840858589875002"),
+                                        ofToken: .weth
+                                    ),
+                                    market: .cwethv3,
+                                    cappedMax: true,
+                                    network: .base
+                                ),
+                            ],
+                            executionType: .contingent
+                        ),
+                    ])
+                )
+            )
+        )
+    }
+
+    @Test("Alice compounds multiple different rewards (USDC and WETH) with USDC→WETH swap, WETH flows directly")
+    func testCompounderMultipleClaimsMultipleSwaps() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(5, .usdc), .base),
+                    .cometReward(.alice, .amt(50, .usdc), .cusdcv3, .usdcReward, .base),
+                    .cometReward(.alice, .amt(0.5, .weth), .cwethv3, .wethReward, .base),
+                    .quote(.basic),
+                ],
+                when: .compounder(
+                    claims: [
+                        (from: .alice, assetSymbol: "USDC"),
+                        (from: .alice, assetSymbol: "WETH"),
+                    ],
+                    swaps: [
+                        (
+                            from: .alice,
+                            sellAmount: .max(.usdc),
+                            buyAmount: .amt(0.0125, .weth),
+                            swapQuoteSellAmount: .amt(50, .usdc),
+                            swapQuoteBuyAmount: .amt(0.0125, .weth),
+                            on: .base
+                        ),
+                        (
+                            from: .alice,
+                            sellAmount: .max(.weth),
+                            buyAmount: .amt(0.5075, .weth),
+                            swapQuoteSellAmount: .amt(0.5, .weth),
+                            swapQuoteBuyAmount: .amt(0.5075, .weth),
+                            on: .base
+                        ),
+                    ],
+                    supply: (
+                        from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
+                        on: .base
+                    )
+                ),
+                expect: .success(
+                    .single(
+                        .multicall(
+                            [
+                                .claimCometRewards(
+                                    cometRewards: [.wethReward],
+                                    comets: [.cwethv3],
+                                    accounts: [.alice],
+                                    network: .base
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.000005, .weth),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .claimCometRewards(
+                                    cometRewards: [.usdcReward],
+                                    comets: [.cusdcv3],
+                                    accounts: [.alice],
+                                    network: .base
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.02, .usdc),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .swap(
+                                    filler: .filler,
+                                    sellAmount: .amt(49.98, .usdc),
+                                    buyAmount: .amt(0.012495, .weth),
+                                    feeAmount: .amt(0.0000187425, .weth),
+                                    feeRecipient: .stax,
+                                    cappedMax: true,
+                                    network: .base
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.000005, .weth),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .supplyToComet(
+                                    tokenAmount: TokenAmount(fromWei: Number("512672425000000000"), ofToken: .weth),
+                                    market: .cwethv3,
+                                    cappedMax: true,
+                                    network: .base
+                                ),
+                            ],
+                            executionType: .immediate
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    @Test("Alice compounds USDC rewards from multiple chains with swaps on each chain")
+    func testCompounderMultiChainSwaps() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .cometReward(.alice, .amt(80, .usdc), .cusdcv3, .usdcReward, .base),
+                    .cometReward(.alice, .amt(40, .usdc), .cusdcv3, .usdcReward, .ethereum),
+                    .quote(.basic),
+                    .acrossQuote(.amt(10, .weth), 0.01),
+                ],
+                when: .compounder(
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [
+                        (
+                            from: .alice,
+                            sellAmount: .max(.usdc),
+                            buyAmount: .amt(0.02, .weth),
+                            swapQuoteSellAmount: .amt(80, .usdc),
+                            swapQuoteBuyAmount: .amt(0.02, .weth),
+                            on: .base
+                        ),
+                        (
+                            from: .alice,
+                            sellAmount: .max(.usdc),
+                            buyAmount: .amt(0.01, .weth),
+                            swapQuoteSellAmount: .amt(40, .usdc),
+                            swapQuoteBuyAmount: .amt(0.01, .weth),
+                            on: .ethereum
+                        ),
+                    ],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -514,8 +743,17 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
+                                .swap(
+                                    filler: .filler,
+                                    sellAmount: .amt(39.9, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("9975000000000000"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("14962500000000"), ofToken: .weth),
+                                    feeRecipient: .stax,
+                                    cappedMax: true,
+                                    network: .ethereum
+                                ),
                                 .quotePay(
-                                    payment: .amt(0.1, .usdc),
+                                    payment: TokenAmount(fromWei: Number("25000000000000"), ofToken: .weth),
                                     payee: .stax,
                                     quote: .basic
                                 ),
@@ -523,9 +761,9 @@ struct CompounderTests {
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .base,
-                                    inputTokenAmount: .amt(39.8, .usdc),
-                                    outputTokenAmount: .amt(29.402, .usdc),
-                                    cappedMax: false
+                                    inputTokenAmount: TokenAmount(fromWei: Number("10099625000000000"), ofToken: .weth),
+                                    outputTokenAmount: TokenAmount(fromWei: Number("0"), ofToken: .weth),
+                                    cappedMax: true
                                 ),
                             ],
                             executionType: .immediate
@@ -545,24 +783,21 @@ struct CompounderTests {
                                 ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(109.382, .usdc),
-                                    buyAmount: TokenAmount(fromWei: Number("23334826666666666"), ofToken: .weth),
-                                    feeAmount: TokenAmount(fromWei: Number("35002239999999"), ofToken: .weth),
+                                    sellAmount: .amt(79.98, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("19995000000000000"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("29992500000000"), ofToken: .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
                                 ),
+                                .wrapAsset(.eth),
                                 .quotePay(
                                     payment: .amt(0.000005, .weth),
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 109.382 * (0.0256/120) * 1.015 - 0.000005 = 0.02367985 (rate scaled to actual flow)
                                 .supplyToComet(
-                                    tokenAmount: TokenAmount(
-                                        fromWei: Number("23679849066666666"),
-                                        ofToken: .weth
-                                    ),
+                                    tokenAmount: TokenAmount(fromWei: Number("20289925000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -586,15 +821,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -656,15 +891,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .bob,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -684,15 +919,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.weth),
                         buyAmount: .amt(100, .usdc),
                         swapQuoteSellAmount: .amt(0.025, .weth),
                         swapQuoteBuyAmount: .amt(100, .usdc),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cusdcv3), amount: .max(.usdc),
                         on: .base
@@ -712,15 +947,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cusdcv3), amount: .max(.usdc),
                         on: .base
@@ -740,15 +975,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
@@ -768,15 +1003,15 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .amt(0.01, .weth),
                         on: .base
@@ -787,7 +1022,6 @@ struct CompounderTests {
         )
     }
 
-
     @Test("Alice compounds with rewards on different chain than swap fails")
     func testCompounderRewardsDifferentChainFails() async throws {
         try await testAcceptanceTests(
@@ -797,21 +1031,21 @@ struct CompounderTests {
                     .quote(.basic),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.025, .weth),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.025, .weth),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
                         on: .base
                     )
                 ),
-                expect: .failure(.error("All rewards must be on the same chain as the swap. Cross-chain reward compounding is not yet supported."))
+                expect: .failure(.error("All rewards must be on the same chain as their corresponding swap. Reward for USDC on Ethereum has no matching swap."))
             )
         )
     }
@@ -824,21 +1058,102 @@ struct CompounderTests {
                     .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
                 ],
                 when: .compounder(
-                    claim: (from: .alice, assetSymbol: "USDC"),
-                    swap: (
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [(
                         from: .alice,
                         sellAmount: .max(.usdc),
                         buyAmount: .amt(0.001, .cbbtc),
                         swapQuoteSellAmount: .amt(100, .usdc),
                         swapQuoteBuyAmount: .amt(0.001, .cbbtc),
                         on: .base
-                    ),
+                    )],
                     supply: (
                         from: .alice, market: .morpho(.wbtc), amount: .max(.cbbtc),
                         on: .ethereum
                     )
                 ),
                 expect: .failure(.error("Cross-chain compounding into cbBTC is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply."))
+            )
+        )
+    }
+
+    @Test("Alice compounds with no swap intent fails")
+    func testCompounderNoSwapIntentFails() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
+                    .quote(.basic),
+                ],
+                when: .compounder(
+                    claims: [(from: .alice, assetSymbol: "USDC")],
+                    swaps: [],
+                    supply: (
+                        from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
+                        on: .base
+                    )
+                ),
+                expect: .failure(.error("Compounder requires at least one swap intent"))
+            )
+        )
+    }
+
+    @Test("Alice compounds with no claim intent fails")
+    func testCompounderNoClaimIntentFails() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
+                    .quote(.basic),
+                ],
+                when: .compounder(
+                    claims: [],
+                    swaps: [(
+                        from: .alice,
+                        sellAmount: .max(.usdc),
+                        buyAmount: .amt(0.025, .weth),
+                        swapQuoteSellAmount: .amt(100, .usdc),
+                        swapQuoteBuyAmount: .amt(0.025, .weth),
+                        on: .base
+                    )],
+                    supply: (
+                        from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
+                        on: .base
+                    )
+                ),
+                expect: .failure(.error("Compounder requires at least one claim intent"))
+            )
+        )
+    }
+
+    @Test("Alice compounds with claim but no matching swap fails")
+    func testCompounderClaimWithoutMatchingSwapFails() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .cometReward(.alice, .amt(100, .usdc), .cusdcv3, .usdcReward, .base),
+                    .cometReward(.alice, .amt(0.5, .weth), .cwethv3, .wethReward, .base),
+                    .quote(.basic),
+                ],
+                when: .compounder(
+                    claims: [
+                        (from: .alice, assetSymbol: "USDC"),
+                        (from: .alice, assetSymbol: "WETH"),
+                    ],
+                    swaps: [(
+                        from: .alice,
+                        sellAmount: .max(.usdc),
+                        buyAmount: .amt(0.025, .weth),
+                        swapQuoteSellAmount: .amt(100, .usdc),
+                        swapQuoteBuyAmount: .amt(0.025, .weth),
+                        on: .base
+                    )],
+                    supply: (
+                        from: .alice, market: .comet(.cwethv3), amount: .max(.weth),
+                        on: .base
+                    )
+                ),
+                expect: .failure(.error("No swap intent found for claimed reward symbol: WETH"))
             )
         )
     }

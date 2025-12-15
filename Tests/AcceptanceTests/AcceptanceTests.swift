@@ -1506,11 +1506,11 @@ indirect enum When: Sendable {
         supply: (from: TestHelpers.Account, market: LendingMarket, amount: TokenAmount, on: Network)
     )
     case compounder(
-        claim: (from: TestHelpers.Account, assetSymbol: String),
-        swap: (
+        claims: [(from: TestHelpers.Account, assetSymbol: String)],
+        swaps: [(
             from: TestHelpers.Account, sellAmount: TokenAmount, buyAmount: TokenAmount,
             swapQuoteSellAmount: TokenAmount, swapQuoteBuyAmount: TokenAmount, on: Network
-        ),
+        )],
         supply: (from: TestHelpers.Account, market: LendingMarket, amount: TokenAmount, on: Network)
     )
     case migrateSupplies(
@@ -1602,8 +1602,8 @@ indirect enum When: Sendable {
                 return from
             case .swapAndSupply(let swapIntent, _):
                 return swapIntent.from
-            case .compounder(let claim, _, _):
-                return claim.from
+            case .compounder(let claims, let swaps, let supply):
+                return claims.first?.from ?? swaps.first?.from ?? supply.from
             case .migrateSupplies(_, let supplyIntent, _):
                 return supplyIntent.from
             case .loopLong(let from, _, _, _, _, _):
@@ -2045,32 +2045,36 @@ class Context {
                         blockTimestamp: Number(1_000_000)
                     )
                 )
-            case .compounder(let claim, let swap, let supply):
-                guard let sellToken = swap.sellAmount.token.address(network: swap.on),
-                    let buyToken = swap.buyAmount.token.address(network: swap.on)
-                else {
-                    fatalError("Cannot swap unknown token")
+            case .compounder(let claims, let swaps, let supply):
+                let claimIntents = claims.map { claim in
+                    Charter.ClaimRewardsIntent(
+                        claimer: claim.from.address,
+                        assetSymbol: claim.assetSymbol
+                    )
                 }
 
-                let claimIntent = Charter.ClaimRewardsIntent(
-                    claimer: claim.from.address,
-                    assetSymbol: claim.assetSymbol
-                )
+                let swapIntents = swaps.map { swap -> Charter.SwapIntent in
+                    guard let sellToken = swap.sellAmount.token.address(network: swap.on),
+                        let buyToken = swap.buyAmount.token.address(network: swap.on)
+                    else {
+                        fatalError("Cannot swap unknown token")
+                    }
 
-                let swapIntent = Charter.SwapIntent(
-                    chainId: Number(swap.on.chainId),
-                    sellToken: sellToken,
-                    sellAmount: Number(swap.sellAmount.amount),
-                    buyToken: buyToken,
-                    buyAmount: Number(swap.buyAmount.amount),
-                    swapQuoteSellAmount: Number(swap.swapQuoteSellAmount.amount),
-                    swapQuoteBuyAmount: Number(swap.swapQuoteBuyAmount.amount),
-                    feeToken: buyToken,
-                    feeAmount: Number(swap.buyAmount.amount / Number(100)),
-                    sender: swap.from.address,
-                    isExactOut: false,
-                    isBuy: true
-                )
+                    return Charter.SwapIntent(
+                        chainId: Number(swap.on.chainId),
+                        sellToken: sellToken,
+                        sellAmount: Number(swap.sellAmount.amount),
+                        buyToken: buyToken,
+                        buyAmount: Number(swap.buyAmount.amount),
+                        swapQuoteSellAmount: Number(swap.swapQuoteSellAmount.amount),
+                        swapQuoteBuyAmount: Number(swap.swapQuoteBuyAmount.amount),
+                        feeToken: buyToken,
+                        feeAmount: Number(swap.buyAmount.amount / Number(100)),
+                        sender: swap.from.address,
+                        isExactOut: false,
+                        isBuy: true
+                    )
+                }
 
                 let supplyIntent: Charter.SupplyIntent
                 switch supply.market {
@@ -2112,8 +2116,8 @@ class Context {
                     .init(
                         type: .compounder(
                             .init(
-                                claimRewardsIntent: claimIntent,
-                                swapIntent: swapIntent,
+                                claimRewardsIntents: claimIntents,
+                                swapIntents: swapIntents,
                                 supplyIntent: supplyIntent
                             )
                         ),

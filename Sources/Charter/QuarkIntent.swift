@@ -283,8 +283,8 @@ extension Charter {
                         }
                         return .compounder(
                             CompounderIntent(
-                                claimRewardsIntent: compounderIntent.claimRewardsIntent,
-                                swapIntent: compounderIntent.swapIntent,
+                                claimRewardsIntents: compounderIntent.claimRewardsIntents,
+                                swapIntents: compounderIntent.swapIntents,
                                 supplyIntent: maxSupplyIntent
                             )
                         )
@@ -1548,23 +1548,23 @@ extension Charter {
     }
 
     public struct CompounderIntent: Equatable, Codable, Hashable, Sendable {
-        public let claimRewardsIntent: ClaimRewardsIntent
-        public let swapIntent: SwapIntent
+        public let claimRewardsIntents: [ClaimRewardsIntent]
+        public let swapIntents: [SwapIntent]
         public let supplyIntent: SupplyIntent
 
         public enum CodingKeys: String, CodingKey {
-            case claimRewardsIntent = "claim_rewards_intent"
-            case swapIntent = "swap_intent"
+            case claimRewardsIntents = "claim_rewards_intents"
+            case swapIntents = "swap_intents"
             case supplyIntent = "supply_intent"
         }
 
         public init(
-            claimRewardsIntent: ClaimRewardsIntent,
-            swapIntent: SwapIntent,
+            claimRewardsIntents: [ClaimRewardsIntent],
+            swapIntents: [SwapIntent],
             supplyIntent: SupplyIntent
         ) {
-            self.claimRewardsIntent = claimRewardsIntent
-            self.swapIntent = swapIntent
+            self.claimRewardsIntents = claimRewardsIntents
+            self.swapIntents = swapIntents
             self.supplyIntent = supplyIntent
         }
     }

@@ -2866,67 +2866,43 @@ extension Charter.QuarkIntent.Type_ {
                 )
 
             case .compounder(let compounderIntent):
-                // TODO: Currently swap must occur on swapIntent.chainId, requiring claimed rewards to bridge there first.
-                // This means all reward tokens must be bridgeable to the swap chain; fails if bridging is unavailable.
-                // Consider using swap quote as an exchange rate and letting Tradewinds optimize which chain to swap on.
-                let claimIntent = compounderIntent.claimRewardsIntent
-                let swapIntent = compounderIntent.swapIntent
+                // Compounder intent: Claims rewards, swaps them to a target token, and supplies to a market.
+                // Supports multiple claim intents and multiple swap intents for flexible reward compounding.
+                //
+                // Constraints:
+                // - Each swap's sell token must match a claimed reward's asset symbol
+                // - All swap buy tokens must match the supply intent's asset symbol
+                // - All rewards must be on the same chain as their corresponding swap
+                // - Cross-chain supply requires bridgeable assets (USDC, ETH, WETH)
+                //
+                // Graph phases:
+                // - Phase A: Claim rewards (from reward markets to token balances)
+                // - Phase B: Swap claimed tokens (each swap converts rewards to supply asset)
+                // - Phase C: Supply swapped tokens (bridges if cross-chain, then supply)
+                let claimIntents = compounderIntent.claimRewardsIntents
+                let swapIntents = compounderIntent.swapIntents
                 let supplyIntent = compounderIntent.supplyIntent
 
-                let swapNetwork = Network.fromChainId(swapIntent.chainId)
+                guard !claimIntents.isEmpty else {
+                    return .failure(.error("Compounder requires at least one claim intent"))
+                }
+                guard !swapIntents.isEmpty else {
+                    return .failure(.error("Compounder requires at least one swap intent"))
+                }
+
                 let supplyNetwork = Network.fromChainId(supplyIntent.chainId)
-                let sender = claimIntent.claimer
+                let sender = claimIntents[0].claimer
 
-                guard claimIntent.claimer == swapIntent.sender,
-                    swapIntent.sender == supplyIntent.sender
-                else {
+                // Validate all senders match across claims, swaps, and supply
+                let allSendersMatch = claimIntents.allSatisfy { $0.claimer == sender }
+                    && swapIntents.allSatisfy { $0.sender == sender }
+                    && supplyIntent.sender == sender
+                guard allSendersMatch else {
                     return .failure(.compounderSenderMismatch)
-                }
-
-                guard
-                    let swapSellAsset = Atlas.getAssetByAddress(
-                        network: swapNetwork,
-                        token: swapIntent.sellToken
-                    )
-                else {
-                    return .failure(
-                        .unknownAsset(symbol: nil, network: swapNetwork, address: swapIntent.sellToken)
-                    )
-                }
-                guard swapSellAsset.symbol.equalIgnoringCase(claimIntent.assetSymbol) else {
-                    return .failure(
-                        .compounderTokenMismatch(
-                            expected: claimIntent.assetSymbol,
-                            actual: swapSellAsset.symbol
-                        )
-                    )
-                }
-
-                guard
-                    let swapBuyAsset = Atlas.getAssetByAddress(
-                        network: swapNetwork,
-                        token: swapIntent.buyToken
-                    )
-                else {
-                    return .failure(
-                        .unknownAsset(symbol: nil, network: swapNetwork, address: swapIntent.buyToken)
-                    )
-                }
-                guard swapBuyAsset.symbol.equalIgnoringCase(supplyIntent.assetSymbol) else {
-                    return .failure(
-                        .compounderTokenMismatch(
-                            expected: supplyIntent.assetSymbol,
-                            actual: swapBuyAsset.symbol
-                        )
-                    )
                 }
 
                 guard supplyIntent.amount.isMaxUint256 else {
                     return .failure(.error("Compounder requires supply amount to be .max"))
-                }
-
-                guard swapIntent.swapQuoteSellAmount > 0 else {
-                    return .failure(.invalidSwapQuoteSellAmountIsZero)
                 }
 
                 guard
@@ -2944,36 +2920,120 @@ extension Charter.QuarkIntent.Type_ {
                     )
                 }
 
-                let rewardBalances = folio.getRewardBalances(
-                    symbol: claimIntent.assetSymbol,
-                    wallet: sender
-                )
-
-                if rewardBalances.isEmpty {
-                    return .failure(.noClaimableRewardsFound(symbol: claimIntent.assetSymbol))
+                // SwapConfig captures validated swap parameters for graph construction
+                struct SwapConfig {
+                    let swapIntent: Charter.SwapIntent
+                    let network: Network
+                    let sellAsset: Atlas.Asset
+                    let buyAsset: Atlas.Asset
                 }
 
-                // Require all rewards to be on the swap network. Cross-chain reward claiming is not yet supported.
-                // TODO: Support multiple swap quotes on each chain to enable non-bridgeable cross-chain compounding.
-                let rewardNetworks = Set(rewardBalances.map { $0.rewardType.underlyingSymbolAndNetwork.1 })
-                if !rewardNetworks.allSatisfy({ $0 == swapNetwork }) {
-                    return .failure(.error("All rewards must be on the same chain as the swap. Cross-chain reward compounding is not yet supported."))
+                // Validate each swap intent and build configs
+                var swapConfigs: [SwapConfig] = []
+                for swapIntent in swapIntents {
+                    let swapNetwork = Network.fromChainId(swapIntent.chainId)
+
+                    guard
+                        let swapSellAsset = Atlas.getAssetByAddress(
+                            network: swapNetwork,
+                            token: swapIntent.sellToken
+                        )
+                    else {
+                        return .failure(
+                            .unknownAsset(symbol: nil, network: swapNetwork, address: swapIntent.sellToken)
+                        )
+                    }
+
+                    // Verify swap sell token matches a claimed reward asset
+                    let hasMatchingClaim = claimIntents.contains { $0.assetSymbol.equalIgnoringCase(swapSellAsset.symbol) }
+                    guard hasMatchingClaim else {
+                        return .failure(
+                            .compounderTokenMismatch(
+                                expected: claimIntents.map { $0.assetSymbol }.joined(separator: ", "),
+                                actual: swapSellAsset.symbol
+                            )
+                        )
+                    }
+
+                    guard
+                        let swapBuyAsset = Atlas.getAssetByAddress(
+                            network: swapNetwork,
+                            token: swapIntent.buyToken
+                        )
+                    else {
+                        return .failure(
+                            .unknownAsset(symbol: nil, network: swapNetwork, address: swapIntent.buyToken)
+                        )
+                    }
+
+                    // Verify swap buy token matches supply asset
+                    guard swapBuyAsset.symbol.equalIgnoringCase(supplyIntent.assetSymbol) else {
+                        return .failure(
+                            .compounderTokenMismatch(
+                                expected: supplyIntent.assetSymbol,
+                                actual: swapBuyAsset.symbol
+                            )
+                        )
+                    }
+
+                    guard swapIntent.swapQuoteSellAmount > 0 else {
+                        return .failure(.invalidSwapQuoteSellAmountIsZero)
+                    }
+
+                    swapConfigs.append(SwapConfig(
+                        swapIntent: swapIntent,
+                        network: swapNetwork,
+                        sellAsset: swapSellAsset,
+                        buyAsset: swapBuyAsset
+                    ))
                 }
 
-                // If supply is on a different chain than swap, the supply asset must be bridgeable.
+                // Cross-chain supply requires bridgeable assets
                 let bridgeableSymbols: Set<String> = ["USDC", "ETH", "WETH"]
-                if swapNetwork != supplyNetwork, !bridgeableSymbols.contains(supplyAsset.symbol) {
-                    return .failure(.error("Cross-chain compounding into \(supplyIntent.assetSymbol) is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply."))
+                for swapConfig in swapConfigs {
+                    if swapConfig.network != supplyNetwork, !bridgeableSymbols.contains(swapConfig.buyAsset.symbol) {
+                        return .failure(.error("Cross-chain compounding into \(supplyIntent.assetSymbol) is not supported. Only bridgeable assets (WETH, ETH, USDC) are supported for cross-chain supply."))
+                    }
                 }
 
-                // Build graph in three phases:
-                // Phase A: Claim rewards (from reward markets to token balances)
-                // Phase B: Swap claimed tokens (bridges if cross-chain, then swap)
-                // Phase C: Supply swapped tokens (bridges if cross-chain, then supply)
+                // Collect all reward balances for claimed asset symbols
+                var allRewardBalances: [(rewardType: Folio.RewardType, amount: Amount)] = []
+                for claimIntent in claimIntents {
+                    let rewardBalances = folio.getRewardBalances(
+                        symbol: claimIntent.assetSymbol,
+                        wallet: sender
+                    )
+                    allRewardBalances.append(contentsOf: rewardBalances)
+                }
+
+                if allRewardBalances.isEmpty {
+                    let symbols = claimIntents.map { $0.assetSymbol }.joined(separator: ", ")
+                    return .failure(.noClaimableRewardsFound(symbol: symbols))
+                }
+
+                // Validate all rewards have a corresponding swap on the same chain
+                let rewardNetworksBySymbol = Dictionary(grouping: allRewardBalances) {
+                    $0.rewardType.underlyingSymbolAndNetwork.0
+                }.mapValues { Set($0.map { $0.rewardType.underlyingSymbolAndNetwork.1 }) }
+
+                let swapNetworksBySymbol = Dictionary(grouping: swapConfigs) {
+                    $0.sellAsset.symbol
+                }.mapValues { Set($0.map { $0.network }) }
+
+                for (symbol, rewardNetworks) in rewardNetworksBySymbol {
+                    guard let swapNetworks = swapNetworksBySymbol[symbol] else {
+                        return .failure(.error("No swap intent found for claimed reward symbol: \(symbol)"))
+                    }
+                    for rewardNetwork in rewardNetworks {
+                        if !swapNetworks.contains(rewardNetwork) {
+                            return .failure(.error("All rewards must be on the same chain as their corresponding swap. Reward for \(symbol) on \(rewardNetwork.description) has no matching swap."))
+                        }
+                    }
+                }
 
                 // Phase A: Build claim routes from reward balances
                 let graphResult = buildRewardClaimGraph(
-                    rewardBalances: rewardBalances, folio: folio, claimer: sender
+                    rewardBalances: allRewardBalances, folio: folio, claimer: sender
                 )
                 guard case .success(let (routes: claimRoutes, resources: resources, sinkNodes: sinkNodes)) = graphResult
                 else {
@@ -2982,17 +3042,63 @@ extension Charter.QuarkIntent.Type_ {
 
                 var routes = claimRoutes
 
-                // Phase B: Generate routes to move claimed tokens to swap sell token
-                // sinkNodes are where claimed rewards land; swapSellTokenNode is swap input
-                let swapSellTokenNode = TradewindsLegendNode.tokenBalance(
-                    network: swapNetwork,
-                    address: swapIntent.sellToken,
-                    symbol: swapSellAsset.symbol,
-                    wallet: sender
-                )
+                // Phase B: Build swap routes for each swap config
+                var allSwapSellNodes: Set<TradewindsLegendNode> = []
+                var allSwapBuyNodes: Set<TradewindsLegendNode> = []
 
+                for swapConfig in swapConfigs {
+                    let swapIntent = swapConfig.swapIntent
+                    let swapNetwork = swapConfig.network
+
+                    let swapSellTokenNode = TradewindsLegendNode.tokenBalance(
+                        network: swapNetwork,
+                        address: swapIntent.sellToken,
+                        symbol: swapConfig.sellAsset.symbol,
+                        wallet: sender
+                    )
+                    allSwapSellNodes.insert(swapSellTokenNode)
+
+                    let swapBuyTokenNode = TradewindsLegendNode.tokenBalance(
+                        network: swapNetwork,
+                        address: swapIntent.buyToken,
+                        symbol: swapConfig.buyAsset.symbol,
+                        wallet: sender
+                    )
+                    allSwapBuyNodes.insert(swapBuyTokenNode)
+
+                    let isMaxSell = swapIntent.sellAmount.isMaxUint256
+                    let swapRate = calculateSwapRate(swapIntent: swapIntent, isMaxSell: isMaxSell)
+                    let (swapMinFlow, swapMaxFlow) = calculateSwapFlowConstraints(
+                        swapIntent: swapIntent,
+                        isMaxSell: isMaxSell
+                    )
+
+                    routes.append(
+                        makeLegendRoute(
+                            type: .swap(
+                                buyToken: swapIntent.buyToken,
+                                buyAmount: swapIntent.buyAmount,
+                                swapQuoteSellAmount: swapIntent.swapQuoteSellAmount,
+                                swapQuoteBuyAmount: swapIntent.swapQuoteBuyAmount,
+                                feeToken: swapIntent.feeToken,
+                                feeAmount: swapIntent.feeAmount,
+                                isExactOut: swapIntent.isExactOut,
+                                isBuy: swapIntent.isBuy,
+                                isCappedMax: isMaxSell
+                            ),
+                            source: swapSellTokenNode,
+                            sink: swapBuyTokenNode,
+                            rate: swapRate,
+                            minFlow: swapMinFlow,
+                            maxFlow: swapMaxFlow,
+                            folio: folio
+                        )
+                    )
+                }
+
+                // Generate routes to move claimed tokens to swap sell nodes
                 var claimPhaseNodes = sinkNodes
-                claimPhaseNodes.insert(swapSellTokenNode)
+                claimPhaseNodes.formUnion(allSwapSellNodes)
 
                 let claimPhaseRoutes = generateRoutes(
                     nodes: Array(claimPhaseNodes),
@@ -3004,47 +3110,12 @@ extension Charter.QuarkIntent.Type_ {
                 )
                 routes.append(contentsOf: claimPhaseRoutes)
 
-                // Create swap route (sellToken → buyToken)
-                let swapBuyTokenNode = TradewindsLegendNode.tokenBalance(
-                    network: swapNetwork,
-                    address: swapIntent.buyToken,
-                    symbol: swapBuyAsset.symbol,
-                    wallet: sender
-                )
-
-                let isMaxSell = swapIntent.sellAmount.isMaxUint256
-                let swapRate = calculateSwapRate(swapIntent: swapIntent, isMaxSell: isMaxSell)
-                let (swapMinFlow, swapMaxFlow) = calculateSwapFlowConstraints(
-                    swapIntent: swapIntent,
-                    isMaxSell: isMaxSell
-                )
-
-                routes.append(
-                    makeLegendRoute(
-                        type: .swap(
-                            buyToken: swapIntent.buyToken,
-                            buyAmount: swapIntent.buyAmount,
-                            swapQuoteSellAmount: swapIntent.swapQuoteSellAmount,
-                            swapQuoteBuyAmount: swapIntent.swapQuoteBuyAmount,
-                            feeToken: swapIntent.feeToken,
-                            feeAmount: swapIntent.feeAmount,
-                            isExactOut: swapIntent.isExactOut,
-                            isBuy: swapIntent.isBuy,
-                            isCappedMax: isMaxSell
-                        ),
-                        source: swapSellTokenNode,
-                        sink: swapBuyTokenNode,
-                        rate: swapRate,
-                        minFlow: swapMinFlow,
-                        maxFlow: swapMaxFlow,
-                        folio: folio
-                    )
-                )
-
-                // Phase C: Generate routes to move swap output to supply venue
-                var buyTokenNodes: Set<TradewindsLegendNode> = [swapBuyTokenNode]
-                if swapNetwork != supplyNetwork {
-                    for symbol in folio.getRelevantSymbols(network: supplyNetwork, assetSymbol: swapBuyAsset.symbol) {
+                // Phase C: Build supply routes from swap outputs to supply venue
+                // Start with swap buy nodes, then add destination nodes on supply network if bridging is needed
+                var buyTokenNodes = allSwapBuyNodes
+                let requiresBridgeToSupply = swapConfigs.contains { $0.network != supplyNetwork }
+                if requiresBridgeToSupply {
+                    for symbol in folio.getRelevantSymbols(network: supplyNetwork, assetSymbol: supplyAsset.symbol) {
                         if let asset = Atlas.getAssetBySymbol(network: supplyNetwork, symbol: symbol) {
                             buyTokenNodes.insert(.tokenBalance(
                                 network: supplyNetwork,

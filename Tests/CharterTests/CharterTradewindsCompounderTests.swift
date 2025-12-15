@@ -26,11 +26,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -43,7 +43,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -158,11 +158,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "WETH"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.WETH.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -175,7 +175,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .morpho(
                             Charter.MorphoVaultSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -294,11 +294,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -311,7 +311,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .aave(
                             Charter.AaveSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -429,11 +429,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -446,7 +446,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -607,11 +607,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -624,7 +624,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -730,8 +730,11 @@ struct CharterTradewindsCompounderTests {
 
     // MARK: - Multi-Chain Claiming Tests
 
-    // TODO: Re-enable when multi-chain reward compounding is supported
-    @Test("Compounder - Claims from multiple chains and bridges to swap network", .disabled("Cross-chain reward compounding not yet supported"))
+    // TODO: Re-enable when bridging rewards before swap is supported.
+    // Multi-chain compounding IS supported when each chain has its own swap (see testCompounderMultipleRewardsMultiChain).
+    // This test is disabled because it tries to bridge rewards BEFORE swapping (single swap on destination chain).
+    // Current implementation requires swaps on the same chain as their rewards.
+    @Test("Compounder - Claims from multiple chains and bridges to swap network", .disabled("Bridging rewards before swap not yet supported - each chain must have its own swap"))
     func testCompounderMultiChainClaimWithBridge() {
         runFlowTest(
             ChartTestCase(
@@ -744,11 +747,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -761,7 +764,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -927,11 +930,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -944,7 +947,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.bob.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -974,11 +977,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.WETH.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -991,7 +994,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -1024,11 +1027,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -1041,7 +1044,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -1074,11 +1077,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -1091,7 +1094,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: "1000e6",
@@ -1120,11 +1123,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -1137,7 +1140,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -1168,11 +1171,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -1185,7 +1188,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .comet(
                             Charter.CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
@@ -1331,11 +1334,11 @@ struct CharterTradewindsCompounderTests {
                 ],
                 intent: .compounder(
                     Charter.CompounderIntent(
-                        claimRewardsIntent: Charter.ClaimRewardsIntent(
+                        claimRewardsIntents: [Charter.ClaimRewardsIntent(
                             claimer: TestHelpers.Account.alice.address,
                             assetSymbol: "USDC"
-                        ),
-                        swapIntent: Charter.SwapIntent(
+                        )],
+                        swapIntents: [Charter.SwapIntent(
                             chainId: Number(BaseNetwork.chainId),
                             sellToken: BaseNetwork.Assets.USDC.assetAddress,
                             sellAmount: Number.MAX_UINT_256,
@@ -1348,7 +1351,7 @@ struct CharterTradewindsCompounderTests {
                             sender: TestHelpers.Account.alice.address,
                             isExactOut: false,
                             isBuy: false
-                        ),
+                        )],
                         supplyIntent: .morpho(
                             Charter.MorphoVaultSupplyIntent(
                                 amount: Number.MAX_UINT_256,
