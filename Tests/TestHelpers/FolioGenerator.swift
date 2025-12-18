@@ -244,7 +244,9 @@ public func applyGiven(folio: inout Folio, given: Given) {
                     folio.bridgeHints.updateValue(
                         .init(
                             minAmount: Amount(0, decimals: fixedCost.token.decimals),
-                            maxAmount: nil,
+                            maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            estimatedFillTimeSec: 5,
                             fixedCost: fixedCost.toAmount,
                             rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
                         ),
@@ -266,7 +268,33 @@ public func applyGiven(folio: inout Folio, given: Given) {
                     folio.bridgeHints.updateValue(
                         .init(
                             minAmount: minAmount.toAmount,
-                            maxAmount: nil,
+                            maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            estimatedFillTimeSec: 5,
+                            fixedCost: fixedCost.toAmount,
+                            rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
+                        ),
+                        forKey: .across(
+                            networkIn: srcNetwork,
+                            symbolIn: fixedCost.token.symbol,
+                            networkOut: dstNetwork,
+                            symbolOut: fixedCost.token.symbol
+                        )
+                    )
+                }
+            }
+        case .acrossQuoteWithMax(let fixedCost, let fee, let maxAmountInstant):
+            for srcNetwork in allNetworks {
+                for dstNetwork in allNetworks {
+                    if srcNetwork == dstNetwork {
+                        continue
+                    }
+                    folio.bridgeHints.updateValue(
+                        .init(
+                            minAmount: Amount(0, decimals: fixedCost.token.decimals),
+                            maxAmount: maxAmountInstant.toAmount,
+                            maxAmountInstant: maxAmountInstant.toAmount,
+                            estimatedFillTimeSec: 5,
                             fixedCost: fixedCost.toAmount,
                             rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
                         ),

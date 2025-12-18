@@ -411,7 +411,9 @@ extension Array where Element == Portfolio {
                     folio.bridgeHints.updateValue(
                         .init(
                             minAmount: bridgeHint.minAmount,
-                            maxAmount: nil,
+                            maxAmount: bridgeHint.maxAmount,
+                            maxAmountInstant: bridgeHint.maxAmountInstant,
+                            estimatedFillTimeSec: bridgeHint.estimatedFillTimeSec,
                             fixedCost: bridgeHint.fixedCost,
                             rate: bridgeHint.rate
                         ),

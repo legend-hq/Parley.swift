@@ -360,6 +360,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                 ): Folio.BridgeHint(
                     minAmount: Amount("5.0e6"),
                     maxAmount: Amount("100.0e6"),
+                    maxAmountInstant: Amount("50.0e6"),
+                    estimatedFillTimeSec: 5,
                     fixedCost: Amount("10.0e6"),
                     rate: Percentage(fromDouble: 0.01)  // 1% fee rate
                 )

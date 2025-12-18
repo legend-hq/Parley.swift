@@ -389,7 +389,9 @@ struct FolioCodableTests {
                     symbolOut: "USDC"
                 ): Folio.BridgeHint(
                     minAmount: Amount("1000000", decimals: 6),
-                    maxAmount: nil,
+                    maxAmount: Amount("2000000000", decimals: 6),
+                    maxAmountInstant: Amount("1500000000", decimals: 6),
+                    estimatedFillTimeSec: 5,
                     fixedCost: Amount("500000", decimals: 6),
                     rate: Percentage(fromBps: Number("9950"))  // 99.5%
                 )
@@ -442,8 +444,10 @@ struct FolioCodableTests {
               },
               "bridge_hints" : {
                 "across/base/USDC/arbitrum/USDC" : {
+                  "estimated_fill_time_sec" : 5,
                   "fixed_cost" : "0.5e6",
-                  "max_amount" : null,
+                  "max_amount" : "2000e6",
+                  "max_amount_instant" : "1500e6",
                   "min_amount" : "1e6",
                   "rate" : "0.995"
                 }

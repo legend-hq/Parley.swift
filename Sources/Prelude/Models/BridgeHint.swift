@@ -22,7 +22,9 @@ public enum LegendModel {
         @NetworkIdent public var networkOut: Network
         public let symbolOut: String
         @Scientific public var minAmount: Amount
-        @ScientificNil public var maxAmount: Amount?
+        @Scientific public var maxAmount: Amount
+        @Scientific public var maxAmountInstant: Amount
+        public let estimatedFillTimeSec: Int
         @Scientific public var fixedCost: Amount
         @Scientific public var rate: Percentage
 
@@ -33,9 +35,11 @@ public enum LegendModel {
             networkOut: Network,
             symbolOut: String,
             minAmount: Amount,
-            maxAmount: Amount?,
+            maxAmount: Amount,
+            maxAmountInstant: Amount,
+            estimatedFillTimeSec: Int,
             fixedCost: Amount,
-            rate: Percentage,
+            rate: Percentage
         ) {
             self.bridgeType = bridgeType
             self.networkIn = networkIn
@@ -44,6 +48,8 @@ public enum LegendModel {
             self.symbolOut = symbolOut
             self.minAmount = minAmount
             self.maxAmount = maxAmount
+            self.maxAmountInstant = maxAmountInstant
+            self.estimatedFillTimeSec = estimatedFillTimeSec
             self.fixedCost = fixedCost
             self.rate = rate
         }
@@ -56,6 +62,8 @@ public enum LegendModel {
             case symbolOut = "symbol_out"
             case minAmount = "min_amount"
             case maxAmount = "max_amount"
+            case maxAmountInstant = "max_amount_instant"
+            case estimatedFillTimeSec = "estimated_fill_time_sec"
             case fixedCost = "fixed_cost"
             case rate = "rate"
         }

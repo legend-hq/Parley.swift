@@ -149,7 +149,7 @@ public class PortfolioState {
                 morphoVaultPositions[network, default: [:]][vault, default: [:]][account] =
                     currentSupply + amount.amount
             // Cases that don't affect portfolio state are ignored
-            case .quote, .prices, .acrossQuote, .acrossQuoteWithMin, .cometBorrowCapacity, .morphoBorrowCapacity:
+            case .quote, .prices, .acrossQuote, .acrossQuoteWithMin, .acrossQuoteWithMax, .cometBorrowCapacity, .morphoBorrowCapacity:
                 break
         }
     }

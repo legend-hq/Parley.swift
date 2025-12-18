@@ -702,6 +702,7 @@ public enum Token: Hashable, Equatable, Sendable {
         ],
         .polygon: [
             .weth: EthAddress("0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"),
+            .usdc: EthAddress("0x3c499c542cef5e3811e1192ce70d8cc03d5c3359"),
         ],
         .unknown(7777): [
             .usdc: EthAddress("0x7777000000000000000000000000000000000001"),
@@ -878,4 +879,5 @@ public enum Given: Hashable, Equatable, Sendable {
     case morphoReward(Account, TokenAmount, MorphoDistributor, MorphoClaimProof, Network)
     case acrossQuote(TokenAmount, Double)
     case acrossQuoteWithMin(TokenAmount, Double, TokenAmount)
+    case acrossQuoteWithMax(TokenAmount, Double, TokenAmount)
 }

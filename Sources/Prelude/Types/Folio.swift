@@ -194,13 +194,24 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
 
     public struct BridgeHint: Codable, Equatable, Hashable, Sendable {
         @Scientific public var minAmount: Amount
-        @ScientificNil public var maxAmount: Amount?
+        @Scientific public var maxAmount: Amount
+        @Scientific public var maxAmountInstant: Amount
+        public let estimatedFillTimeSec: Int
         @Scientific public var fixedCost: Amount
         @Scientific public var rate: Percentage
 
-        public init(minAmount: Amount, maxAmount: Amount?, fixedCost: Amount, rate: Percentage) {
+        public init(
+            minAmount: Amount,
+            maxAmount: Amount,
+            maxAmountInstant: Amount,
+            estimatedFillTimeSec: Int,
+            fixedCost: Amount,
+            rate: Percentage
+        ) {
             self.minAmount = minAmount
             self.maxAmount = maxAmount
+            self.maxAmountInstant = maxAmountInstant
+            self.estimatedFillTimeSec = estimatedFillTimeSec
             self.fixedCost = fixedCost
             self.rate = rate
         }
@@ -274,6 +285,8 @@ extension Folio.BridgeHint {
     private enum CodingKeys: String, CodingKey {
         case minAmount = "min_amount"
         case maxAmount = "max_amount"
+        case maxAmountInstant = "max_amount_instant"
+        case estimatedFillTimeSec = "estimated_fill_time_sec"
         case fixedCost = "fixed_cost"
         case rate
     }

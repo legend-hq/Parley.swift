@@ -140,7 +140,7 @@ internal func generateRoute(
                         )
                     ],
                     minFlow: bridgeHint.minAmount.underlying,
-                    maxFlow: bridgeHint.maxAmount?.underlying ?? maxFlow,
+                    maxFlow: bridgeHint.maxAmountInstant.underlying,
                     folio: folio
                 )
             }
