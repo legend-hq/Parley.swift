@@ -1,0 +1,13 @@
+.DS_Store
+/.build
+/.swiftpm
+/.devContainer
+/Packages
+/*.xcodeproj
+xcuserdata/
+/.vscode/*
+.env.*
+.env
+test-results/
+Visualizations/
+legend-script-releases/

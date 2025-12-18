@@ -1,0 +1,60 @@
+{
+  "originHash" : "e8914f58de69ebe0f7ae070e59959bdb039bfa1976f4b3e7a87db4a4301a8d98",
+  "pins" : [
+    {
+      "identity" : "eth.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hayesgm/Eth.swift",
+      "state" : {
+        "revision" : "2da8c93229f09245b8828cd4540038d28265031d",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "phonenumberkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/PhoneNumberKit.git",
+      "state" : {
+        "revision" : "288b99e9e99926bc8be41220802df83c059fac9b",
+        "version" : "4.0.2"
+      }
+    },
+    {
+      "identity" : "swift-icudata-slim",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/GoodNotes/swift-icudata-slim.git",
+      "state" : {
+        "revision" : "31cbbf135568735c518171e0258e1ab47e20e66a",
+        "version" : "0.2.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "swiftkeccak",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hayesgm/SwiftKeccak.git",
+      "state" : {
+        "revision" : "98a9d4a037dd62283977d5e0ef7d11c5612ff813",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swiftnumber",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:legend-hq/SwiftNumber",
+      "state" : {
+        "revision" : "89e127293ab1a0a7b276bed91b18ee60b651e7e9",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

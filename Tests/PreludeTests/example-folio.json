@@ -1,0 +1,982 @@
+{
+  "balances": {
+    "token/base/USDC/0x904df5c4e756f383a4ffa5607b1e9cc9552bfbbf": "1e6"
+  },
+  "borrow_markets": {
+    "comet/arbitrum/0x6f7d514bbd4aff3bcd1140b7344b32f063dee486/WETH": {
+      "borrow_apr": "0.022212913990752",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00700414396301148",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "30000000e6",
+          "total_supply": "9860.579181e6",
+          "usd_price": "0.99991956"
+        },
+        "USDT": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "20000000e6",
+          "total_supply": "20701.832826e6",
+          "usd_price": "1.000591"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1000e8",
+          "total_supply": "32.46826318e8",
+          "usd_price": "105886.50459158"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.94",
+          "supply_cap": "12000e18",
+          "total_supply": "1209.76057014211e18",
+          "usd_price": "2582.82484511"
+        },
+        "rETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "7500e18",
+          "total_supply": "89.6557680590786e18",
+          "usd_price": "2796.01527447"
+        },
+        "rsETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.96",
+          "supply_cap": "3500e18",
+          "total_supply": "1026.67835050282e18",
+          "usd_price": "2570.90911633"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "24000e18",
+          "total_supply": "1654.69662068054e18",
+          "usd_price": "2627.02940305"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "10000e18",
+          "total_supply": "752.655705575366e18",
+          "usd_price": "2958.81901895"
+        }
+      },
+      "total_borrow": "5058.45931682749e18"
+    },
+    "comet/arbitrum/0x9c4ec768c28520b50860ea7a15bd7213a9ff58bf/USDC": {
+      "borrow_apr": "0.0391015739124",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00888442741825541",
+      "collaterals": {
+        "ARB": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "16000000e18",
+          "total_supply": "7153099.8978157e18",
+          "usd_price": "0.32381634"
+        },
+        "GMX": {
+          "borrow_collateral_factor": "0.6",
+          "liquidate_collateral_factor": "0.75",
+          "liquidation_factor": "0.85",
+          "supply_cap": "120000e18",
+          "total_supply": "2245.81941398184e18",
+          "usd_price": "14.32171435"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.75",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1000e8",
+          "total_supply": "314.86923135e8",
+          "usd_price": "105886.50459158"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "40000e18",
+          "total_supply": "5921.180074789e18",
+          "usd_price": "2453.94"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1400e18",
+          "total_supply": "124.445407166633e18",
+          "usd_price": "2582.82484511"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "8000e18",
+          "total_supply": "4153.59122233347e18",
+          "usd_price": "2958.81901895"
+        }
+      },
+      "total_borrow": "29360538.205781e6"
+    },
+    "comet/arbitrum/0xd98be00b5d27fc98112bde293e487f8d4ca57d07/USDT": {
+      "borrow_apr": "0.037427866843392",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.010975331425244",
+      "collaterals": {
+        "ARB": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "7500000e18",
+          "total_supply": "837046.509910166e18",
+          "usd_price": "0.32381634"
+        },
+        "GMX": {
+          "borrow_collateral_factor": "0.6",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "100000e18",
+          "total_supply": "4607.09364903386e18",
+          "usd_price": "14.32171435"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1000e8",
+          "total_supply": "297.62401099e8",
+          "usd_price": "105886.50459158"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "20000e18",
+          "total_supply": "3431.99464364658e18",
+          "usd_price": "2453.94"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "16000e18",
+          "total_supply": "4055.77419172598e18",
+          "usd_price": "2958.81901895"
+        }
+      },
+      "total_borrow": "23751130.405252e6"
+    },
+    "comet/base/0x46e6b214b524310239732d51387075e0e70970bf/WETH": {
+      "borrow_apr": "0.022157441567568",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.0091289259298666",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "20000000e6",
+          "total_supply": "69461.296028e6",
+          "usd_price": "0.99986829"
+        },
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "45e8",
+          "total_supply": "0.77463901e8",
+          "usd_price": "106035.74668776"
+        },
+        "cbETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "7500e18",
+          "total_supply": "441.635432846741e18",
+          "usd_price": "2708.06670099"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.94",
+          "supply_cap": "2000e18",
+          "total_supply": "746.255976842324e18",
+          "usd_price": "2585.4063485"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "15000e18",
+          "total_supply": "647.425605915938e18",
+          "usd_price": "2629.91898813"
+        },
+        "wrsETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.96",
+          "supply_cap": "700e18",
+          "total_supply": "460.723170709323e18",
+          "usd_price": "2573.53722905"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "1200e18",
+          "total_supply": "97.7504636599965e18",
+          "usd_price": "2962.17531312"
+        }
+      },
+      "total_borrow": "2326.66752518733e18"
+    },
+    "comet/base/0xb125e6687d4313864e53df431d5425969c15eb2f/USDC": {
+      "borrow_apr": "0.039429139195872",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00672934630172666",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.85",
+          "liquidate_collateral_factor": "0.9",
+          "liquidation_factor": "0.95",
+          "supply_cap": "11000e18",
+          "total_supply": "2972.83747847382e18",
+          "usd_price": "2456.448541"
+        },
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "400e8",
+          "total_supply": "211.28475129e8",
+          "usd_price": "106035.74668776"
+        },
+        "cbETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "7500e18",
+          "total_supply": "1542.08854737713e18",
+          "usd_price": "2708.06670099"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "3000e18",
+          "total_supply": "901.184339483293e18",
+          "usd_price": "2962.17531312"
+        }
+      },
+      "total_borrow": "18093508.713789e6"
+    },
+    "comet/ethereum/0xa17581a9e3356d9a858b789d68b4d866e593ae94/WETH": {
+      "borrow_apr": "0.02741023846656",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00320384045035168",
+      "collaterals": {
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "150e8",
+          "total_supply": "0.39016626e8",
+          "usd_price": "105518.97172756"
+        },
+        "cbETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "10000e18",
+          "total_supply": "23.7663761061112e18",
+          "usd_price": "2713.79482686"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "64500e18",
+          "total_supply": "16868.5038708767e18",
+          "usd_price": "2968.69282084"
+        }
+      },
+      "total_borrow": "44344.0480936245e18"
+    },
+    "comet/ethereum/0xc3d688b66703497daa19211eedff47f25384cdc3/USDC": {
+      "borrow_apr": "0.039411939902976",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00290040408938731",
+      "collaterals": {
+        "COMP": {
+          "borrow_collateral_factor": "0.5",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.75",
+          "supply_cap": "100000e18",
+          "total_supply": "57016.5881341492e18",
+          "usd_price": "47.9075949"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.825",
+          "liquidate_collateral_factor": "0.895",
+          "liquidation_factor": "0.95",
+          "supply_cap": "500000e18",
+          "total_supply": "74279.8688871369e18",
+          "usd_price": "2461.62"
+        },
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "900e8",
+          "total_supply": "338.12222994e8",
+          "usd_price": "105518.97172756"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.82",
+          "liquidate_collateral_factor": "0.87",
+          "liquidation_factor": "0.92",
+          "supply_cap": "75000e18",
+          "total_supply": "44847.7620144808e18",
+          "usd_price": "2968.69282084"
+        }
+      },
+      "total_borrow": "428113442.301734e6"
+    },
+    "comet/optimism/0x2e44e174f7d53f0212823acc11c01a11d58c5bcb/USDC": {
+      "borrow_apr": "0.038999116507392",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.0144492846058701",
+      "collaterals": {
+        "OP": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "1400000e18",
+          "total_supply": "366116.363233612e18",
+          "usd_price": "0.55891372"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "130e8",
+          "total_supply": "67.15751669e8",
+          "usd_price": "105928.61883412"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2600e18",
+          "total_supply": "971.341202784621e18",
+          "usd_price": "2456.08516325"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1200e18",
+          "total_supply": "525.981404523373e18",
+          "usd_price": "2960.42535365"
+        }
+      },
+      "total_borrow": "4814911.432487e6"
+    },
+    "comet/optimism/0x995e394b8b2437ac8ce61ee0bc610d617962b214/USDT": {
+      "borrow_apr": "0.037648844861904",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.0193272612926075",
+      "collaterals": {
+        "OP": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "1000000e18",
+          "total_supply": "131095.078129217e18",
+          "usd_price": "0.55891372"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "100e8",
+          "total_supply": "58.99106308e8",
+          "usd_price": "105928.61883412"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2600e18",
+          "total_supply": "651.36648419228e18",
+          "usd_price": "2456.08516325"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1300e18",
+          "total_supply": "680.322225056519e18",
+          "usd_price": "2960.42535365"
+        }
+      },
+      "total_borrow": "4496661.808083e6"
+    },
+    "comet/optimism/0xe36a30d249f7761327fd973001a32010b521b6fd/WETH": {
+      "borrow_apr": "0.023631747675408",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.0106656431574837",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "15000000e6",
+          "total_supply": "101748.521946e6",
+          "usd_price": "0.99991"
+        },
+        "USDT": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "10000000e6",
+          "total_supply": "991.64631e6",
+          "usd_price": "1.00056436"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "60e8",
+          "total_supply": "2.28501273e8",
+          "usd_price": "105928.61883412"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.94",
+          "supply_cap": "3200e18",
+          "total_supply": "544.464033109382e18",
+          "usd_price": "2585.17579594"
+        },
+        "rETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "5000e18",
+          "total_supply": "287.002885457301e18",
+          "usd_price": "2798.45947002"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1600e18",
+          "total_supply": "481.974915764676e18",
+          "usd_price": "2629.45228176"
+        },
+        "wrsETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.91",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1400e18",
+          "total_supply": "189.549438188172e18",
+          "usd_price": "2573.00999562"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "3900e18",
+          "total_supply": "494.948883635464e18",
+          "usd_price": "2960.42535365"
+        }
+      },
+      "total_borrow": "1991.7111403198e18"
+    },
+    "comet/polygon/0xaeb318360f27748acb200ce616e389a6c9409a07/USDT": {
+      "borrow_apr": "0.231277891534416",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.75",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "180e8",
+          "total_supply": "102.57028157e8",
+          "usd_price": "105997.03104102"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2000e18",
+          "total_supply": "61.7043734436467e18",
+          "usd_price": "2455.89670255"
+        },
+        "WPOL": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.85",
+          "supply_cap": "5000000e18",
+          "total_supply": "333191.739096744e18",
+          "usd_price": "0.18173738"
+        }
+      },
+      "total_borrow": "3785552.015552e6"
+    },
+    "comet/unichain/0x2c7118c4c88b9841fcf839074c26ae8f035f2921/USDC": {
+      "borrow_apr": "0.110962185901488",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00233265017769328",
+      "collaterals": {
+        "UNI": {
+          "borrow_collateral_factor": "0.68",
+          "liquidate_collateral_factor": "0.74",
+          "liquidation_factor": "0.83",
+          "supply_cap": "100000e18",
+          "total_supply": "7635.19318157546e18",
+          "usd_price": "7.0771833"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.9",
+          "liquidation_factor": "0.95",
+          "supply_cap": "5000e18",
+          "total_supply": "4988.9812015644e18",
+          "usd_price": "2458.72049881"
+        }
+      },
+      "total_borrow": "7483620.970123e6"
+    },
+    "morpho/base/WETH/USDC": {
+      "borrow_apr": "0.044611612328592",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2456.44854099"
+        }
+      },
+      "total_borrow": "1821484.333877e6"
+    },
+    "morpho/base/cbBTC/USDC": {
+      "borrow_apr": "0.052078487138784",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "cbBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "106050.87723962"
+        }
+      },
+      "total_borrow": "456248578.930591e6"
+    },
+    "morpho/base/cbETH/USDC": {
+      "borrow_apr": "0.046803949321392",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "cbETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2708.06670099"
+        }
+      },
+      "total_borrow": "1493352.045411e6"
+    },
+    "morpho/ethereum/cbBTC/USDC": {
+      "borrow_apr": "0.043993833883056",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "cbBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "106159.47716624"
+        }
+      },
+      "total_borrow": "145044046.367466e6"
+    },
+    "morpho/ethereum/wstETH/USDC": {
+      "borrow_apr": "0.044506950052608",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "wstETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2976.00343338"
+        }
+      },
+      "total_borrow": "28347678.180266e6"
+    },
+    "morpho/unichain/WBTC/USDC": {
+      "borrow_apr": "0.026311902311664",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "105821.13388364"
+        }
+      },
+      "total_borrow": "2291176.639353e6"
+    },
+    "morpho/unichain/weETH/USDC": {
+      "borrow_apr": "0.069597065446848",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "weETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2632.27363715"
+        }
+      },
+      "total_borrow": "1262419.465967e6"
+    },
+    "morpho/unichain/weETH/WETH": {
+      "borrow_apr": "0.018324557073648",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "weETH": {
+          "borrow_collateral_factor": "0.945",
+          "liquidate_collateral_factor": "0.945",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2632.27363715"
+        }
+      },
+      "total_borrow": "10084.1276111125e18"
+    },
+    "morpho/unichain/wstETH/USDC": {
+      "borrow_apr": "0.032575316247072",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "wstETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2966.16215207"
+        }
+      },
+      "total_borrow": "1760629.914897e6"
+    },
+    "morpho/unichain/wstETH/WETH": {
+      "borrow_apr": "0.011373083689248",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "wstETH": {
+          "borrow_collateral_factor": "0.965",
+          "liquidate_collateral_factor": "0.965",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2966.16215207"
+        }
+      },
+      "total_borrow": "2108.37754415254e18"
+    },
+    "morpho/world_chain/WBTC/USDC": {
+      "borrow_apr": "0.078907018509648",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "105955.30194785"
+        }
+      },
+      "total_borrow": "2821785.370969e6"
+    },
+    "morpho/world_chain/WBTC/WETH": {
+      "borrow_apr": "0.00049385817504",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.915",
+          "liquidate_collateral_factor": "0.915",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "146504.80834873"
+        }
+      },
+      "total_borrow": "59.1728146354254e18"
+    },
+    "morpho/world_chain/WETH/USDC": {
+      "borrow_apr": "0.053198286758352",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2452.65817206"
+        }
+      },
+      "total_borrow": "2893753.092482e6"
+    },
+    "morpho/world_chain/WLD/USDC": {
+      "borrow_apr": "0.002016428333328",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WLD": {
+          "borrow_collateral_factor": "0.77",
+          "liquidate_collateral_factor": "0.77",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "0.91712142"
+        }
+      },
+      "total_borrow": "2061311.672354e6"
+    }
+  },
+  "bridge_hints": {},
+  "completion_statuses": {},
+  "hex_data": {},
+  "prices": {
+    "token/ezETH": "2585.17579594",
+    "token/wsteth": "3058.51",
+    "token/wstETH": "2960.42535365",
+    "token/gmx": "22.62",
+    "token/COMP": "47.64778367",
+    "token/PENDLE": "3.55353025",
+    "token/WELL": "0.04819757",
+    "token/toshi": "0.00096132",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/arbitrum/baseline": "0.04",
+    "token/aero": "1.094",
+    "token/cbBTC": "105518.97172756",
+    "token/CRV": "0.57650603",
+    "token/ezeth": "3501.99",
+    "token/mog": "0.00000096",
+    "token/usol": "149.37",
+    "token/VVV": "5.03",
+    "token/WETH": "3391.3",
+    "token/uSOL": "149.37",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/optimism/baseline": "0.06",
+    "token/wld": "106126",
+    "token/steth": "2410.85",
+    "token/usde": "1",
+    "token/UNI": "7.0771833",
+    "token/ARB": "0.32381634",
+    "token/weeth": "2717.02",
+    "token/wrseth": "3500.4",
+    "token/ena": "0.901266",
+    "token/wrsETH": "2573.00999562",
+    "token/degen": "0.00741871",
+    "token/AAVE": "266.22276",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/base/baseline": "0.1",
+    "token/ANON": "0.00257329",
+    "token/arb": "0.717778",
+    "token/CLANKER": "21.31",
+    "token/rETH": "2798.45947002",
+    "token/cbbtc": "100000",
+    "token/pol": "0.202243",
+    "token/usdt": "1",
+    "token/Mog": "0.00000096",
+    "token/cbeth": "3680.32",
+    "token/prime": "7.69",
+    "token/weETH": "2629.45228176",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/unichain/baseline": "0.04",
+    "token/BRETT": "0.090801",
+    "token/lum": "3.03",
+    "token/LUM": "3.03",
+    "token/VIRTUAL": "1.59",
+    "token/DEGEN": "0.00741871",
+    "token/WBTC": "106126",
+    "token/ETH": "2000",
+    "token/wbtc": "106126",
+    "token/aave": "265.25",
+    "token/rsweth": "3477.21",
+    "token/WLD": "106126",
+    "token/uXRP": "2.53",
+    "token/brett": "0.090801",
+    "token/TOSHI": "0.00096132",
+    "token/anon": "0.00257329",
+    "token/comp": "77.04",
+    "token/weth": "3391.3",
+    "token/GHO": "1",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/world_chain/baseline": "0.06",
+    "token/stETH": "2410.85",
+    "token/WPOL": "0.18173738",
+    "token/OP": "0.55891372",
+    "token/ZRO": "2.82",
+    "token/AERO": "1.094",
+    "token/crv": "0.836644",
+    "token/MORPHO": "3.43",
+    "token/ENA": "0.2687",
+    "token/POL": "0.202243",
+    "token/usdc": "1",
+    "token/clanker": "21.31",
+    "token/rsETH": "2570.90911633",
+    "token/EURC": "1.16223144",
+    "token/USDT": "1.00056436",
+    "token/PRIME": "7.69",
+    "token/reth": "3789.7",
+    "token/eth": "2000",
+    "token/virtual": "1.59",
+    "token/uxrp": "2.53",
+    "token/GMX": "14.32171435",
+    "token/LINK": "13.456525",
+    "token/USDe": "1.0006025",
+    "token/wpol": "0.2",
+    "token/uni": "12.77",
+    "token/pendle": "3.81",
+    "token/higher": "0.0140511",
+    "token/link": "25.87",
+    "token/zro": "2.82",
+    "token/vvv": "5.03",
+    "token/well": "0.04819757",
+    "network_operation_quote/0x322a4fc0ac78f133c49da179c8736dfb22a60e99b63eda570843f35cb8b6a20d/polygon/baseline": "0.04",
+    "token/morpho": "3.43",
+    "token/cbETH": "2713.79482686",
+    "token/HIGHER": "0.0140511",
+    "token/USDC": "1"
+  },
+  "rewards": {},
+  "swap_hints": {
+    "wrapper/arbitrum/stETH/arbitrum/wstETH": {
+      "exchange_rate": "1.20638443746718",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/base/stETH/base/wstETH": {
+      "exchange_rate": "1.20638443746718",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/ethereum/ETH/ethereum/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/ethereum/stETH/ethereum/wstETH": {
+      "exchange_rate": "1.20638443746718",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/optimism/stETH/optimism/wstETH": {
+      "exchange_rate": "1.20638443746718",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/unichain/stETH/unichain/wstETH": {
+      "exchange_rate": "1.20628974746466",
+      "max_amount": null,
+      "min_amount": null
+    }
+  },
+  "yield_markets": {
+    "morpho_vault/base/0xc1256ae5ff1cf2719d4937adb3bbccab2e00a2ca/USDC": {
+      "supply_apr": "0.03924394849277",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "45455101.01026e6"
+    },
+    "morpho_vault/ethereum/0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458/USDC": {
+      "supply_apr": "0.0475617908383004",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "65161477.222222e6"
+    },
+    "morpho_vault/unichain/0x38f4f3b6533de0023b9dcd04b02f93d36ad1f9f9/USDC": {
+      "supply_apr": "0.0241475842976558",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "8713072.177958e6"
+    },
+    "morpho_vault/unichain/0x830898200f0e8be8dc1c9a836f4ab29ecedf76eb/WETH": {
+      "supply_apr": "0.0143319340868384",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "5533.22503059204e18"
+    },
+    "morpho_vault/unichain/0x89849b6e57e1c61e447257242bda97c70fa99b6b/USDT": {
+      "supply_apr": "0.00193246156597734",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "3968412.255962e6"
+    },
+    "morpho_vault/world_chain/0x0db7e405278c2674f462ac9d9eb8b8346d1c1571/WETH": {
+      "supply_apr": "0.000013966729822512",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "1922.86591536989e18"
+    },
+    "morpho_vault/world_chain/0x348831b46876d3df2db98bdec5e3b4083329ab9f/WLD": {
+      "supply_apr": "0",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "7517611.43837097e18"
+    },
+    "morpho_vault/world_chain/0xb1e80387ebe53ff75a89736097d34dc8d9e9045b/USDC": {
+      "supply_apr": "0.0168016440704472",
+      "supply_cap": null,
+      "supply_rewards_apr": "0.1",
+      "total_supply": "20395736.377915e6"
+    },
+    "morpho_vault/world_chain/0xbc8c37467c5df9d50b42294b8628c25888becf61/WBTC": {
+      "supply_apr": "0",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "0.02445734e8"
+    }
+  }
+}

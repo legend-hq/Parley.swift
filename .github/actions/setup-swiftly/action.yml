@@ -1,0 +1,105 @@
+name: Setup Swiftly
+description: Setup Swiftly with caching
+
+inputs:
+  swiftly-version:
+    description: Version of Swiftly to use
+    required: false
+    default: '1.0.1'
+
+runs:
+  using: composite
+  steps:
+    - if: runner.os == 'macOS' && env.SWIFTLY_HOME_DIR == ''
+      shell: bash
+      run: echo "SWIFTLY_HOME_DIR=${HOME}/.swiftly" >> ${GITHUB_ENV}
+
+    # on macOS, force toolchains to be installed in the swiftly home
+    # directory instead of ${HOME}/Library/Developer/Toolchains where
+    # they'd be mixed in with other development XCode toolchains.
+    - if: runner.os == 'macOS' && env.SWIFTLY_TOOLCHAINS_DIR == ''
+      shell: bash
+      run: echo "SWIFTLY_TOOLCHAINS_DIR=${SWIFTLY_HOME_DIR}/toolchains" >> ${GITHUB_ENV}
+
+    - if: runner.os == 'Linux' && env.SWIFTLY_HOME_DIR == ''
+      shell: bash
+      run: echo "SWIFTLY_HOME_DIR=${HOME}/.local/share/swiftly" >> ${GITHUB_ENV}
+
+    - name: Identify Swift Toolchain
+      shell: bash
+      run: echo "SWIFT_VERSION=$(cat .swift-version)" >> ${GITHUB_ENV}
+
+    # overlaid on top of the swiftly cache that saves ${SWIFTLY_HOME_DIR},
+    # we separately cache ${SWIFTLY_HOME_DIR}/toolchains so that adding a
+    # new toolchain does not bust the install cache for swiftly itself
+    - name: Restore Swift Toolchain
+      id: swift-toolchains-cache
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ env.SWIFTLY_TOOLCHAINS_DIR }}
+        key: ${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}
+
+    - name: Restore Swiftly Cache
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true'
+      id: swiftly-cache
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ env.SWIFTLY_HOME_DIR }}
+        key: ${{ runner.os }}-swiftly-${{ inputs.swiftly-version }}
+
+    - name: Download + Install Swiftly
+      if: runner.os == 'macOS' && steps.swift-toolchains-cache.outputs.cache-hit != 'true' && steps.swiftly-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+        installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+
+    - name: Download + Verify + Install Swiftly
+      if: runner.os == 'Linux' && steps.swift-toolchains-cache.outputs.cache-hit != 'true' && steps.swiftly-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        arch=$(uname -m)
+        target="swiftly-${{ inputs.swiftly-version }}-${arch}"
+
+        curl -O https://download.swift.org/swiftly/linux/${target}.tar.gz
+        curl -O https://download.swift.org/swiftly/linux/${target}.tar.gz.sig
+
+        curl --compressed https://www.swift.org/keys/all-keys.asc | gpg --import
+        if ! gpg --verify ${target}.tar.gz.sig ${target}.tar.gz; then
+          echo "::warning::Failed to verify signature for Swiftly@${{ inputs.swiftly-version }}"
+        fi
+
+        mkdir -p ${SWIFTLY_HOME_DIR}/bin
+        tar xzf ${target}.tar.gz --directory ${SWIFTLY_HOME_DIR}/bin
+
+    - name: Swiftly Init
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true' && steps.swiftly-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: ${SWIFTLY_HOME_DIR}/bin/swiftly init
+
+    - name: Save Swiftly Cache
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true' && steps.swiftly-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ env.SWIFTLY_HOME_DIR }}
+        key: ${{ steps.swiftly-cache.outputs.cache-primary-key }}
+
+    - name: Add swiftly to PATH
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: echo "${SWIFTLY_HOME_DIR}/bin" >> ${GITHUB_PATH}
+
+    - name: Install Swift Toolchain
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: swiftly install
+
+    # overlaid on top of the swiftly cache that saves ${SWIFTLY_HOME_DIR},
+    # we separately cache ${SWIFTLY_HOME_DIR}/toolchains so that adding a
+    # new toolchain does not bust the install cache for swiftly itself
+    - name: Cache Swift Toolchain
+      if: steps.swift-toolchains-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ env.SWIFTLY_TOOLCHAINS_DIR }}
+        key: ${{ steps.swift-toolchains-cache.outputs.cache-primary-key }}

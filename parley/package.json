@@ -1,0 +1,16 @@
+{
+  "name": "parley-tests",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "test:smoke": "bun tests/smoke.test.js",
+    "test:charter": "bun test tests/charter.test.js",
+    "test:all": "bun tests/smoke.test.js && bun test tests/charter.test.js",
+    "build:wasm": "../scripts/build-parley.sh",
+    "build:test": "../scripts/build-parley.sh && bun test"
+  },
+  "devDependencies": {
+    "bun": "latest"
+  }
+}

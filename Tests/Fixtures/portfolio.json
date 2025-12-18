@@ -1,0 +1,1476 @@
+{
+    "block": {
+        "timestamp": 1714159572,
+        "number": 5783614
+    },
+    "tokens": [
+        {
+            "decimals": 18,
+            "name": "Wrapped Ether",
+            "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+            "symbol": "WETH",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "315288151686"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 18,
+            "name": "Compound",
+            "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+            "symbol": "COMP",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "5000000000"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "249151405001160504216"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 18,
+            "name": "Coinbase Wrapped Staked ETH",
+            "address": "0xb9fa8f5ec3da13b508f462243ad0555b46e028df",
+            "symbol": "cbETH",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "305829507135"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 18,
+            "name": "Wrapped liquid staked Ether 2.0",
+            "address": "0xb82381a3fbd3fafa77b3a7be693342618240067b",
+            "symbol": "wstETH",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "311764491302"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 6,
+            "name": "USD Coin",
+            "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+            "symbol": "USDC",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "100006375"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "12443468"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 8,
+            "name": "Wrapped BTC",
+            "address": "0xa035b9e130f2b1aedc733eefb1c67ba4c503491f",
+            "symbol": "WBTC",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "6404351700000"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        },
+        {
+            "decimals": 18,
+            "name": "Ether",
+            "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "symbol": "ETH",
+            "usd_price": {
+                "type": "decimal",
+                "precision": 8,
+                "uint_string": "315288151686"
+            },
+            "balances": [
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "49432775921948220"
+                    },
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                },
+                {
+                    "balance": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                }
+            ]
+        }
+    ],
+    "chain_id": 11155111,
+    "wallets": [
+        {
+            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+            "is_quark": true,
+            "quark_version": "1",
+            "has_code": true
+        },
+        {
+            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+            "is_quark": false,
+            "quark_version": "",
+            "has_code": false
+        }
+    ],
+    "comets": [
+        {
+            "name": "Compound WETH",
+            "address": "0x2943ac1216979ad8db76d9147f64e61adc126e96",
+            "symbol": "cWETHv3",
+            "base": {
+                "decimals": 18,
+                "name": "Wrapped Ether",
+                "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+                "symbol": "WETH",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "315288151686"
+                },
+                "total_borrow": {
+                    "type": "decimal",
+                    "precision": 18,
+                    "uint_string": "969017000499"
+                },
+                "total_supply": {
+                    "type": "decimal",
+                    "precision": 18,
+                    "uint_string": "3405644257260925148"
+                },
+                "total_balance": {
+                    "type": "decimal",
+                    "precision": 18,
+                    "uint_string": "3405643280745890843"
+                },
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "base_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "usd_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "base_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "usd_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "reward": {
+                "decimals": 18,
+                "name": "Compound",
+                "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+                "symbol": "COMP",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "5000000000"
+                },
+                "rewards_address": "0x8bf5b658bdf0388e8b482ed51b14aef58f90abfd",
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "reward_owed": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "reward_owed": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "factor_decimals": 18,
+            "borrow_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "9945224338320000"
+            },
+            "supply_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "4793472000"
+            },
+            "borrow_rewards_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "0"
+            },
+            "supply_rewards_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "1699636062375893083"
+            },
+            "collaterals": [
+                {
+                    "decimals": 18,
+                    "name": "Coinbase Wrapped Staked ETH",
+                    "address": "0xb9fa8f5ec3da13b508f462243ad0555b46e028df",
+                    "symbol": "cbETH",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "305829507135"
+                    },
+                    "balances": [
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                        },
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                        }
+                    ],
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "2000134115105271783"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "9000000000000000000000"
+                    },
+                    "borrow_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "900000000000000000"
+                    },
+                    "liquidate_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "930000000000000000"
+                    },
+                    "liquidation_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "950000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "97000000"
+                    }
+                },
+                {
+                    "decimals": 18,
+                    "name": "Wrapped liquid staked Ether 2.0",
+                    "address": "0xb82381a3fbd3fafa77b3a7be693342618240067b",
+                    "symbol": "wstETH",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "311764491302"
+                    },
+                    "balances": [
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                        },
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                        }
+                    ],
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "0"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "80000000000000000000000"
+                    },
+                    "borrow_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "900000000000000000"
+                    },
+                    "liquidate_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "930000000000000000"
+                    },
+                    "liquidation_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "950000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "98882400"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Compound USDC",
+            "address": "0xaec1f48e02cfb822be958b68c7957156eb3f0b6e",
+            "symbol": "cUSDCv3",
+            "base": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "symbol": "USDC",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "100006375"
+                },
+                "total_borrow": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "48939439660"
+                },
+                "total_supply": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "52131384489"
+                },
+                "total_balance": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "3236924183"
+                },
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1011914"
+                        },
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "base_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1466480"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1520131"
+                        },
+                        "usd_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1466386"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1520034"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "base_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "usd_borrow_capacity": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "reward": {
+                "decimals": 18,
+                "name": "Compound",
+                "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+                "symbol": "COMP",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "5000000000"
+                },
+                "rewards_address": "0x8bf5b658bdf0388e8b482ed51b14aef58f90abfd",
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "reward_owed": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "82462000000000000"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "reward_owed": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "factor_decimals": 18,
+            "borrow_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "210960831828384000"
+            },
+            "supply_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "182833724073888000"
+            },
+            "borrow_rewards_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "36915723587783280905"
+            },
+            "supply_rewards_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "350054709181925385"
+            },
+            "collaterals": [
+                {
+                    "decimals": 18,
+                    "name": "Compound",
+                    "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+                    "symbol": "COMP",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "5000000000"
+                    },
+                    "balances": [
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                        },
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                        }
+                    ],
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "344820000100000000000"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "500000000000000000000000"
+                    },
+                    "borrow_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "650000000000000000"
+                    },
+                    "liquidate_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "700000000000000000"
+                    },
+                    "liquidation_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "920000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "5000000000"
+                    }
+                },
+                {
+                    "decimals": 8,
+                    "name": "Wrapped BTC",
+                    "address": "0xa035b9e130f2b1aedc733eefb1c67ba4c503491f",
+                    "symbol": "WBTC",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "6404351700000"
+                    },
+                    "balances": [
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                        },
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                        }
+                    ],
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "1489"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "3500000000000"
+                    },
+                    "borrow_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "700000000000000000"
+                    },
+                    "liquidate_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "750000000000000000"
+                    },
+                    "liquidation_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "930000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "6404351700000"
+                    }
+                },
+                {
+                    "decimals": 18,
+                    "name": "Wrapped Ether",
+                    "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+                    "symbol": "WETH",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "315288151686"
+                    },
+                    "balances": [
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "567224078051780"
+                            },
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                        },
+                        {
+                            "balance": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                        }
+                    ],
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "23507831900917937798"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "1000000000000000000000000"
+                    },
+                    "borrow_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "820000000000000000"
+                    },
+                    "liquidate_collateral_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "850000000000000000"
+                    },
+                    "liquidation_factor": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "930000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "315288151686"
+                    }
+                }
+            ]
+        }
+    ],
+    "morpho_vaults": [
+        {
+            "name": "Gauntlet USDC Core",
+            "address": "0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458",
+            "symbol": "gtUSDCcore",
+            "supply_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "60784632133538372"
+            },
+            "supply_rewards_apr": [
+                {
+                    "name": "Compound",
+                    "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+                    "symbol": "COMP",
+                    "reward_apr": {
+                        "type": "decimal",
+                        "precision": 2,
+                        "uint_string": "3"
+                    }
+                },
+                {
+                    "name": "Wrapped Ether",
+                    "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+                    "symbol": "WETH",
+                    "reward_apr": {
+                        "type": "decimal",
+                        "precision": 2,
+                        "uint_string": "1"
+                    }
+                }
+            ],
+            "loan_asset": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "symbol": "USDC",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "99988833"
+                },
+                "total_supply": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "28235616809105"
+                },
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "748010038"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "supply": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "fixnum_decimals": 18,
+            "fee": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "0"
+            }
+        }
+    ],
+    "aave_markets": [
+        {
+            "name": "Aave Base V3 Market",
+            "pool": "0xa238dd80c259a72e81d7e4664a9801593f98d1c5",
+            "positions": [
+                {
+                    "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                    "base_borrow_capacity": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "333"
+                    },
+                    "base_liquidation_point": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "444"
+                    },
+                    "usd_borrow_capacity": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "111"
+                    },
+                    "usd_liquidation_point": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "222"
+                    }
+                },
+                {
+                    "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                    "base_borrow_capacity": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    },
+                    "base_liquidation_point": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    },
+                    "usd_borrow_capacity": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    },
+                    "usd_liquidation_point": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "0"
+                    }
+                }
+            ],
+            "asset_positions": [
+                {
+                    "decimals": 6,
+                    "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                    "symbol": "USDC",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "99999999"
+                    },
+                    "total_borrow": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "300000000"
+                    },
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "500000000"
+                    },
+                    "positions": [
+                        {
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                            "borrowed": {
+                                "type": "decimal",
+                                "precision": 6,
+                                "uint_string": "0"
+                            },
+                            "supplied": {
+                                "type": "decimal",
+                                "precision": 6,
+                                "uint_string": "500000000"
+                            },
+                            "usage_as_collateral_enabled_on_user": true
+                        },
+                        {
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                            "borrowed": {
+                                "type": "decimal",
+                                "precision": 6,
+                                "uint_string": "0"
+                            },
+                            "supplied": {
+                                "type": "decimal",
+                                "precision": 6,
+                                "uint_string": "0"
+                            },
+                            "usage_as_collateral_enabled_on_user": false
+                        }
+                    ],
+                    "borrow_apr": {
+                        "type": "decimal",
+                        "precision": 27,
+                        "uint_string": "250000000000000000000000000"
+                    },
+                    "supply_apr": {
+                        "type": "decimal",
+                        "precision": 27,
+                        "uint_string": "250000000000000000000000000"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "2000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "99999999"
+                    },
+                    "borrow_cap": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1000000000"
+                    },
+                    "borrowing_enabled": true,
+                    "is_active": true,
+                    "is_frozen": false,
+                    "is_paused": false,
+                    "is_siloed_borrowing": false,
+                    "usage_as_collateral_enabled": true,
+                    "base_price_decimals": 8,
+                    "collateral_ltv": {
+                        "type": "decimal",
+                        "precision": 5,
+                        "uint_string": "7500"
+                    },
+                    "liquidation_ltv": {
+                        "type": "decimal",
+                        "precision": 5,
+                        "uint_string": "8000"
+                    },
+                    "is_borrowable_in_isolation": true
+                },
+                {
+                    "decimals": 18,
+                    "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+                    "symbol": "WETH",
+                    "usd_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "300000000000"
+                    },
+                    "total_borrow": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "300000000000000000000"
+                    },
+                    "total_supply": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "700000000000000000000"
+                    },
+                    "positions": [
+                        {
+                            "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                            "borrowed": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "supplied": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "500000000000000000"
+                            },
+                            "usage_as_collateral_enabled_on_user": true
+                        },
+                        {
+                            "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                            "borrowed": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "supplied": {
+                                "type": "decimal",
+                                "precision": 18,
+                                "uint_string": "0"
+                            },
+                            "usage_as_collateral_enabled_on_user": false
+                        }
+                    ],
+                    "borrow_apr": {
+                        "type": "decimal",
+                        "precision": 27,
+                        "uint_string": "250000000000000000000000000"
+                    },
+                    "supply_apr": {
+                        "type": "decimal",
+                        "precision": 27,
+                        "uint_string": "150000000000000000000000000"
+                    },
+                    "supply_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "2000000000000000000000"
+                    },
+                    "base_price": {
+                        "type": "decimal",
+                        "precision": 8,
+                        "uint_string": "300000000000"
+                    },
+                    "borrow_cap": {
+                        "type": "decimal",
+                        "precision": 18,
+                        "uint_string": "1000000000000000000000"
+                    },
+                    "borrowing_enabled": true,
+                    "is_active": true,
+                    "is_frozen": false,
+                    "is_paused": false,
+                    "is_siloed_borrowing": false,
+                    "usage_as_collateral_enabled": true,
+                    "base_price_decimals": 8,
+                    "collateral_ltv": {
+                        "type": "decimal",
+                        "precision": 5,
+                        "uint_string": "7500"
+                    },
+                    "liquidation_ltv": {
+                        "type": "decimal",
+                        "precision": 5,
+                        "uint_string": "8000"
+                    },
+                    "is_borrowable_in_isolation": true
+                }
+            ]
+        }
+    ],
+    "morpho_markets": [
+        {
+            "morpho": "0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+            "market_id": "0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc",
+            "borrow_apr": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "58515117410736000"
+            },
+            "borrow_rewards_apr": [
+                {
+                    "name": "Compound",
+                    "address": "0xa6c8d1c55951e8ac44a0eaa959be5fd21cc07531",
+                    "symbol": "COMP",
+                    "reward_apr": {
+                        "type": "decimal",
+                        "precision": 2,
+                        "uint_string": "1"
+                    }
+                },
+                {
+                    "name": "Wrapped Ether",
+                    "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
+                    "symbol": "WETH",
+                    "reward_apr": {
+                        "type": "decimal",
+                        "precision": 2,
+                        "uint_string": "2"
+                    }
+                }
+            ],
+            "loan_asset": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "symbol": "USDC",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "99988833"
+                },
+                "total_borrow": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "48821079718212"
+                },
+                "total_supply": {
+                    "type": "decimal",
+                    "precision": 6,
+                    "uint_string": "57733643171879"
+                },
+                "positions": [
+                    {
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "1000000"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "860000"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "859904"
+                        }
+                    },
+                    {
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                        "borrow": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "base_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        },
+                        "usd_liquidation_point": {
+                            "type": "decimal",
+                            "precision": 6,
+                            "uint_string": "0"
+                        }
+                    }
+                ]
+            },
+            "fixnum_decimals": 18,
+            "collateral_asset": {
+                "decimals": 18,
+                "name": "Wrapped liquid staked Ether 2.0",
+                "address": "0xb82381a3fbd3fafa77b3a7be693342618240067b",
+                "symbol": "wstETH",
+                "usd_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "375736914136"
+                },
+                "balances": [
+                    {
+                        "balance": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "500000000000000000"
+                        },
+                        "wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"
+                    },
+                    {
+                        "balance": {
+                            "type": "decimal",
+                            "precision": 18,
+                            "uint_string": "0"
+                        },
+                        "wallet": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e"
+                    }
+                ],
+                "base_price": {
+                    "type": "decimal",
+                    "precision": 8,
+                    "uint_string": "375778877364"
+                }
+            },
+            "liquidation_loan_to_value": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "860000000000000000"
+            }
+        }
+    ],
+    "query_version": {
+        "revision": 1,
+        "schema": "2025-03-27"
+    },
+    "token_wrapper_quotes": [
+        {
+            "underlying": {
+                "decimals": 18,
+                "name": "Liquid staked Ether 2.0",
+                "address": "0x0000000000000000000000000000000000000000",
+                "symbol": "stETH"
+            },
+            "wrapped": {
+                "decimals": 18,
+                "name": "Wrapped liquid staked Ether 2.0",
+                "address": "0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452",
+                "symbol": "wstETH"
+            },
+            "underlying_has_token": false,
+            "unwrap_quote": {
+                "type": "decimal",
+                "precision": 18,
+                "uint_string": "1205197532041884459"
+            }
+        }
+    ],
+    "across_fill_statuses": [
+        {
+            "quark_wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+            "filled": true,
+            "relay_hash": "0x5500000000000000000000000000000000000000000000000000000000000055"
+        }
+    ],
+    "morpho_reward_positions": [
+        {
+            "chain_id": 11155111,
+            "account": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+            "asset": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "decimals": 6,
+                "name": "USD Coin",
+                "symbol": "USDC"
+            },
+            "airdrop_rewards": [],
+            "distributions": [
+                {
+                    "distributor": "0x2efd4625d0c149ebadf118ec5446c6de24d916a4",
+                    "account": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                    "claimable": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "2000000"
+                    },
+                    "proof": [
+                        "0x15e274cc4da3ce6471acd8b53346b892fd6033ded7da069785317958a50cf99c",
+                        "0x4c37ead3cc3ef4a8954d173b515aa47bc13032fb107f009a5abc98bbffd41d65",
+                        "0x6509c9e67eca8c2618671e7cb0b11dae79af09e621e0e1f2d025f1a9aae1d5a0",
+                        "0x5e4b52dd31834f133c5f3deb5a7eb38f6661e7ba9b1928f1f3ce90ff8064b2ee",
+                        "0xd14774b6852c785e5b064139d48b4249f7619ff6911de0e838b47e2337ad6e9e",
+                        "0xa06c4c906c093a42f417f43ca103ab0234a11668c0601e08b6bbdd32616a7fab",
+                        "0xd53802e4eb82c3cb7906f089bf33956132b6cd9f7ef36fd776586991ec4fded8",
+                        "0xda5d9901fd3d79f4ccb1f0f755e7c004c3c85d1f5faa8a229eaa482a7c3c5932",
+                        "0xedf7f4482e47eae45e20890902f58b2b7191d5e278bc96e38a2d692269470e1f",
+                        "0x0dba4ec43302044ecd83718003a2724333105a4165651fb04c30a026b12cd0bb",
+                        "0xfb92150816651b32f54b4edeaa9ed26c2516d1f800ed0811623294f8547b8ff5",
+                        "0xcfdd30e5149457fd1e4d0874afc98f862d9753fbb5db738df207c38178d83d39",
+                        "0x0b919c5793331006f9b8df52b2f164954f3f132f3461c0c72d8fdd0fdd1bd298",
+                        "0x355d9b122d6c903dc5ef3eff52392a8ce322d78d049f7d5c81d2039ee8e468a0",
+                        "0x0ff9c6479308b581430ac82b391d5d742a531386a50254ec811ab5698fc7fa26"
+                    ]
+                }
+            ],
+            "market_rewards": [
+                {
+                    "total": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1000000"
+                    },
+                    "account": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                    "market_id": "0xa60e9b888f343351dece4df8251abe5858fc5db96e8624d614a6500c3a3085ea",
+                    "claimable_next": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "0"
+                    },
+                    "claimable_now": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1000000"
+                    },
+                    "claimed": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "0"
+                    },
+                    "reallocated_from": null
+                },
+                {
+                    "total": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "3500000"
+                    },
+                    "account": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                    "market_id": "0x214c2bf3c899c913efda9c4a49adff23f77bbc2dc525af7c05be7ec93f32d561",
+                    "claimable_next": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "0"
+                    },
+                    "claimable_now": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1500000"
+                    },
+                    "claimed": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "2000000"
+                    },
+                    "reallocated_from": "0x6b13c060f13af1fdb319f52315bbbf3fb1d88844"
+                }
+            ],
+            "uniform_rewards": [],
+            "vault_rewards": [
+                {
+                    "total": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "7000000"
+                    },
+                    "account": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+                    "vault": "0x6b13c060f13af1fdb319f52315bbbf3fb1d88844",
+                    "claimable_next": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1000000"
+                    },
+                    "claimable_now": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "1000000"
+                    },
+                    "claimed": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "5000000"
+                    }
+                }
+            ]
+        },
+        {
+            "chain_id": 11155111,
+            "account": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+            "asset": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "decimals": 6,
+                "name": "USD Coin",
+                "symbol": "USDC"
+            },
+            "distributor": "0x2efd4625d0c149ebadf118ec5446c6de24d916a4",
+            "airdrop_rewards": [],
+            "distributions": [],
+            "market_rewards": [],
+            "uniform_rewards": [],
+            "vault_rewards": [
+                {
+                    "total": {
+                        "type": "decimal",
+                        "precision": 7,
+                        "uint_string": "17100000"
+                    },
+                    "account": "0xe276bc378a527a8792b353cdca5b5e53263dfb9e",
+                    "vault": "0x6b13c060f13af1fdb319f52315bbbf3fb1d88844",
+                    "claimable_next": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "400000"
+                    },
+                    "claimable_now": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "600000"
+                    },
+                    "claimed": {
+                        "type": "decimal",
+                        "precision": 6,
+                        "uint_string": "710000"
+                    }
+                }
+            ]
+        }
+    ],
+    "quark_nonce_statuses": [
+        {
+            "nonce": "0x3300000000000000000000000000000000000000000000000000000000000033",
+            "quark_wallet": "0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d",
+            "submitted": true
+        }
+    ]
+}

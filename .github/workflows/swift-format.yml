@@ -1,0 +1,22 @@
+name: Swift Format
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+env:
+  SWIFTLY_VERSION: "1.0.1"
+
+jobs:
+  format:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/actions/setup-swiftly
+      with:
+        swiftly-version: ${{ env.SWIFTLY_VERSION }}
+
+    - name: Format Check
+      run: swift format lint --recursive --configuration .swift-format Sources/

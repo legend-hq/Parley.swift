@@ -1,0 +1,39 @@
+{
+  "quote_id": "0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8",
+  "issued_at": 1747983262,
+  "expires_at": 1748069662,
+  "asset_quotes": [
+    {
+      "token_symbol": "USDC",
+      "market_price_usd": "100000000",
+      "adjusted_price_usd": "1000000000"
+    },
+    {
+      "token_symbol": "WETH",
+      "market_price_usd": "380000000000",
+      "adjusted_price_usd": "378100000000"
+    }
+  ],
+  "network_operation_fees": [
+    {
+      "chain_id": 8453,
+      "operation_type": "baseline",
+      "usd_price": "10000000"
+    },
+    {
+      "chain_id": 42161,
+      "operation_type": "baseline",
+      "usd_price": "100000000"
+    },
+    {
+      "chain_id": 84532,
+      "operation_type": "baseline",
+      "usd_price": "10000000"
+    },
+    {
+      "chain_id": 11155111,
+      "operation_type": "baseline",
+      "usd_price": "100000000"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+steps:
+  - group: "Mercator Tests"
+    steps:
+      - label: "Prepare Test Build"
+        command: scripts/prepare.sh test
+        key: prepare_test_build
+        artifact_paths:
+          - "artifact_test*.tar.gz"
+
+      - wait: ~
+
+      - label: "Acceptance Tests"
+        command: scripts/test.sh --filter AcceptanceTests.
+        depends_on: prepare_test_build
+        artifact_paths:
+          - "test-results/*-swift-testing.xml"
+
+      - label: "Unit Tests"
+        command: scripts/test.sh --filter MercatorTests.
+        depends_on: prepare_test_build
+        artifact_paths:
+          - "test-results/*-swift-testing.xml"
+
+      - label: "Server Tests"
+        command: scripts/test.sh --filter ServerTests.
+        depends_on: prepare_test_build
+        artifact_paths:
+          - "test-results/*-swift-testing.xml"
+
+  - wait: ~
+    continue_on_failure: true
+
+  - label: ":bar_chart: Test Analytics"
+    command: |
+      echo "--- :bar_chart: Uploading test results"
+      buildkite-agent artifact download "test-results/*.xml" .
+    plugins:
+      - test-collector#v1.11.0:
+          files: "test-results/*-swift-testing.xml"
+          format: "junit"
+          timeout: 600
