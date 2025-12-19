@@ -21,47 +21,44 @@ if [[ $(${git_root}/semver.sh validate "${target_version}") == invalid ]]; then
   exit 1
 fi
 
-if [[ -n $(git status --porcelain ${git_root}/Mercator.swift) ]]; then
+if [[ -n $(git status --porcelain ${git_root}/Parley.swift) ]]; then
   >&2 printf "‼ Working tree is dirty. Stash or commit your changes.\n"
   exit 1
 fi
 
-if ! (cd ${git_root}/Mercator.swift && ${swiftly} run swift build --build-tests --force-resolved-versions); then
-  >&2 printf "‼ Mercator.swift failed to build. Do not release broken code.\n"
+if ! (cd ${git_root}/Parley.swift && ${swiftly} run swift build --build-tests --force-resolved-versions); then
+  >&2 printf "‼ Parley.swift failed to build. Do not release broken code.\n"
   exit 1
 fi
 
-if ! (cd ${git_root}/Mercator.swift && retry_upto 30 "${swiftly} run swift test --force-resolved-versions"); then
-  >&2 printf "‼ Mercator.swift has failing tests. Do not release broken code.\n"
+if ! (cd ${git_root}/Parley.swift && retry_upto 30 "${swiftly} run swift test --force-resolved-versions"); then
+  >&2 printf "‼ Parley.swift has failing tests. Do not release broken code.\n"
   exit 1
 fi
 
 printf '──────────────────────────────────────────────────────────────────\n'
-printf '(Mercator.swift) Preconditions satisfied. Preparing release...\n'
+printf '(Parley.swift) Preconditions satisfied. Preparing release...\n'
 printf '──────────────────────────────────────────────────────────────────\n'
 
 # update Charter.swift version to the release version under preparation
-${git_root}/Mercator.swift/scripts/set-version.sh "${target_version}"
+${git_root}/Parley.swift/scripts/set-version.sh "${target_version}"
 
-printf '(Mercator.swift) Compiling optimized Parley.wasm...\n'
+printf '(Parley.swift) Compiling optimized Parley.wasm...\n'
 printf '──────────────────────────────────────────────────────────────────\n'
 
 printf '» Compiling a release-optimized Parley.wasm...\n'
 # compile an updated Parley.wasm binary
 WASM_OPT=${git_root}/wasm-opt.sh \
-  ${git_root}/Mercator.swift/scripts/build-parley.sh --release
+  ${git_root}/Parley.swift/scripts/build-parley.sh --release
 
-printf '(Mercator.swift) Updating Atlas.swift version...\n'
-printf '──────────────────────────────────────────────────────────────────\n'
-
-# update Atlas.swift version tag to the release version under preparation
-${git_root}/Mercator.swift/scripts/set-dep-version.sh Atlas "${target_version}"
+# NOTE: Atlas.swift is a path dependency in the monorepo, so no version update needed.
+# The local path dependency will automatically use the Atlas.swift code in this repo.
 
 # if there are no changes, there is nothing to stage; abort
-if [[ ${UNCHANGED:-} != ok ]] && [[ -z $(git status --porcelain ${git_root}/Mercator.swift) ]]; then
+if [[ ${UNCHANGED:-} != ok ]] && [[ -z $(git status --porcelain ${git_root}/Parley.swift) ]]; then
   >&2 printf "‼ Release is pointless.\n"
-  >&2 printf "    %s\n" "Mercator.swift is already up-to-date." "Target: ${revision}"
+  >&2 printf "    %s\n" "Parley.swift is already up-to-date." "Target: ${revision}"
   exit 1
 fi
 
-printf "✓ Prepared Mercator.swift ${target_version} for release.\n"
+printf "✓ Prepared Parley.swift ${target_version} for release.\n"
