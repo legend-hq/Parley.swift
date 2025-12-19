@@ -1,22 +1,116 @@
 import Foundation
 
-extension Decimal {
-    public func formatCurrency(sieved: Bool = true, maxDecimals: Int = 2) -> String {
+private enum DecimalFormatters {
+    // MARK: - Currency Formatters (2, 4, 8 fraction digits)
+
+    static let currency2: NumberFormatter = makeCurrencyFormatter(fractionDigits: 2)
+    static let currency3: NumberFormatter = makeCurrencyFormatter(fractionDigits: 3)
+    static let currency4: NumberFormatter = makeCurrencyFormatter(fractionDigits: 4)
+    static let currency5: NumberFormatter = makeCurrencyFormatter(fractionDigits: 5)
+    static let currency6: NumberFormatter = makeCurrencyFormatter(fractionDigits: 6)
+    static let currency7: NumberFormatter = makeCurrencyFormatter(fractionDigits: 7)
+    static let currency8: NumberFormatter = makeCurrencyFormatter(fractionDigits: 8)
+
+    private static func makeCurrencyFormatter(fractionDigits: Int) -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = Locale(identifier: "en_US")
-        formatter.maximumFractionDigits = numDecimalsToShow(maxDecimals: maxDecimals)
-        formatter.minimumFractionDigits = numDecimalsToShow(maxDecimals: maxDecimals)
         formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = fractionDigits
+        formatter.minimumFractionDigits = fractionDigits
+        return formatter
+    }
 
-        // If we aren't sieving the value (formatting with K, M, B), then just format as normal
+    static func currency(fractionDigits: Int) -> NumberFormatter {
+        switch fractionDigits {
+            case ...2: return currency2
+            case 3: return currency3
+            case 4: return currency4
+            case 5: return currency5
+            case 6: return currency6
+            case 7: return currency7
+            case 8: return currency8
+            default: return makeCurrencyFormatter(fractionDigits: fractionDigits)
+        }
+    }
+
+    // MARK: - Decimal Formatters (2, 4, 8 fraction digits)
+
+    static let decimal2: NumberFormatter = makeDecimalFormatter(fractionDigits: 2)
+    static let decimal3: NumberFormatter = makeDecimalFormatter(fractionDigits: 3)
+    static let decimal4: NumberFormatter = makeDecimalFormatter(fractionDigits: 4)
+    static let decimal5: NumberFormatter = makeDecimalFormatter(fractionDigits: 5)
+    static let decimal6: NumberFormatter = makeDecimalFormatter(fractionDigits: 6)
+    static let decimal7: NumberFormatter = makeDecimalFormatter(fractionDigits: 7)
+    static let decimal8: NumberFormatter = makeDecimalFormatter(fractionDigits: 8)
+
+    private static func makeDecimalFormatter(fractionDigits: Int) -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.numberStyle = .decimal
+        formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = fractionDigits
+        formatter.minimumFractionDigits = fractionDigits
+        return formatter
+    }
+
+    static func decimal(fractionDigits: Int) -> NumberFormatter {
+        switch fractionDigits {
+            case ...2: return decimal2
+            case 3: return decimal3
+            case 4: return decimal4
+            case 5: return decimal5
+            case 6: return decimal6
+            case 7: return decimal7
+            case 8: return decimal8
+            default: return makeDecimalFormatter(fractionDigits: fractionDigits)
+        }
+    }
+
+    // MARK: - Other Formatters
+    static let percentageWithDecimals: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        return formatter
+    }()
+
+    static let percentageNoDecimals: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        return formatter
+    }()
+
+    static let multiplierWithDecimals: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        return formatter
+    }()
+
+    static let multiplierNoDecimals: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+}
+
+extension Decimal {
+    public func formatCurrency(sieved: Bool = true, maxDecimals: Int = 2) -> String {
+        let decimals = numDecimalsToShow(maxDecimals: maxDecimals)
+        let formatter = DecimalFormatters.currency(fractionDigits: decimals)
+
         if !sieved {
             return formatter.string(from: self as NSDecimalNumber) ?? "0"
         }
 
-        let billion = pow(10, 9)
-        let million = pow(10, 6)
-        let thousand = pow(10, 3)
+        let billion: Decimal = pow(10, 9)
+        let million: Decimal = pow(10, 6)
+        let thousand: Decimal = pow(10, 3)
 
         let (sievedDecimalValue, suffix) =
             if self >= billion {
@@ -33,22 +127,18 @@ extension Decimal {
     }
 
     public func formatPercentage(showDecimals: Bool = true) -> String {
-        let formatter = NumberFormatter()
-
-        formatter.numberStyle = .percent
-        if showDecimals {
-            formatter.maximumFractionDigits = 2
-            formatter.minimumFractionDigits = 2
-            formatter.decimalSeparator = "."
-        }
-
+        let formatter =
+            showDecimals
+            ? DecimalFormatters.percentageWithDecimals
+            : DecimalFormatters.percentageNoDecimals
         return formatter.string(from: self as NSDecimalNumber) ?? "0"
     }
 
     public func formatMultiplier(showDecimals: Bool = true, showX: Bool = true) -> String {
-        let formatter = NumberFormatter()
-
-        formatter.numberStyle = .decimal
+        let formatter =
+            showDecimals
+            ? DecimalFormatters.multiplierWithDecimals
+            : DecimalFormatters.multiplierNoDecimals
 
         var valueToFormat = self
         if showDecimals {
@@ -58,10 +148,6 @@ extension Decimal {
             var rounded = Decimal()
             NSDecimalRound(&rounded, &mutableSelf, 2, .plain)
             valueToFormat = rounded
-
-            formatter.maximumFractionDigits = 2
-            formatter.minimumFractionDigits = 2
-            formatter.decimalSeparator = "."
         }
 
         var value = formatter.string(from: valueToFormat as NSDecimalNumber) ?? "0"
@@ -71,13 +157,8 @@ extension Decimal {
     }
 
     public func formatTokenAmount() -> String {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = numDecimalsToShow(maxDecimals: 4)
-        formatter.minimumFractionDigits = numDecimalsToShow(maxDecimals: 4)
-        formatter.decimalSeparator = "."
-
+        let decimals = numDecimalsToShow(maxDecimals: 4)
+        let formatter = DecimalFormatters.decimal(fractionDigits: decimals)
         return formatter.string(from: self as NSDecimalNumber) ?? "0"
     }
 
