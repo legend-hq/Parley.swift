@@ -6,7 +6,7 @@ import SwiftNumber
 import Tradewinds
 
 public enum Charter {
-    public static let version = "1.2.1"
+    public static let version = "1.3.0"
 
     // MARK: - Action Type Constants
     static let ACTION_TYPE_AAVE_SUPPLY = "AAVE_SUPPLY"
@@ -14,6 +14,7 @@ public enum Charter {
     static let ACTION_TYPE_COMET_BORROW = "COMET_BORROW"
     static let ACTION_TYPE_MORPHO_BORROW = "MORPHO_BORROW"
     static let ACTION_TYPE_BRIDGE = "BRIDGE"
+    static let ACTION_TYPE_BRIDGE_MINT = "BRIDGE_MINT"
     static let ACTION_TYPE_COMET_CLAIM_REWARDS = "COMET_CLAIM_REWARDS"
     static let ACTION_TYPE_MORPHO_CLAIM_REWARDS = "MORPHO_CLAIM_REWARDS"
     static let ACTION_TYPE_RECURRING_SWAP = "RECURRING_SWAP"
@@ -87,6 +88,16 @@ public enum Charter {
 
     /// @notice The amount of time that the bridge action has to be filled before timing out
     static let ACROSS_FILL_DEADLINE_BUFFER: UInt = 600  // 10 minutes
+
+    // @TODO: Change to reference from Atlas once available
+    static let CCTP_V2_TOKEN_MESSENGER: EthAddress = EthAddress(
+        "0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d"
+    )
+
+    // @TODO: Change to reference from Atlas once available
+    static let CCTP_V2_MESSAGE_TRANSMITTER: EthAddress = EthAddress(
+        "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64"
+    )
 
     static let QUOTE_PAY_RECIPIENT: EthAddress = EthAddress(
         "0x7ea8d6119596016935543d90Ee8f5126285060A1"

@@ -363,7 +363,7 @@ struct CharterTradewindsCometRepayTests {
                     [
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
                                     address: EthereumNetwork.Assets.USDC.assetAddress,
@@ -560,7 +560,7 @@ struct CharterTradewindsCometRepayTests {
                         // First bridge from Ethereum
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
                                     address: EthereumNetwork.Assets.USDC.assetAddress,

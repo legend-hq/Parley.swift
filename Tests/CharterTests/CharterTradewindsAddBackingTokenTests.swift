@@ -181,7 +181,7 @@ struct CharterTradewindsAddBackingTokenTests {
                         // Bridge from Arbitrum to Base (includes 1% rate, 1 USDC fixed, and 0.04 USDC QuotePay on Arbitrum)
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
                                     address: ArbitrumNetwork.Assets.USDC.assetAddress,
@@ -196,7 +196,7 @@ struct CharterTradewindsAddBackingTokenTests {
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "1e6")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "1e6")
                                 ],
                                 minFlow: "0",
                                 maxFlow: "5000e6"

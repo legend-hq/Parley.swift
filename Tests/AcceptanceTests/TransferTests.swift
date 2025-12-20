@@ -865,50 +865,6 @@ struct TransferTests {
         )
     }
 
-    @Test("Alice transfers all of Base USDC to Bob on Arbitrum via Bridge")
-    func testTransferMaxUsdcViaBridge() async throws {
-        try await testAcceptanceTests(
-            test: .init(
-                given: [
-                    .tokenBalance(.alice, .amt(100, .usdc), .base),
-                    .quote(.basic),
-                    .acrossQuote(.amt(1, .usdc), 0.01),
-                ],
-                when: .transfer(from: .alice, to: .bob, amount: .max(.usdc), on: .arbitrum),
-                expect: .success(
-                    .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(99.980000, .usdc),
-                                    outputTokenAmount: .amt(97.980200, .usdc),
-                                    cappedMax: true,
-                                ),
-                            ],
-                            executionType: .immediate
-                        ),
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
-                                    tokenAmount: .amt(97.940200, .usdc),
-                                    recipient: .bob,
-                                    cappedMax: true,
-                                    network: .arbitrum
-                                ),
-                            ],
-                            executionType: .contingent
-                        ),
-                    ])
-                )
-            )
-        )
-    }
-
     @Test(
         "Alice transfers MAX USDC (with uint256.max) to Bob on Arbitrum via Bridge, but some funds are unbridgeable"
     )

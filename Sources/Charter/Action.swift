@@ -7,6 +7,7 @@ import SwiftNumber
 public enum Action: Equatable, Identifiable, ActionProtocol, Sendable {
     case transfer(TransferAction)
     case bridge(BridgeAction)
+    case bridgeMint(BridgeMintAction)
     case supply(SupplyAction)
     case borrow(BorrowAction)
     case repay(RepayAction)
@@ -27,6 +28,8 @@ public enum Action: Equatable, Identifiable, ActionProtocol, Sendable {
         switch self {
             case .bridge(let action):
                 "bridge:\(action.id)"
+            case .bridgeMint(let action):
+                "bridgeMint:\(action.id)"
             case .transfer(let action):
                 "transfer:\(action.id)"
             case .supply(let action):
@@ -215,6 +218,31 @@ public struct BridgeAction: Equatable, Identifiable, Sendable {
         self.bridgeAmount = bridgeAmount
         self.bridgeFee = bridgeFee
         self.recipient = recipient
+        self.bridgeType = bridgeType
+    }
+}
+
+/// A ``BridgeMintAction`` is a wrapped version of ``Actions.BridgeMintActionContext``
+/// Represents the mint/receiving side of a cross-chain bridge operation
+public struct BridgeMintAction: Equatable, Identifiable, Sendable {
+    public let mintAmount: PricedAmount<Asset>
+    public let feeAmount: PricedAmount<Asset>
+    public let sender: ChainAddress
+    public let bridgeType: DApp
+
+    public var id: String {
+        "\(mintAmount.asset.chain.chainId):\(mintAmount.asset.address.hex):\(sender.address.hex):\(mintAmount.amount.underlying):\(bridgeType.displayName)"
+    }
+
+    public init(
+        mintAmount: PricedAmount<Asset>,
+        feeAmount: PricedAmount<Asset>,
+        sender: ChainAddress,
+        bridgeType: DApp
+    ) {
+        self.mintAmount = mintAmount
+        self.feeAmount = feeAmount
+        self.sender = sender
         self.bridgeType = bridgeType
     }
 }

@@ -874,7 +874,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                         // Flow 3: Bridge 3000 USDC from Optimism to Base
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .optimism,
                                     address: OptimismNetwork.Assets.USDC.assetAddress,
@@ -889,7 +889,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "5e6")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "5e6")
                                 ],
                                 minFlow: "1e6",
                                 maxFlow: Number.MAX_UINT_256
@@ -899,7 +899,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                         // Flow 4: Bridge 5000 USDC from Arbitrum to Base
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
                                     address: ArbitrumNetwork.Assets.USDC.assetAddress,
@@ -914,7 +914,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "5e6")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "5e6")
                                 ],
                                 minFlow: "1e6",
                                 maxFlow: Number.MAX_UINT_256
@@ -1062,7 +1062,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                         // Flow 3: Bridge 2 WETH from Arbitrum to Base (as ETH)
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
                                     address: ArbitrumNetwork.Assets.WETH.assetAddress,
@@ -1078,7 +1078,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
                                     Tradewinds.Fee(
-                                        type: .bridge,
+                                        type: .bridgeAcross,
                                         isInFee: false,
                                         amount: "0.005e18"
                                     )
@@ -1091,7 +1091,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                         // Flow 4: Bridge 3 WETH from Optimism to Base (as ETH)
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .optimism,
                                     address: OptimismNetwork.Assets.WETH.assetAddress,
@@ -1107,7 +1107,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
                                     Tradewinds.Fee(
-                                        type: .bridge,
+                                        type: .bridgeAcross,
                                         isInFee: false,
                                         amount: "0.005e18"
                                     )

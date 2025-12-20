@@ -141,7 +141,7 @@ struct CharterTradewindsRoutingTests {
                         // Algorithm chooses Base (alphabetically first, both equivalent)
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
                                     address: BaseNetwork.Assets.USDC.assetAddress,
@@ -156,7 +156,7 @@ struct CharterTradewindsRoutingTests {
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "20e6")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "20e6")
                                 ],
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256

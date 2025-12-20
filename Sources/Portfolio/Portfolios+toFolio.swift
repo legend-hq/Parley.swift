@@ -408,6 +408,22 @@ extension Array where Element == Portfolio {
 
                 for bridgeHint in bridgeHints {
                     // TODO: We previously inverted these rates, do we still need that?
+                    let key: Folio.BridgeHintType = switch bridgeHint.bridgeType {
+                    case .across:
+                        .across(
+                            networkIn: bridgeHint.networkIn,
+                            symbolIn: bridgeHint.symbolIn,
+                            networkOut: bridgeHint.networkOut,
+                            symbolOut: bridgeHint.symbolOut
+                        )
+                    case .cctpV2:
+                        .cctpV2(
+                            networkIn: bridgeHint.networkIn,
+                            symbolIn: bridgeHint.symbolIn,
+                            networkOut: bridgeHint.networkOut,
+                            symbolOut: bridgeHint.symbolOut
+                        )
+                    }
                     folio.bridgeHints.updateValue(
                         .init(
                             minAmount: bridgeHint.minAmount,
@@ -417,12 +433,7 @@ extension Array where Element == Portfolio {
                             fixedCost: bridgeHint.fixedCost,
                             rate: bridgeHint.rate
                         ),
-                        forKey: .across(
-                            networkIn: bridgeHint.networkIn,
-                            symbolIn: bridgeHint.symbolIn,
-                            networkOut: bridgeHint.networkOut,
-                            symbolOut: bridgeHint.symbolOut
-                        )
+                        forKey: key
                     )
                 }
             }

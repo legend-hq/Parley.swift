@@ -72,6 +72,7 @@ extension Charter {
             case destNetwork = "dest_network"
             case destSymbol = "dest_symbol"
             case bridgeAmount = "bridge_amount"
+            case maxAmount = "max_amount"
             case noScript = "no_script"
             case marketId = "market_id"
             case market

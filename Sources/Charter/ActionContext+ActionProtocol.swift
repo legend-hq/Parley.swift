@@ -103,6 +103,8 @@ extension Charter.ActionContext: ActionProtocol {
                 context
             case .bridge(let context):
                 context
+            case .bridgeMint(let context):
+                context
             case .aaveSupply(let context):
                 context
             case .aaveWithdraw(let context):
@@ -161,6 +163,8 @@ extension Charter.ActionContext: ActionProtocol {
             case .transfer(let actionContext):
                 actionContext.chainId
             case .bridge(let actionContext):
+                actionContext.chainId
+            case .bridgeMint(let actionContext):
                 actionContext.chainId
             case .aaveSupply(let actionContext):
                 actionContext.chainId
@@ -321,7 +325,7 @@ extension Charter.ActionContext: ActionProtocol {
                     $0.isRelatedTo(assetSymbol: assetSymbol)
                 })
             case .quotePay, .bridge, .wrap, .withdrawAndBorrow, .unwrap, .addBackingToken,
-                .withdrawBackingToken:
+                .withdrawBackingToken, .bridgeMint:
                 false
         }
     }

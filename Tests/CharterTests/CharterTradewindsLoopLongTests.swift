@@ -189,7 +189,7 @@ struct CharterTradewindsLoopLongTests {
                         // Bridge from Arbitrum to Base
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
                                     address: ArbitrumNetwork.Assets.USDC.assetAddress,
@@ -204,7 +204,7 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "1e6")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "1e6")
                                 ],
                                 minFlow: "0",
                                 maxFlow: "10000e6"

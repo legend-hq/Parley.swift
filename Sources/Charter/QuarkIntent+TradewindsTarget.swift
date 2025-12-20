@@ -110,7 +110,15 @@ internal func generateRoute(
             .tokenBalance(let sinkNetwork, _, let sinkSymbol, let sinkWallet)
         ):
 
-            // Case 3: Cross-chain bridge
+            // Case 3: Cross-chain Across bridge (tokenBalance -> tokenBalance)
+            // For bridges: only allow actor to bridge their own funds
+            // This minimizes bridge operations and fees
+            // TODO: Consider allowing direct bridging to recipient for transfer intents
+            if sourceWallet != actorWallet || sinkWallet != actorWallet {
+                return nil
+            }
+
+            // Across bridge
             if let bridgeHint = folio.getAcrossQuote(
                 sourceNetwork: sourceNetwork,
                 sinkNetwork: sinkNetwork,
@@ -126,7 +134,7 @@ internal func generateRoute(
 
                 let isCappedMax = cappedMaxNodes.contains(sourceNode)
                 return makeLegendRoute(
-                    type: .bridge(isCappedMax: isCappedMax),
+                    type: .bridge(bridgeType: .across, isCappedMax: isCappedMax),
                     source: sourceNode,
                     sink: sinkNode,
                     // Convert percentage directly to Rate to avoid precision loss
@@ -134,7 +142,7 @@ internal func generateRoute(
                     // Bridge fees are treated as outFee (deducted after rate)
                     fees: [
                         Tradewinds.Fee(
-                            type: .bridge,
+                            type: .bridgeAcross,
                             isInFee: false,
                             amount: bridgeHint.fixedCost.underlying
                         )
@@ -145,7 +153,84 @@ internal func generateRoute(
                 )
             }
 
-            return nil
+        case (
+            .tokenBalance(let sourceNetwork, _, let sourceSymbol, let sourceWallet),
+            .cctpBridge(let bridgeSourceNetwork, let bridgeDestNetwork, let bridgeDestAsset, let bridgeWallet)
+        )
+        where sourceNetwork == bridgeSourceNetwork && sourceWallet == bridgeWallet
+            && sourceWallet == actorWallet:
+            // Case 4: CCTP v2 burn route (tokenBalance -> cctpBridge)
+
+            // Get the sink token symbol from the bridge destination asset
+            guard let sinkAsset = Atlas.getAssetByAddress(
+                network: bridgeDestNetwork,
+                token: bridgeDestAsset
+            ) else {
+                return nil
+            }
+
+            if let cctpHint = folio.getCCTPv2Quote(
+                sourceNetwork: sourceNetwork,
+                sinkNetwork: bridgeDestNetwork,
+                sourceSymbol: sourceSymbol,
+                sinkSymbol: sinkAsset.symbol
+            ) {
+                let isCappedMax = cappedMaxNodes.contains(sourceNode)
+
+                // Burn route: source token -> CCTP Bridge
+                return makeLegendRoute(
+                    type: .bridge(bridgeType: .cctpV2, isCappedMax: isCappedMax),
+                    source: sourceNode,
+                    sink: sinkNode,
+                    // Convert percentage directly to Rate to avoid precision loss
+                    rate: Percentage(fromNumber: Number(cctpHint.rate.underlying)),
+                    // Bridge fees are treated as outFee (deducted after rate)
+                    fees: [
+                        Tradewinds.Fee(
+                            type: .bridgeCCTPv2,
+                            isInFee: false,
+                            amount: cctpHint.fixedCost.underlying
+                        )
+                    ],
+                    minFlow: cctpHint.minAmount.underlying,
+                    maxFlow: cctpHint.maxAmount.underlying,
+                    folio: folio
+                )
+            }
+
+        case (
+            .cctpBridge(let bridgeSourceNetwork, let bridgeDestNetwork, let bridgeDestAsset, let bridgeWallet),
+            .tokenBalance(let sinkNetwork, let sinkAddress, let sinkSymbol, let sinkWallet)
+        )
+        where bridgeDestNetwork == sinkNetwork && bridgeDestAsset == sinkAddress
+            && bridgeWallet == sinkWallet && sinkWallet == actorWallet:
+            // Case 5: CCTP v2 mint route (cctpBridge -> tokenBalance)
+
+            // For CCTP, the same asset symbol exists on both source and dest networks
+            // We use the sink symbol directly from the tokenBalance node
+            if let cctpHint = folio.getCCTPv2Quote(
+                sourceNetwork: bridgeSourceNetwork,
+                sinkNetwork: sinkNetwork,
+                sourceSymbol: sinkSymbol,  // Use the symbol from the sink token balance
+                sinkSymbol: sinkSymbol
+            ) {
+                // Mint route: CCTP Bridge -> sink token
+                // Store burn route's rate and fees to compute burn amount later
+                return makeLegendRoute(
+                    type: .mint(
+                        sourceNetwork: bridgeSourceNetwork,
+                        bridgeType: .cctpV2,
+                        burnRate: Percentage(fromNumber: Number(cctpHint.rate.underlying)),
+                        burnFee: cctpHint.fixedCost.underlying
+                    ),
+                    source: sourceNode,
+                    sink: sinkNode,
+                    rate: 1.0,  // 1:1 conversion for mint
+                    minFlow: Number(0),
+                    maxFlow: maxFlow,
+                    folio: folio
+                )
+            }
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -426,6 +511,51 @@ internal func generateRoute(
     return nil
 }
 
+/// Pre-creates CCTP bridge nodes for all valid cross-chain CCTP pairs
+/// These intermediate nodes enable the optimizer to route through CCTP bridges
+internal func createCCTPBridgeNodes(
+    nodes: [TradewindsLegendNode],
+    folio: Folio,
+    actorWallet: EthAddress
+) -> [TradewindsLegendNode] {
+    var cctpBridgeNodes: Set<TradewindsLegendNode> = []
+
+    // Extract all token balance nodes from the input
+    let tokenNodes = nodes.compactMap { node -> (Network, EthAddress, String)? in
+        if case .tokenBalance(let network, let address, let symbol, _) = node {
+            return (network, address, symbol)
+        }
+        return nil
+    }
+
+    // For each pair of token nodes on different networks
+    for (sourceNetwork, _, sourceSymbol) in tokenNodes {
+        for (sinkNetwork, sinkAddress, sinkSymbol) in tokenNodes {
+            // Only create CCTP bridge nodes for cross-chain pairs
+            guard sourceNetwork != sinkNetwork else { continue }
+
+            // Check if CCTP v2 bridge is available for this pair
+            if folio.getCCTPv2Quote(
+                sourceNetwork: sourceNetwork,
+                sinkNetwork: sinkNetwork,
+                sourceSymbol: sourceSymbol,
+                sinkSymbol: sinkSymbol
+            ) != nil {
+                // Create the intermediate CCTP bridge node
+                let cctpBridgeNode = TradewindsLegendNode.cctpBridge(
+                    sourceNetwork: sourceNetwork,
+                    destNetwork: sinkNetwork,
+                    destAsset: sinkAddress,
+                    wallet: actorWallet
+                )
+                cctpBridgeNodes.insert(cctpBridgeNode)
+            }
+        }
+    }
+
+    return Array(cctpBridgeNodes)
+}
+
 internal func generateRoutes(
     nodes: [TradewindsLegendNode],
     folio: Folio,
@@ -437,9 +567,17 @@ internal func generateRoutes(
 ) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
     var routes: Set<Tradewinds.Route<TradewindsLegendNode, LegendRouteType>> = []
 
-    // Generate routes between all pairs of nodes
-    for sourceNode in nodes {
-        for sinkNode in nodes where sourceNode != sinkNode {
+    // Pre-create CCTP bridge nodes and add them to the node set
+    let cctpBridgeNodes = createCCTPBridgeNodes(
+        nodes: nodes,
+        folio: folio,
+        actorWallet: actorWallet
+    )
+    let allNodes = nodes + cctpBridgeNodes
+
+    // Generate routes between all pairs of nodes (including CCTP bridge nodes)
+    for sourceNode in allNodes {
+        for sinkNode in allNodes where sourceNode != sinkNode {
             if let route = generateRoute(
                 sourceNode: sourceNode,
                 sinkNode: sinkNode,

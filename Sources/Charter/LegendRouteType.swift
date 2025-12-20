@@ -6,7 +6,8 @@ import Tradewinds
 
 // Fee type enum for annotated fees
 public enum LegendFeeType: String, Hashable, Sendable {
-    case bridge = "bridge"
+    case bridgeAcross = "bridgeAcross"
+    case bridgeCCTPv2 = "bridgeCCTPv2"
     case quotePay = "quotePay"
 }
 
@@ -36,33 +37,46 @@ public func makeLegendRoute(
     //   - Fee NOT added to flows; market provides exact amount
     //   - Fee paid separately from wallet in subsequent quotePay
     //
+    // Mint operations don't have their own quote pay fees - they're part of the bridge flow. 
+    // Fees are handled by the burn operation, so we skip adding quotePay fees here.
+    //
     // Check source BEFORE sink (important for bridges where both are tokenBalance).
     // This ensures bridges correctly apply inFee at source.
-    if case .tokenBalance = source {
-        // Deposit/Bridge pattern: fee is paid from wallet along with operation
-        if let sourceSymbol = source.symbol,
-            let sourceNetwork = source.network,
-            let sourceQuoteCost = folio.quoteCost(
-                routeType: type,
-                symbol: sourceSymbol,
-                network: sourceNetwork
-            ),
-            sourceQuoteCost > .zero
-        {
-            allFees.append(Tradewinds.Fee(type: .quotePay, isInFee: true, amount: sourceQuoteCost))
-        }
-    } else if case .tokenBalance = sink {
-        // Withdrawal pattern: fee is paid from wallet after withdrawal
-        if let sinkSymbol = sink.symbol,
-            let sinkNetwork = sink.network,
-            let sinkQuoteCost = folio.quoteCost(
-                routeType: type,
-                symbol: sinkSymbol,
-                network: sinkNetwork
-            ),
-            sinkQuoteCost > .zero
-        {
-            allFees.append(Tradewinds.Fee(type: .quotePay, isInFee: false, amount: sinkQuoteCost))
+    let allowQuotePay: Bool
+    switch type {
+        case .mint:
+            allowQuotePay = false
+        default:
+            allowQuotePay = true
+    }
+
+    if allowQuotePay {
+        if case .tokenBalance = source {
+            // Deposit/Bridge pattern: fee is paid from wallet along with operation
+            if let sourceSymbol = source.symbol,
+                let sourceNetwork = source.network,
+                let sourceQuoteCost = folio.quoteCost(
+                    routeType: type,
+                    symbol: sourceSymbol,
+                    network: sourceNetwork
+                ),
+                sourceQuoteCost > .zero
+            {
+                allFees.append(Tradewinds.Fee(type: .quotePay, isInFee: true, amount: sourceQuoteCost))
+            }
+        } else if case .tokenBalance = sink {
+            // Withdrawal pattern: fee is paid from wallet after withdrawal
+            if let sinkSymbol = sink.symbol,
+                let sinkNetwork = sink.network,
+                let sinkQuoteCost = folio.quoteCost(
+                    routeType: type,
+                    symbol: sinkSymbol,
+                    network: sinkNetwork
+                ),
+                sinkQuoteCost > .zero
+            {
+                allFees.append(Tradewinds.Fee(type: .quotePay, isInFee: false, amount: sinkQuoteCost))
+            }
         }
     }
 
@@ -77,10 +91,15 @@ public func makeLegendRoute(
     )
 }
 
+// Reuse the ActionContext bridge type to avoid duplication
+public typealias BridgeType = Charter.ActionContext.BridgeActionContext.BridgeType
+
 public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, RouteIdentifiable, Sendable {
     case tokenTransfer
     case transferOut
-    case bridge(isCappedMax: Bool)
+    case bridge(bridgeType: BridgeType, isCappedMax: Bool)
+    // Note: mint currently only supports CCTP v2 bridges
+    case mint(sourceNetwork: Network, bridgeType: BridgeType, burnRate: Percentage, burnFee: Number)
     case wrap
     case unwrap
     case aaveSupply(isCappedMax: Bool)
@@ -190,7 +209,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
         switch self {
             case .tokenTransfer: return "ERC20 Transfer"
             case .transferOut: return "ERC20 Transfer [External]"
-            case .bridge: return "Bridge"
+            case .bridge(let bridgeType, _): return "Bridge via \(bridgeType)"
+            case .mint(_, let bridgeType, _, _): return "Mint via \(bridgeType) Bridge"
             case .wrap: return "Wrap"
             case .unwrap: return "Unwrap"
             case .aaveSupply: return "Aave Supply"
@@ -229,7 +249,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
         switch self {
             case .tokenTransfer: return "tokenTransfer"
             case .transferOut: return "transferOut"
-            case .bridge: return "bridge"
+            case .bridge(let bridgeType, _): return "bridge_\(bridgeType)"
+            case .mint(let sourceNetwork, _, _, _): return "mint_\(sourceNetwork)"
             case .wrap: return "wrap"
             case .unwrap: return "unwrap"
             case .aaveSupply: return "aaveSupply"
@@ -267,7 +288,9 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
         switch self {
             case .tokenTransfer: return "ERC20 Transfer \(source.label) -> \(sink.label)"
             case .transferOut: return "ERC20 Transfer \(source.label) -> \(sink.label) [External]"
-            case .bridge: return "Bridge \(source.label) -> \(sink.label)"
+            case .bridge(let bridgeType, _): return "Bridge via \(bridgeType) \(source.label) -> \(sink.label)"
+            case .mint(_, let bridgeType, _, _):
+                return "Mint via \(bridgeType) Bridge \(source.label) -> \(sink.label)"
             case .wrap: return "Wrap \(source.label) -> \(sink.label)"
             case .unwrap: return "Unwrap \(source.label) -> \(sink.label)"
             case .aaveSupply: return "Aave Supply \(source.label) -> \(sink.label)"
@@ -316,36 +339,37 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .tokenTransfer: 0
             case .transferOut: 1
             case .bridge: 2
-            case .wrap: 3
-            case .unwrap: 4
-            case .aaveSupply: 5
-            case .aaveWithdraw: 6
-            case .cometSupply: 7
-            case .cometWithdraw: 8
-            case .cometSupplyCollateral: 9
-            case .cometBorrow: 10
-            case .cometSupplyCollateralAndBorrow: 11
-            case .cometRepay: 12
-            case .cometWithdrawCollateral: 13
-            case .cometRepayAndWithdrawCollateral: 14
-            case .morphoSupplyCollateral: 15
-            case .morphoBorrow: 16
-            case .morphoSupplyCollateralAndBorrow: 17
-            case .morphoVaultSupply: 18
-            case .morphoVaultWithdraw: 19
-            case .morphoRepay: 20
-            case .morphoWithdrawCollateral: 21
-            case .morphoRepayAndWithdrawCollateral: 22
-            case .swap: 23
-            case .loopLong: 24
-            case .loopShort: 25
-            case .unloopLong: 26
-            case .unloopShort: 27
-            case .addBackingToken: 28
-            case .withdrawBackingToken: 29
-            case .morphoClaimRewards: 30
-            case .cometClaimRewards: 31
-            case .rewardSettlement: 32
+            case .mint: 3
+            case .wrap: 4
+            case .unwrap: 5
+            case .aaveSupply: 6
+            case .aaveWithdraw: 7
+            case .cometSupply: 8
+            case .cometWithdraw: 9
+            case .cometSupplyCollateral: 10
+            case .cometBorrow: 11
+            case .cometSupplyCollateralAndBorrow: 12
+            case .cometRepay: 13
+            case .cometWithdrawCollateral: 14
+            case .cometRepayAndWithdrawCollateral: 15
+            case .morphoSupplyCollateral: 16
+            case .morphoBorrow: 17
+            case .morphoSupplyCollateralAndBorrow: 18
+            case .morphoVaultSupply: 19
+            case .morphoVaultWithdraw: 20
+            case .morphoRepay: 21
+            case .morphoWithdrawCollateral: 22
+            case .morphoRepayAndWithdrawCollateral: 23
+            case .swap: 24
+            case .loopLong: 25
+            case .loopShort: 26
+            case .unloopLong: 27
+            case .unloopShort: 28
+            case .addBackingToken: 29
+            case .withdrawBackingToken: 30
+            case .morphoClaimRewards: 31
+            case .cometClaimRewards: 32
+            case .rewardSettlement: 33
         }
     }
 
@@ -359,6 +383,7 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .tokenTransfer: return "baseline"
             case .transferOut: return "baseline"
             case .bridge: return "baseline"
+            case .mint: return "baseline"
             case .wrap: return nil
             case .unwrap: return nil
             case .aaveSupply: return "baseline"

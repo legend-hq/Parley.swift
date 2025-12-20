@@ -301,9 +301,11 @@ extension Folio {
                 )
 
             case .bridge(let context):
-                // Bridge takes tokens from source chain, add to destination chain
+                // Bridge takes tokens from source chain
+                // For Across: also add to destination chain
+                // For CCTPv2: only removes from source (burn), mint happens separately
 
-                // Transfer out from sender
+                // Transfer out from sender (for both Across and CCTPv2)
                 try reduceBalance(
                     balances: &balances,
                     balanceType: .token(
@@ -314,12 +316,28 @@ extension Folio {
                     amount: context.inputAmount
                 )
 
+                // Transfer in to recipient (only for Across, not for CCTPv2 burn)
+                if context.bridgeType == .across {
+                    try augmentBalance(
+                        balances: &balances,
+                        balanceType: .token(
+                            network: Network.fromChainId(context.destinationChainId),
+                            symbol: context.destinationAssetSymbol,
+                            wallet: context.recipient
+                        ),
+                        amount: context.outputAmount
+                    )
+                }
+
+            case .bridgeMint(let context):
+                // Bridge Mint adds tokens to destination chain, gives to recipient
+
                 // Transfer in to recipient
                 try augmentBalance(
                     balances: &balances,
                     balanceType: .token(
-                        network: Network.fromChainId(context.destinationChainId),
-                        symbol: context.destinationAssetSymbol,
+                        network: Network.fromChainId(context.chainId),
+                        symbol: context.assetSymbol,
                         wallet: context.recipient
                     ),
                     amount: context.outputAmount

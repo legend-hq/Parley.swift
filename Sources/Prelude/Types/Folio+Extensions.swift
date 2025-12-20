@@ -473,6 +473,31 @@ extension Folio {
             return nil
         })
     }
+    
+    public func getCCTPv2Quote(
+        sourceNetwork: Network,
+        sinkNetwork: Network,
+        sourceSymbol: String,
+        sinkSymbol: String
+    ) -> Folio.BridgeHint? {
+        return self.bridgeHints
+            .compactMap({ type, bridgeHint in
+                if case .cctpV2(
+                    let networkIn,
+                    let symbolIn,
+                    let networkOut,
+                    let symbolOut
+                ) = type,
+                    networkIn == sourceNetwork && symbolIn.equalIgnoringCase(sourceSymbol)
+                        && networkOut == sinkNetwork && symbolOut.equalIgnoringCase(sinkSymbol)
+                {
+                    return bridgeHint
+                }
+
+                return nil
+            })
+            .first
+    }
 }
 
 extension Folio.YieldMarketType {

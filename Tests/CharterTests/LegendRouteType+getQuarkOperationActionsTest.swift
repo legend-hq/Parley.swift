@@ -166,7 +166,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("10.0e6").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER
+                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -243,7 +244,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("50.0e6").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER
+                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -314,7 +316,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.WETH.assetAddress),
                                 .uint256(Amount("0.5e18").underlying)
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .base
                         ),
                         .init(
                             actionType: Charter.ActionContext.TransferActionContext.actionType,
@@ -335,7 +338,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("0.5e18").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER
+                            expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -369,7 +373,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
         )
 
         let route = Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-            type: .bridge(isCappedMax: false),
+            type: .bridge(bridgeType: .across, isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
                 address: BaseNetwork.Assets.USDC.assetAddress,
@@ -447,7 +451,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .bool(false),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER
+                            expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -517,7 +522,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                             scriptCallValues: [
                                 .address(BaseNetwork.Assets.WETH.assetAddress)
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -588,7 +594,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.WETH.assetAddress),
                                 .uint256(Amount("1.5e18").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -659,7 +666,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(EthereumNetwork.Assets.wstETH.assetAddress),
                                 .address(EthereumNetwork.Assets.stETH.assetAddress)
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .ethereum
                         )
                     ])
 
@@ -765,7 +773,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(EthAddress("0x7ea8d6119596016935543d90ee8f5126285060a1")),  // Fee recipient
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.SWAP_EXPIRY_BUFFER
+                            expiryBuffer: Charter.SWAP_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -843,7 +852,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -927,7 +937,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("300.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1012,7 +1023,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Number("0")),
                                 .array(.bool, [.bool(false)]),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1105,7 +1117,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("500.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1196,7 +1209,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("300.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1287,7 +1301,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Number(0)),  // No borrow
                                 .bool(false),  // isCappedMax
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1365,7 +1380,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1448,7 +1464,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(vaultAddress),
                                 .uint256(Amount("300.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1524,7 +1541,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1606,7 +1624,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("300.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1696,7 +1715,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .array(.bool, [.bool(false)]),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1785,7 +1805,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("500.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1868,7 +1889,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Number(0)),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -1960,7 +1982,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .bool(false),  // isCappedMax
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2050,7 +2073,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .uint256(Number(0)),  // No withdrawal
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2139,7 +2163,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Number(0)),  // No repay
                                 .uint256(Amount("0.5e18").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2234,7 +2259,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),  // borrow amount
                                 .bool(false),  // isCappedMax
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2326,7 +2352,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),  // repay amount
                                 .uint256(Amount("0.5e18").underlying),  // collateral withdrawal amount
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2440,7 +2467,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     .address(Charter.LOOP_FEE_RECIPIENT)  // feeRecipient
                                 ),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2551,7 +2579,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     .address(Charter.LOOP_FEE_RECIPIENT)  // feeRecipient
                                 ),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2661,7 +2690,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     .address(Charter.LOOP_FEE_RECIPIENT)  // feeRecipient
                                 ),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2756,7 +2786,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Number("1000e6")),
                                 .bool(false),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2850,7 +2881,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 ),
                                 .uint256(Number("500e6")),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                            network: .base
                         )
                     ])
 
@@ -2944,7 +2976,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Number(0)),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .base
                         )
                     ])
 
@@ -3043,7 +3076,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("500.0e6").underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .base
                         )
                     ])
 
@@ -3142,7 +3176,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(.zero),
                                 .uint256(collateralBalance.underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .base
                         )
                     ])
 
@@ -3246,7 +3281,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 .uint256(Amount("500.0e6").underlying),
                                 .uint256(collateralBalance.underlying),
                             ],
-                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                            expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER, 
+                            network: .base
                         )
                     ])
 

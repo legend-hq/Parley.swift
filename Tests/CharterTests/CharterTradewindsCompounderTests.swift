@@ -524,7 +524,7 @@ struct CharterTradewindsCompounderTests {
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: true),
+                                type: .bridge(bridgeType: .across, isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
                                     address: BaseNetwork.Assets.WETH.assetAddress,
@@ -539,7 +539,7 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "0.001e18")
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "0.001e18")
                                 ],
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256
@@ -832,7 +832,7 @@ struct CharterTradewindsCompounderTests {
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
                                     address: EthereumNetwork.Assets.USDC.assetAddress,

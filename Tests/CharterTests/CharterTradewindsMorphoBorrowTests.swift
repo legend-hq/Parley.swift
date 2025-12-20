@@ -341,7 +341,7 @@ struct CharterTradewindsMorphoBorrowTests {
                     [
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
                                     address: ArbitrumNetwork.Assets.WETH.assetAddress,
@@ -356,7 +356,7 @@ struct CharterTradewindsMorphoBorrowTests {
                                 ),
                                 rate: Percentage(fromDouble: 0.99),  // 1% fee
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "1e16")  // 0.01 WETH fixed cost
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "1e16")  // 0.01 WETH fixed cost
                                 ],
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256
@@ -469,7 +469,7 @@ struct CharterTradewindsMorphoBorrowTests {
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.worldChain,
                                     address: EthAddress(
@@ -651,7 +651,7 @@ struct CharterTradewindsMorphoBorrowTests {
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
                                     address: ArbitrumNetwork.Assets.WETH.assetAddress,
@@ -666,7 +666,7 @@ struct CharterTradewindsMorphoBorrowTests {
                                 ),
                                 rate: Percentage(fromDouble: 0.99),  // 1% fee
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "1e16")  // 0.01 WETH minimum
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "1e16")  // 0.01 WETH minimum
                                 ],
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256

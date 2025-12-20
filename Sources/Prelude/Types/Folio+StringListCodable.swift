@@ -436,6 +436,10 @@ extension Folio.BridgeHintType: StringListCodable {
                 return [
                     "across", networkIn.networkIdent, symbolIn, networkOut.networkIdent, symbolOut,
                 ]
+            case .cctpV2(let networkIn, let symbolIn, let networkOut, let symbolOut):
+                return [
+                    "cctp_v2", networkIn.networkIdent, symbolIn, networkOut.networkIdent, symbolOut,
+                ]
         }
     }
 
@@ -454,6 +458,22 @@ extension Folio.BridgeHintType: StringListCodable {
                 let networkOut = try Network(fromIdent: values[3])
                 return (
                     .across(
+                        networkIn: networkIn,
+                        symbolIn: values[2],
+                        networkOut: networkOut,
+                        symbolOut: values[4]
+                    ),
+                    Array(values.dropFirst(5))
+                )
+
+            case "cctp_v2":
+                guard values.count >= 5 else {
+                    throw StringListCodableError.insufficientValues(expected: 5, got: values.count)
+                }
+                let networkIn = try Network(fromIdent: values[1])
+                let networkOut = try Network(fromIdent: values[3])
+                return (
+                    .cctpV2(
                         networkIn: networkIn,
                         symbolIn: values[2],
                         networkOut: networkOut,

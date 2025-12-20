@@ -14,6 +14,7 @@ public enum LegendModel {
     public struct BridgeHint: Codable, Equatable, Sendable {
         public enum BridgeType: String, Codable, Equatable, Sendable {
             case across
+            case cctpV2 = "cctp_v2"
         }
 
         public let bridgeType: BridgeType

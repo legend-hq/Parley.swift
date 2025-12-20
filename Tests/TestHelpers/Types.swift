@@ -880,4 +880,6 @@ public enum Given: Hashable, Equatable, Sendable {
     case acrossQuote(TokenAmount, Double)
     case acrossQuoteWithMin(TokenAmount, Double, TokenAmount)
     case acrossQuoteWithMax(TokenAmount, Double, TokenAmount)
+    case cctpV2Quote(TokenAmount, Double)  // Fixed cost, rate
+    case cctpV2QuoteWithMin(TokenAmount, Double, TokenAmount)  // Fixed cost, rate, min amount
 }

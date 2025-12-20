@@ -197,7 +197,7 @@ struct CharterTradewindsMorphoTests {
                     [
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
                                     address: ArbitrumNetwork.Assets.USDC.assetAddress,
@@ -212,7 +212,7 @@ struct CharterTradewindsMorphoTests {
                                 ),
                                 rate: Percentage(fromNumber: "998000000000000000"),  // Bridge fee (0.998 as fixed point)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "10e6")  // 10 USDC relayer fee
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "10e6")  // 10 USDC relayer fee
                                 ],
                                 minFlow: "0",
                                 maxFlow: "1000000e6"

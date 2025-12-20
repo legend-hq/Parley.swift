@@ -10,6 +10,8 @@ extension Charter.ActionContext {
                 return context.toAction(portfolios: portfolios)
             case .bridge(let context):
                 return context.toAction(portfolios: portfolios)
+            case .bridgeMint(let context):
+                return context.toAction(portfolios: portfolios)
             case .aaveSupply(let context):
                 return context.toAction(portfolios: portfolios)
             case .aaveWithdraw(let context):
@@ -100,6 +102,52 @@ extension Charter.ActionContext.TransferActionContext: ActionConvertible {
     }
 }
 
+// MARK: Bridge Mint
+
+extension Charter.ActionContext.BridgeMintActionContext: ActionConvertible {
+    public var bridgeDapp: DApp? {
+        switch bridgeType {
+            case .cctpV1, .cctpV2:
+                return .CircleBridge
+            case .across:
+                return .Across
+            default:
+                return nil
+        }
+    }
+
+    public func toBridgeMintAction(portfolios: [Portfolio]) -> BridgeMintAction? {
+        let network = Network.fromChainId(chainId)
+
+        // Use the token address to find the asset
+        guard let asset = portfolios.getAsset(token: token, chain: network),
+              let bridgeDapp = bridgeDapp else {
+            return nil
+        }
+
+        // Calculate the price from the fee and amounts
+        let price = outputAmount > 0 ? (inputAmount - maxFee) / outputAmount : 1
+
+        let mintAmount = PricedAmount(outputAmount, forAsset: asset, withPrice: price)
+        let feeAmount = PricedAmount(maxFee, forAsset: asset, withPrice: price)
+        let senderAddress = ChainAddress(
+            address: recipient,
+            chain: Network.fromChainId(sourceChainId)
+        )
+
+        return BridgeMintAction(
+            mintAmount: mintAmount,
+            feeAmount: feeAmount,
+            sender: senderAddress,
+            bridgeType: bridgeDapp
+        )
+    }
+
+    public func toAction(portfolios: [Portfolio]) -> Action? {
+        toBridgeMintAction(portfolios: portfolios).map { .bridgeMint($0) }
+    }
+}
+
 // MARK: Bridge
 
 extension Charter.ActionContext.BridgeActionContext: ActionConvertible {
@@ -137,7 +185,7 @@ extension Charter.ActionContext.BridgeActionContext: ActionConvertible {
     }
 
     public func toAction(portfolios: [Portfolio]) -> Action? {
-        toBridgeAction(portfolios: portfolios).map { .bridge($0) }
+        return toBridgeAction(portfolios: portfolios).map { .bridge($0) }
     }
 }
 

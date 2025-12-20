@@ -29,7 +29,7 @@ if [[ $(${git_root}/semver.sh validate "${target_version}") == invalid ]]; then
 fi
 
 # back up the original Package.swift file
-cp ${git_root}/Mercator.swift/Package.swift ${git_root}/Mercator.swift/Package.swift.bak
+cp ${git_root}/Parley.swift/Package.swift ${git_root}/Parley.swift/Package.swift.bak
 
 # edit the dependency version with an ex script, if it works
 #
@@ -37,7 +37,7 @@ cp ${git_root}/Mercator.swift/Package.swift ${git_root}/Mercator.swift/Package.s
 # across multiple lines?
 #
 vim=$(command -v vim || command -v nvim)
-${vim} -es ${git_root}/Mercator.swift/Package.swift <<-EOF
+${vim} -es ${git_root}/Parley.swift/Package.swift <<-EOF
   silent /dependencies:
   silent /\.*${target_dependency}
   normal [(
@@ -48,11 +48,11 @@ ${vim} -es ${git_root}/Mercator.swift/Package.swift <<-EOF
 EOF
 
 # check our work: if we failed, restore the backup Package.swift file
-if [[ $(${git_root}/Mercator.swift/scripts/get-dep-version.sh "${target_dependency}") == "${target_version}" ]]; then
+if [[ $(${git_root}/Parley.swift/scripts/get-dep-version.sh "${target_dependency}") == "${target_version}" ]]; then
   printf "✓ Updated %s to version %s.\n" "${target_dependency}" "${target_version}"
-  rm ${git_root}/Mercator.swift/Package.swift.bak
+  rm ${git_root}/Parley.swift/Package.swift.bak
 else
   >&2 printf "✗ Failed to update dep %s to version %s.\n" "${target_dependency}" "${target_version}"
-  mv ${git_root}/Mercator.swift/Package.swift.bak ${git_root}/Mercator.swift/Package.swift
+  mv ${git_root}/Parley.swift/Package.swift.bak ${git_root}/Parley.swift/Package.swift
   exit 1
 fi

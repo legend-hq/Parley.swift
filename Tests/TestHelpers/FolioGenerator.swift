@@ -234,6 +234,59 @@ public func applyGiven(folio: inout Folio, given: Given) {
                 .init(proof: proof),
                 forKey: rewardKey
             )
+            case .cctpV2Quote(let fixedCost, let fee):
+            // CCTP v2 is only for USDC transfers
+            for srcNetwork in allNetworks {
+                for dstNetwork in allNetworks {
+                    if srcNetwork == dstNetwork {
+                        continue
+                    }
+                    // Only add CCTP v2 quotes for USDC
+                    if fixedCost.token.symbol == "USDC" {
+                        folio.bridgeHints.updateValue(
+                            .init(
+                                minAmount: Amount(0, decimals: fixedCost.token.decimals),
+                                maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                                maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                                estimatedFillTimeSec: 8,
+                                fixedCost: fixedCost.toAmount,
+                                rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
+                            ),
+                            forKey: .cctpV2(
+                                networkIn: srcNetwork,
+                                symbolIn: "USDC",
+                                networkOut: dstNetwork,
+                                symbolOut: "USDC"
+                            )
+                        )
+                    }
+                }
+            }
+        case .cctpV2QuoteWithMin(let fixedCost, let fee, let minAmount):
+            // CCTP v2 is only for USDC transfers
+            for srcNetwork in allNetworks {
+                for dstNetwork in allNetworks {
+                    if srcNetwork == dstNetwork {
+                        continue
+                    }
+                    folio.bridgeHints.updateValue(
+                        .init(
+                            minAmount: minAmount.toAmount,
+                            maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            estimatedFillTimeSec: 8,
+                            fixedCost: fixedCost.toAmount,
+                            rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
+                        ),
+                        forKey: .cctpV2(
+                            networkIn: srcNetwork,
+                            symbolIn: "USDC",
+                            networkOut: dstNetwork,
+                            symbolOut: "USDC"
+                        )
+                    )
+                }
+            }
         case .acrossQuote(let fixedCost, let fee):
             for srcNetwork in allNetworks {
                 for dstNetwork in allNetworks {
@@ -303,6 +356,59 @@ public func applyGiven(folio: inout Folio, given: Given) {
                             symbolIn: fixedCost.token.symbol,
                             networkOut: dstNetwork,
                             symbolOut: fixedCost.token.symbol
+                        )
+                    )
+                }
+            }
+        case .cctpV2Quote(let fixedCost, let fee):
+            // CCTP v2 is only for USDC transfers
+            for srcNetwork in allNetworks {
+                for dstNetwork in allNetworks {
+                    if srcNetwork == dstNetwork {
+                        continue
+                    }
+                    // Only add CCTP v2 quotes for USDC
+                    if fixedCost.token.symbol == "USDC" {
+                        folio.bridgeHints.updateValue(
+                            .init(
+                                minAmount: Amount(0, decimals: fixedCost.token.decimals),
+                                maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                                maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                                estimatedFillTimeSec: 8,
+                                fixedCost: fixedCost.toAmount,
+                                rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
+                            ),
+                            forKey: .cctpV2(
+                                networkIn: srcNetwork,
+                                symbolIn: "USDC",
+                                networkOut: dstNetwork,
+                                symbolOut: "USDC"
+                            )
+                        )
+                    }
+                }
+            }
+        case .cctpV2QuoteWithMin(let fixedCost, let fee, let minAmount):
+            // CCTP v2 is only for USDC transfers
+            for srcNetwork in allNetworks {
+                for dstNetwork in allNetworks {
+                    if srcNetwork == dstNetwork {
+                        continue
+                    }
+                    folio.bridgeHints.updateValue(
+                        .init(
+                            minAmount: minAmount.toAmount,
+                            maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
+                            estimatedFillTimeSec: 8,
+                            fixedCost: fixedCost.toAmount,
+                            rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
+                        ),
+                        forKey: .cctpV2(
+                            networkIn: srcNetwork,
+                            symbolIn: "USDC",
+                            networkOut: dstNetwork,
+                            symbolOut: "USDC"
                         )
                     )
                 }

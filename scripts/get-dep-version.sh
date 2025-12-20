@@ -19,7 +19,7 @@ target_dependency=$(tr '[[:upper:]]' '[[:lower:]]' <<< "${target_dependency}")
 target_dependency=${target_dependency%%.swift}
 
 ${swiftly} run swift package                \
-  --package-path ${git_root}/Mercator.swift \
+  --package-path ${git_root}/Parley.swift \
   describe                                  \
   --type json                               \
 | jq -r ".dependencies | .[] | select(.identity == \"${target_dependency}.swift\") | .requirement.exact[0]"

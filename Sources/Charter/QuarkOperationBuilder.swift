@@ -1,5 +1,6 @@
 import Atlas
 import Eth
+import Foundation
 import Prelude
 import SwiftNumber
 import Tradewinds
@@ -13,6 +14,7 @@ extension Charter {
             public let scriptFunction: ABI.Function
             public let scriptCallValues: [ABI.Value]
             public let expiryBuffer: Number
+            public let network: Network
         }
 
         private struct MorphoRewardEntry: Equatable {
@@ -157,7 +159,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER
+                    expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER,
+                    network: srcNetwork
                 )
             ])
         }
@@ -232,7 +235,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER
+                    expiryBuffer: Charter.TRANSFER_EXPIRY_BUFFER,
+                    network: network
                 )
             )
 
@@ -338,7 +342,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.SWAP_EXPIRY_BUFFER
+                    expiryBuffer: Charter.SWAP_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -366,7 +371,7 @@ extension Charter {
                 scriptFunction = WrapperActions.wrapAllLidoStETHFn
                 scriptCallValues = [
                     .address(destAsset.assetAddress),
-                    .address(sourceAsset.assetAddress)
+                    .address(sourceAsset.assetAddress),
                 ]
             } else {
                 return .failure(
@@ -395,7 +400,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -458,7 +464,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -513,7 +520,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -554,7 +562,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -594,7 +603,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -675,7 +685,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -756,7 +767,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -825,7 +837,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -895,7 +908,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -934,7 +948,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -973,7 +988,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1014,7 +1030,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1054,7 +1071,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1101,7 +1119,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1232,7 +1251,8 @@ extension Charter {
                 scriptAddress: scriptAddress,
                 scriptFunction: scriptFunction,
                 scriptCallValues: scriptCallValues,
-                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                network: network
             )
         }
 
@@ -1275,7 +1295,8 @@ extension Charter {
                 scriptAddress: scriptAddress,
                 scriptFunction: scriptFunction,
                 scriptCallValues: scriptCallValues,
-                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                network: network
             )
         }
 
@@ -1379,7 +1400,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1481,7 +1503,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1575,7 +1598,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1674,7 +1698,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1760,7 +1785,8 @@ extension Charter {
                     scriptAddress: EthAddress(fromData: scriptAddress.data)!,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1848,7 +1874,8 @@ extension Charter {
                     scriptAddress: scriptAddress,
                     scriptFunction: scriptFunction,
                     scriptCallValues: scriptCallValues,
-                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                    expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                    network: network
                 )
             ])
         }
@@ -1915,11 +1942,175 @@ extension Charter {
                     .uint256(quotePayAmount.underlying),
                     .bytes32(quoteId),
                 ],
-                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER
+                expiryBuffer: Charter.STANDARD_EXPIRY_BUFFER,
+                network: network
             )
             operations.append(quotePayOp)
 
             return .success(operations)
+        }
+
+        // CCTPv2
+
+        /// Maps Network to CCTP v2 domain IDs
+        /// Reference: https://developers.circle.com/stablecoins/docs/cctp-protocol-contract
+        private static func getCCTPv2DomainId(for network: Network) -> UInt? {
+            switch network {
+                case .ethereum:
+                    return 0  // Ethereum
+                case .avalanche:
+                    return 1  // Avalanche
+                case .optimism:
+                    return 2  // OP (Optimism)
+                case .arbitrum:
+                    return 3  // Arbitrum
+                case .base:
+                    return 6  // Base
+                case .polygon:
+                    return 7  // Polygon PoS
+                case .unichain:
+                    return 10  // Unichain
+                case .linea:
+                    return 11  // Linea
+                case .sonic:
+                    return 13  // Sonic
+                case .worldChain:
+                    return 14  // World Chain
+                case .bnbSmartChain:
+                    return 17  // BNB Smart Chain
+                case .hyperEVM:
+                    return 19  // HyperEVM
+                default:
+                    return nil  // Network not supported by CCTP v2
+            }
+        }
+
+        /// Converts an Ethereum address (20 bytes) to a bytes32 format by padding with leading zeros
+        private static func ethAddressToWord(_ address: EthAddress) -> Hex {
+            let addressData = address.data
+            let padding = Data(repeating: 0, count: 12)
+            return Hex(padding + addressData)
+        }
+
+        public static func bridgeCCTPv2(
+            srcNetwork: Network,
+            srcAsset: Atlas.Asset,
+            destNetwork: Network,
+            destAsset: Atlas.Asset,
+            rate: Percentage,
+            assetPrice: Value,
+            inputAmount: Amount,
+            outputAmount: Amount,
+            sender: EthAddress,
+            recipient: EthAddress,
+            isMaxBridge: Bool
+        ) -> Result<[ImmedatiateOperationDetails], CharterError> {
+            // This now only generates the burn operation
+            // The mint operation is handled separately via bridgeMint
+
+            let tokenMessenger = Charter.CCTP_V2_TOKEN_MESSENGER
+
+            guard let destinationDomain = getCCTPv2DomainId(for: destNetwork) else {
+                return .failure(
+                    .error("Destination network \(destNetwork) is not supported by CCTP v2")
+                )
+            }
+
+            let burnScriptAddress = Create2.getScriptAddress(CCTPv2Actions.creationCode)
+            let burnScriptFunction: ABI.Function = CCTPv2Actions.bridgeUSDCFn
+
+            let burnScriptCallValues: [ABI.Value] = [
+                .address(tokenMessenger),
+                .uint256(inputAmount.underlying),
+                .uint32(destinationDomain),
+                .bytes32(ethAddressToWord(sender)),
+                .address(srcAsset.assetAddress),
+                // Calculate max fee by subtracting outputAmount from inputAmount
+                .uint256(inputAmount.underlying - outputAmount.underlying),
+                .uint32(UInt(1000)),  // Set slippage to 0.1% (1000 basis points)
+                .bool(isMaxBridge),
+            ]
+
+            return .success([
+                .init(
+                    actionType: ActionContext.BridgeActionContext.actionType,
+                    actionContext: .bridge(
+                        Charter.ActionContext.BridgeActionContext(
+                            assetSymbol: srcAsset.symbol,
+                            bridgeType: .cctpV2,
+                            chainId: srcNetwork.chainId,
+                            destinationChainId: destNetwork.chainId,
+                            destinationAssetSymbol: destAsset.symbol,
+                            inputAmount: inputAmount.underlying,
+                            outputAmount: outputAmount.underlying,
+                            price: assetPrice.underlying,
+                            recipient: recipient,
+                            token: srcAsset.assetAddress
+                        )
+                    ),
+                    scriptAddress: burnScriptAddress,
+                    scriptFunction: burnScriptFunction,
+                    scriptCallValues: burnScriptCallValues,
+                    expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER,
+                    network: srcNetwork
+                )
+            ])
+        }
+
+        public static func bridgeMint(
+            srcNetwork: Network,
+            destNetwork: Network,
+            destAsset: Atlas.Asset,
+            inputAmount: Amount,
+            outputAmount: Amount,
+            recipient: EthAddress,
+            bridgeType: Charter.ActionContext.BridgeActionContext.BridgeType
+        ) -> Result<[ImmedatiateOperationDetails], CharterError> {
+            // This generates the mint operation for cross-chain bridges
+
+            let messageTransmitter = Charter.CCTP_V2_MESSAGE_TRANSMITTER
+
+            guard let atlasMintNetwork = Atlas.getNetwork(network: destNetwork) else {
+                return .failure(.unknownAtlasNetwork(network: destNetwork))
+            }
+
+            let mintScriptAddress = Create2.getScriptAddress(CCTPv2Actions.creationCode)
+            let mintScriptFunction: ABI.Function = CCTPv2Actions.mintUSDCFn
+            // Calculate maxFee for TStoracle key generation
+            let maxFee = inputAmount.underlying - outputAmount.underlying
+            let mintScriptCallValues: [ABI.Value] = [
+                .address(atlasMintNetwork.tStoracle),  // tStoracle address on destination network
+                .address(messageTransmitter),
+                .address(recipient),                   // recipient address for TStoracle key
+                .uint256(srcNetwork.chainId),          // sourceChainId for TStoracle key
+                .uint256(destNetwork.chainId),         // destinationChainId for TStoracle key
+                .uint256(inputAmount.underlying),      // inputAmount for TStoracle key
+                .uint256(maxFee),                      // maxFee for TStoracle key
+            ]
+
+            return .success([
+                .init(
+                    actionType: ActionContext.BridgeMintActionContext.actionType,
+                    actionContext: .bridgeMint(
+                        Charter.ActionContext.BridgeMintActionContext(
+                            assetSymbol: destAsset.symbol,
+                            bridgeType: bridgeType,
+                            chainId: destNetwork.chainId,
+                            sourceChainId: srcNetwork.chainId,
+                            inputAmount: inputAmount.underlying,
+                            outputAmount: outputAmount.underlying,
+                            maxFee: inputAmount.underlying - outputAmount.underlying,
+                            recipient: recipient,
+                            token: destAsset.assetAddress
+                        )
+                    ),
+                    scriptAddress: mintScriptAddress,
+                    scriptFunction: mintScriptFunction,
+                    scriptCallValues: mintScriptCallValues,
+                    expiryBuffer: Charter.BRIDGE_EXPIRY_BUFFER,
+                    network: destNetwork
+                )
+            ])
         }
 
         // MARK: - Missing Operations

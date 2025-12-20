@@ -189,7 +189,7 @@ struct CharterTradewindsLoopShortTests {
                         // Bridge from Arbitrum to Base (WETH arrives as ETH)
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .bridge(isCappedMax: false),
+                                type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
                                     address: ArbitrumNetwork.Assets.WETH.assetAddress,
@@ -204,7 +204,7 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
-                                    Tradewinds.Fee(type: .bridge, isInFee: false, amount: "1e18")  // 1 WETH fixed cost
+                                    Tradewinds.Fee(type: .bridgeAcross, isInFee: false, amount: "1e18")  // 1 WETH fixed cost
                                 ],
                                 minFlow: "0",
                                 maxFlow: "5e18"

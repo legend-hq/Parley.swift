@@ -213,6 +213,11 @@ enum Call: CustomStringConvertible, Equatable {
         tokenAmount: TokenAmount,
         executionType: Charter.Chart.Action.ExecutionType? = nil
     )
+    case bridgeMint(
+        network: Network,
+        bridgeType: DApp,
+        executionType: Charter.Chart.Action.ExecutionType? = nil
+    )
     case unknownFunctionCall(String, String, ABI.Value)
     case unknownScriptCall(EthAddress, Hex)
 
@@ -225,6 +230,7 @@ enum Call: CustomStringConvertible, Equatable {
         ("WrapperActions", WrapperActions.creationCode, WrapperActions.functions),
         ("MorphoVaultActions", MorphoVaultActions.creationCode, MorphoVaultActions.functions),
         ("ApproveAndSwap", ApproveAndSwap.creationCode, ApproveAndSwap.functions),
+        ("CCTPv2Actions", CCTPv2Actions.creationCode, CCTPv2Actions.functions),
     ]
 
     static func tryDecodeCall(
@@ -913,6 +919,71 @@ enum Call: CustomStringConvertible, Equatable {
             }
         }
 
+        if scriptAddress == Create2.getScriptAddress(CCTPv2Actions.creationCode) {
+            if let (
+                _,  // tokenMessenger
+                amount,
+                destinationDomain,
+                _,  // mintRecipient
+                burnToken,
+                maxFee,
+                _,  // minFinalityThreshold
+                cappedMax
+            ) = try? CCTPv2Actions.bridgeUSDCDecode(input: calldata) {
+                // Map CCTP v2 domain ID to network
+                // Reference: https://developers.circle.com/stablecoins/docs/cctp-protocol-contract
+                let destinationNetwork: Network = {
+                    switch destinationDomain {
+                        case 0: return .ethereum  // Ethereum
+                        case 1: return .avalanche  // Avalanche
+                        case 2: return .optimism  // OP (Optimism)
+                        case 3: return .arbitrum  // Arbitrum
+                        case 6: return .base  // Base
+                        case 7: return .polygon  // Polygon PoS
+                        case 10: return .unichain  // Unichain
+                        case 11: return .linea  // Linea
+                        case 13: return .sonic  // Sonic
+                        case 14: return .worldChain  // World Chain
+                        case 17: return .bnbSmartChain  // BNB Smart Chain
+                        case 19: return .hyperEVM  // HyperEVM
+                        default: return network  // Fallback to current network if domain not recognized
+                    }
+                }()
+
+                return .bridge(
+                    bridge: "CCTPv2",
+                    srcNetwork: network,
+                    destinationNetwork: destinationNetwork,
+                    inputTokenAmount: Token.getTokenAmount(
+                        amount: amount,
+                        network: network,
+                        address: burnToken
+                    ),
+                    outputTokenAmount: Token.getTokenAmount(
+                        amount: amount - maxFee,
+                        network: network,
+                        address: burnToken
+                    ),
+                    cappedMax: cappedMax,
+                    executionType: executionTypeForCall
+                )
+            } else if let (
+                _,  // tStoracle
+                _,  // messageTransmitter
+                _,  // recipient
+                _,  // sourceChainId
+                _,  // destinationChainId
+                _,  // inputAmount
+                _   // maxFee
+            ) = try? CCTPv2Actions.mintUSDCDecode(input: calldata) {
+                return .bridgeMint(
+                    network: network,
+                    bridgeType: .CircleBridge,
+                    executionType: executionTypeForCall
+                )
+            }
+        }
+
         for (name, creationCode, functions) in Call.allFunctions {
             if scriptAddress == Create2.getScriptAddress(creationCode) {
                 for function in functions {
@@ -1190,6 +1261,13 @@ enum Call: CustomStringConvertible, Equatable {
             ):
                 return
                     "withdrawBackingToken(withdraw \(backingAmount.amount) \(backingAmount.token.symbol) of backing token from \(isShort ? "short" : "long") position on \(market.description) on \(network.description))\(executionTypeDescription(executionType))"
+            case .bridgeMint(
+                let network,
+                let bridgeType,
+                let executionType
+            ):
+                return
+                    "bridgeMint(mint on \(network.description) via \(bridgeType.displayName))\(executionTypeDescription(executionType))"
             case .unknownFunctionCall(let name, let function, let value):
                 return "unknownFunctionCall(\(name), \(function), \(value))"
             case .unknownScriptCall(let scriptSource, let calldata):

@@ -8,6 +8,7 @@ extension Charter {
         case cometBorrow(CometBorrowActionContext)
         case morphoBorrow(MorphoBorrowActionContext)
         case bridge(BridgeActionContext)
+        case bridgeMint(BridgeMintActionContext)
         case cometRepay(CometRepayActionContext)
         case morphoRepay(MorphoRepayActionContext)
         case aaveSupply(AaveSupplyActionContext)
@@ -50,6 +51,9 @@ extension Charter {
                 case .bridge(let bridgeIntent):
                     try container.encode(BridgeActionContext.actionType, forKey: .actionType)
                     try bridgeIntent.encode(to: encoder)
+                case .bridgeMint(let bridgeMintIntent):
+                    try container.encode(BridgeMintActionContext.actionType, forKey: .actionType)
+                    try bridgeMintIntent.encode(to: encoder)
                 case .cometRepay(let repayIntent):
                     try container.encode(CometRepayActionContext.actionType, forKey: .actionType)
                     try repayIntent.encode(to: encoder)
@@ -175,8 +179,10 @@ extension Charter {
                         return try .cometBorrow(CometBorrowActionContext(from: decoder))
                     case MorphoBorrowActionContext.actionType:
                         return try .morphoBorrow(MorphoBorrowActionContext(from: decoder))
-                    case BridgeActionContext.actionType:
+                    case BridgeActionContext.actionType, "BRIDGE_CCTP_V2_BURN":
                         return try .bridge(BridgeActionContext(from: decoder))
+                    case BridgeMintActionContext.actionType, "BRIDGE_CCTP_V2_MINT":
+                        return try .bridgeMint(BridgeMintActionContext(from: decoder))
                     case CometRepayActionContext.actionType, "REPAY":
                         return try .cometRepay(CometRepayActionContext(from: decoder))
                     case MorphoRepayActionContext.actionType:
@@ -293,6 +299,8 @@ extension Charter {
                     TransferActionContext.actionType
                 case .bridge:
                     BridgeActionContext.actionType
+                case .bridgeMint:
+                    BridgeMintActionContext.actionType
                 case .aaveSupply:
                     AaveSupplyActionContext.actionType
                 case .aaveWithdraw:
@@ -491,8 +499,6 @@ extension Charter {
             }
         }
 
-        // ---
-
         public struct BridgeActionContext: Codable, Equatable, Hashable, Sendable {
             public static let actionType: String = Charter.ACTION_TYPE_BRIDGE
 
@@ -623,6 +629,55 @@ extension Charter {
                     recipient: context.recipient,
                     token: context.token
                 )
+            }
+        }
+
+        public struct BridgeMintActionContext: Codable, Equatable, Hashable, Sendable {
+            public static let actionType: String = Charter.ACTION_TYPE_BRIDGE_MINT
+
+            public let assetSymbol: String
+            public let bridgeType: BridgeActionContext.BridgeType
+            public let chainId: Number  // destination chain ID
+            public let sourceChainId: Number
+            public let inputAmount: Number
+            // outputAmount: Useful to be attached for Portfolio Patching calculation
+            public let outputAmount: Number  // inputAmount - maxFee
+            public let maxFee: Number
+            public let recipient: EthAddress
+            public let token: EthAddress  // The token address on destination chain
+
+            public enum CodingKeys: String, CodingKey {
+                case assetSymbol = "asset_symbol"
+                case bridgeType = "bridge_type"
+                case chainId = "chain_id"
+                case sourceChainId = "source_chain_id"
+                case inputAmount = "input_amount"
+                case outputAmount = "output_amount"
+                case maxFee = "max_fee"
+                case recipient
+                case token
+            }
+
+            public init(
+                assetSymbol: String,
+                bridgeType: BridgeActionContext.BridgeType,
+                chainId: Number,
+                sourceChainId: Number,
+                inputAmount: Number,
+                outputAmount: Number,
+                maxFee: Number,
+                recipient: EthAddress,
+                token: EthAddress
+            ) {
+                self.assetSymbol = assetSymbol
+                self.bridgeType = bridgeType
+                self.chainId = chainId
+                self.sourceChainId = sourceChainId
+                self.inputAmount = inputAmount
+                self.outputAmount = outputAmount
+                self.maxFee = maxFee
+                self.recipient = recipient
+                self.token = token
             }
         }
 
@@ -1915,8 +1970,14 @@ extension Charter {
                 backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
                 backingToken = try container.decode(EthAddress.self, forKey: .backingToken)
                 backingTokenPrice = try container.decode(Number.self, forKey: .backingTokenPrice)
-                maxSwapBackingAmount = try container.decode(Number.self, forKey: .maxSwapBackingAmount)
-                maxProvidedBackingAmount = try container.decode(Number.self, forKey: .maxProvidedBackingAmount)
+                maxSwapBackingAmount = try container.decode(
+                    Number.self,
+                    forKey: .maxSwapBackingAmount
+                )
+                maxProvidedBackingAmount = try container.decode(
+                    Number.self,
+                    forKey: .maxProvidedBackingAmount
+                )
                 chainId = try container.decode(Number.self, forKey: .chainId)
                 // Preserve backwards compatibility
                 isIncrease = try container.decodeIfPresent(Bool.self, forKey: .isIncrease) ?? false

@@ -190,6 +190,12 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
             networkOut: Network,
             symbolOut: String
         )
+        case cctpV2(
+            networkIn: Network,
+            symbolIn: String,
+            networkOut: Network,
+            symbolOut: String
+        )
     }
 
     public struct BridgeHint: Codable, Equatable, Hashable, Sendable {
