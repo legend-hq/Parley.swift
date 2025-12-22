@@ -222,7 +222,17 @@ extension Array where Element == Portfolio {
     }
 
     public func getAsset(token: EthAddress, chain: Network) -> Asset? {
-        first { $0.chain == chain }?.assets.first { $0.address == token }
+        if let asset = first(where: { $0.chain == chain })?.assets.first(where: { $0.address == token }) {
+            return asset
+        }
+
+        // Native ETH (0xEeee...EEeE) is not stored directly in portfolio assets because it's
+        // an underlying asset of WETH. Fall back to WETH lookup for native ETH addresses.
+        if token.hex.lowercased() == "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" {
+            return getAsset(symbol: "WETH", chain: chain)
+        }
+
+        return nil
     }
 
     public func getAsset(symbol: String, chain: Network) -> Asset? {
