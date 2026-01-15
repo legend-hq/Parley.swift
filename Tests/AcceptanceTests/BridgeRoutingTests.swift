@@ -85,6 +85,11 @@ struct BridgeRoutingTests {
     //   - Base→Optimism: ~9.98 (direct, limited by max 10)
     //   - Base→Polygon→Optimism: ~9.11→9.10→9.09 (multi-hop via intermediate chain)
     // Total arriving on Optimism: ~19 USDC
+    //
+    // Execution order:
+    //   1. Base operations (IMMEDIATE): initiate both bridges from Base
+    //   2. Polygon→Optimism (CONTINGENT): waits for tokens to arrive from Base→Polygon
+    //   3. Final transfer (CONTINGENT): waits for all bridges to complete
     @Test("Bridge max amount forces Tradewinds to use multiple bridge hops")
     func testBridgeMaxForcesMultipleHops() async throws {
         try await testAcceptanceTests(
@@ -103,16 +108,7 @@ struct BridgeRoutingTests {
                 ),
                 expect: .success(
                     .multi([
-                        // Polygon→Optimism executes first (uses tokens bridged from Base→Polygon)
-                        .bridge(
-                            bridge: "Across",
-                            srcNetwork: .polygon,
-                            destinationNetwork: .optimism,
-                            inputTokenAmount: .amt(9.10, .usdc),  // 9.10 in
-                            outputTokenAmount: .amt(9.09, .usdc),  // 9.09 out (minus 0.01 fee)
-                            cappedMax: false,
-                            executionType: .immediate
-                        ),
+                        // Step 1: Base operations - initiate both bridges from Base
                         .multicall(
                             [
                                 .quotePay(
@@ -146,6 +142,17 @@ struct BridgeRoutingTests {
                             ],
                             executionType: .immediate
                         ),
+                        // Step 2: Polygon→Optimism - waits for tokens to arrive from Base→Polygon
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .polygon,
+                            destinationNetwork: .optimism,
+                            inputTokenAmount: .amt(9.10, .usdc),  // 9.10 in
+                            outputTokenAmount: .amt(9.09, .usdc),  // 9.09 out (minus 0.01 fee)
+                            cappedMax: false,
+                            executionType: .contingent
+                        ),
+                        // Step 3: Final transfer - waits for all bridges to complete
                         .multicall(
                             [
                                 // Total quotePay: 0.02 + 0.02 + 0.02 = 0.06 USDC

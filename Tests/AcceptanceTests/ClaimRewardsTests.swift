@@ -442,6 +442,8 @@ struct ClaimRewardsTests {
                 ),
                 expect: .successWithActions(
                     .multi([
+                        // Ethereum, Base order determined by Tradewinds topological sort
+                        // Both are independent reward claims (no dependency between them)
                         // Ethereum USDC claim from regular Morpho distributor with QuotePay
                         .multicall(
                             [
@@ -480,6 +482,7 @@ struct ClaimRewardsTests {
                         ),
                     ]),
                     [
+                        // Ethereum action first (matches the order above)
                         .multiAction(
                             [
                                 Charter.ActionContext.morphoClaimRewards(
@@ -514,6 +517,7 @@ struct ClaimRewardsTests {
                                 ),
                             ]
                         ),
+                        // Base action second
                         .multiAction(
                             [
                                 Charter.ActionContext.morphoClaimRewards(

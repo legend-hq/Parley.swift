@@ -1892,6 +1892,8 @@ struct MigrateSuppliesTests {
                 ),
                 expect: .success(
                     .multi([
+                        // Optimism, Unichain, Base order - sorted by chainId (10 < 130 < 8453)
+                        // All three are independent bridges to World Chain (no dependency between them)
                         .multicall(
                             [
                                 .withdrawFromComet(

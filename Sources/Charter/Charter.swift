@@ -461,28 +461,38 @@ public enum Charter {
     private static func mergeSameChainOperations(
         operationActions: [QuarkOperationAction]
     ) -> Result<(operations: [Chart.QuarkOperation], actions: [Chart.Action]), CharterError> {
-        let operations = operationActions.map { $0.operation }
-        let actions = operationActions.map { $0.action }
-
-        let hasBridgeOperation = actions.contains(where: {
-            $0.actionContext.isBridge
-        })
-
         var groupedOperations: [Number: [Chart.QuarkOperation]] = [:]
         var groupedActions: [Number: [Chart.Action]] = [:]
+        var chainOrder: [Number] = []
+        var allBridgeDestinations: Set<Number> = []
 
-        for (index, operation) in operations.enumerated() {
-            let action = actions[index]
-
+        for operationAction in operationActions {
+            let operation = operationAction.operation
+            let action = operationAction.action
+            if groupedOperations[action.chainId] == nil {
+                chainOrder.append(action.chainId)
+            }
             groupedOperations[action.chainId, default: []].append(operation)
             groupedActions[action.chainId, default: []].append(action)
+            if let bridgeContext = action.actionContext.bridgeActionContext {
+                allBridgeDestinations.insert(bridgeContext.destinationChainId)
+            }
         }
 
         var mergedOperations: [Chart.QuarkOperation] = []
         var mergedActions: [Chart.Action] = []
 
-        for (chainId, operations) in groupedOperations {
-            let actions = groupedActions[chainId] ?? []
+        for chainId in chainOrder {
+            let operations = groupedOperations[chainId]!
+            let actions = groupedActions[chainId]!
+
+            let chainReceivesBridgeTokens = allBridgeDestinations.contains(chainId)
+
+            let executionType = getExecutionTypeForMergedActions(
+                actions: actions,
+                chainReceivesBridgeTokens: chainReceivesBridgeTokens
+            )
+
             if operations.count == 1 {
                 let operation = operations.first!
                 let action = actions.first!
@@ -493,10 +503,7 @@ public enum Charter {
                     actionContext: action.actionContext,
                     nonceSecret: action.nonceSecret,
                     totalPlays: 1,
-                    executionType: getExecutionTypeForMergedActions(
-                        actions: [action],
-                        containsOtherBridges: hasBridgeOperation
-                    )
+                    executionType: executionType
                 )
 
                 mergedOperations.append(operation)
@@ -532,10 +539,7 @@ public enum Charter {
                     ),
                     nonceSecret: actions.last!.nonceSecret,
                     totalPlays: 1,
-                    executionType: getExecutionTypeForMergedActions(
-                        actions: actions,
-                        containsOtherBridges: hasBridgeOperation
-                    )
+                    executionType: executionType
                 )
 
                 mergedOperations.append(quarkOperation)
@@ -543,38 +547,27 @@ public enum Charter {
             }
         }
 
-        let (sortedOperations, sortedActions) = sortByActionType(
-            operations: mergedOperations,
-            actions: mergedActions
-        )
-
-        return .success((operations: sortedOperations, actions: sortedActions))
-    }
-
-    private static func sortByActionType(
-        operations: [Chart.QuarkOperation],
-        actions: [Chart.Action],
-    ) -> (operations: [Chart.QuarkOperation], actions: [Chart.Action]) {
-        let zipped = Array(zip(actions, operations))
-        let sortedByChainId = zipped.sorted { $0.0.chainId < $1.0.chainId }
-        let partitioned = sortedByChainId.stablePartition { $0.0.executionType.isImmediate }
-
-        let sortedActions = partitioned.map { $0.0 }
-        let sortedOperations = partitioned.map { $0.1 }
-        return (
-            operations: sortedOperations,
-            actions: sortedActions
-        )
+        // Order operations: IMMEDIATE first, then CONTINGENT
+        // Within IMMEDIATE operations, sort by chainId for deterministic ordering (safe since they're independent)
+        // CONTINGENT operations preserve topological order (they may have dependencies on each other)
+        let zipped = Array(zip(mergedOperations, mergedActions))
+        let immediateOps = zipped.filter { $0.1.executionType.isImmediate }
+            .sorted { $0.1.chainId < $1.1.chainId }
+        let contingentOps = zipped.filter { !$0.1.executionType.isImmediate }
+        let sorted = immediateOps + contingentOps
+        return .success((
+            operations: sorted.map { $0.0 },
+            actions: sorted.map { $0.1 }
+        ))
     }
 
     private static func getExecutionTypeForMergedActions(
         actions: [Chart.Action],
-        containsOtherBridges: Bool
+        chainReceivesBridgeTokens: Bool
     ) -> Chart.Action.ExecutionType {
-        let containsBridge = actions.contains(where: {
-            $0.actionContext.isBridge
-        })
-
-        return containsOtherBridges && !containsBridge ? .contingent : actions.last!.executionType
+        if chainReceivesBridgeTokens {
+            return .contingent
+        }
+        return actions.last!.executionType
     }
 }
