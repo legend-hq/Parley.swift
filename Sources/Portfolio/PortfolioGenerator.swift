@@ -88,7 +88,142 @@ public enum PortfolioGenerator {
                 ]
             }
 
-            let aaveMarkets: [[String: Any]] = []
+            // MARK: Aave Markets
+
+            var givensByAave: [MockAave: [Given]] = [:]
+            for given in givens {
+                switch given {
+                    case .aaveSupply(_, _, let aave, _):
+                        givensByAave[aave, default: []] += [given]
+                    default:
+                        continue
+                }
+            }
+
+            var aaveMarkets: [[String: Any]] = []
+            for (aave, givens) in givensByAave {
+                var assetPositions: [[String: Any]] = []
+
+                for given in givens {
+                    switch given {
+                        case .aaveSupply(let token, let amount, _, let network):
+                            let assetPosition: [String: Any] = [
+                                "decimals": amount.decimals,
+                                "address": token.address(network: network).hex,
+                                "symbol": token.symbol,
+                                "positions": [
+                                    [
+                                        "wallet": quarkWalletAddress.hex,
+                                        "usage_as_collateral_enabled_on_user": false,
+                                        "supplied": [
+                                            "type": "decimal",
+                                            "precision": amount.decimals,
+                                            "uint_string": amount.underlying.description,
+                                        ],
+                                        "borrowed": [
+                                            "type": "decimal",
+                                            "precision": amount.decimals,
+                                            "uint_string": "0",
+                                        ],
+                                    ]
+                                ],
+                                "total_supply": [
+                                    "type": "decimal",
+                                    "precision": amount.decimals,
+                                    "uint_string": (amount.underlying * 1000).description,
+                                ],
+                                "supply_apr": [
+                                    "type": "decimal",
+                                    "precision": 27,
+                                    "uint_string": aave.defaultSupplyApr.underlying.description,
+                                ],
+                                "borrow_apr": [
+                                    "type": "decimal",
+                                    "precision": 27,
+                                    "uint_string": aave.defaultBorrowApr.underlying.description,
+                                ],
+                                "usd_price": [
+                                    "type": "decimal",
+                                    "precision": Value.priceFeedDecimalsInt,
+                                    "uint_string": token.defaultUsdPrice.underlying.description,
+                                ],
+                                "usage_as_collateral_enabled": true,
+                                "total_borrow": [
+                                    "type": "decimal",
+                                    "precision": amount.decimals,
+                                    "uint_string": "0",
+                                ],
+                                "supply_cap": [
+                                    "type": "decimal",
+                                    "precision": amount.decimals,
+                                    "uint_string": "130000",
+                                ],
+                                "liquidation_ltv": [
+                                    "type": "decimal",
+                                    "precision": 4,
+                                    "uint_string": "8300",
+                                ],
+                                "is_siloed_borrowing": false,
+                                "is_paused": false,
+                                "is_frozen": false,
+                                "is_active": true,
+                                "collateral_ltv": [
+                                    "type": "decimal",
+                                    "precision": 4,
+                                    "uint_string": "8000",
+                                ],
+                                "borrowing_enabled": true,
+                                "borrow_cap": [
+                                    "type": "decimal",
+                                    "precision": amount.decimals,
+                                    "uint_string": "110000",
+                                ],
+                                "base_price_decimals": Value.priceFeedDecimalsInt,
+                                "base_price": [
+                                    "type": "decimal",
+                                    "precision": Value.priceFeedDecimalsInt,
+                                    "uint_string": token.defaultUsdPrice.underlying.description,
+                                ],
+                                "is_borrowable_in_isolation": false,
+                            ]
+                            assetPositions.append(assetPosition)
+                        default:
+                            continue
+                    }
+                }
+
+                let aaveMarket: [String: Any] = [
+                    "name": aave.name,
+                    "pool": aave.poolAddress(network: network).hex,
+                    "positions": [
+                        [
+                            "wallet": quarkWalletAddress.hex,
+                            "base_liquidation_point": [
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0",
+                            ],
+                            "base_borrow_capacity": [
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0",
+                            ],
+                            "usd_liquidation_point": [
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0",
+                            ],
+                            "usd_borrow_capacity": [
+                                "type": "decimal",
+                                "precision": 8,
+                                "uint_string": "0",
+                            ],
+                        ]
+                    ],
+                    "asset_positions": assetPositions,
+                ]
+                aaveMarkets.append(aaveMarket)
+            }
 
             // Mark: Comets
 
@@ -108,7 +243,7 @@ public enum PortfolioGenerator {
             for (comet, givens) in givensByComet {
                 var baseSupply: Number = 0
                 var baseBorrow: Number = 0
-                var baseDecimals = 0
+                var baseDecimals = comet.baseAsset.defaultDecimals
                 var collateralSupplies: [String: (MockToken, MockComet, Amount, Network)] = [:]
                 var rewardAmounts: [String: (MockToken, Amount, MockComet, Network)] = [:]
 
@@ -243,7 +378,7 @@ public enum PortfolioGenerator {
                     fatalError("Comet only supports one reward token")
                 }
 
-                var reward: [String: Any] = [:]
+                var reward: Any = NSNull()
                 if let (token, amount, comet, network) = rewardAmounts.values.first {
                     reward = [
                         "address": token.address(network: network).hex,
@@ -266,7 +401,7 @@ public enum PortfolioGenerator {
                             "precision": Value.priceFeedDecimalsInt,
                             "uint_string": token.defaultUsdPrice.underlying.description,
                         ],
-                    ]
+                    ] as [String: Any]
                 }
 
                 if !baseSupply.isZero && !baseBorrow.isZero {
@@ -286,6 +421,7 @@ public enum PortfolioGenerator {
                             "address": comet.baseAsset.address(network: network).hex,
                             "decimals": baseDecimals,
                             "name": comet.baseAsset.name,
+                            "symbol": comet.baseAsset.symbol,
                             "positions": [
                                 [
                                     "supply": [
@@ -671,6 +807,7 @@ public enum PortfolioGenerator {
         case morphoVaultSupply(Amount, MockMorphoVault, Network)
         case cometReward(MockToken, Amount, MockComet, Network)
         case morphoReward(MockToken, Amount, Network)
+        case aaveSupply(MockToken, Amount, MockAave, Network)
 
         var network: Network {
             switch self {
@@ -680,7 +817,8 @@ public enum PortfolioGenerator {
                     .morphoBorrow(_, _, _, let network),
                     .morphoVaultSupply(_, _, let network),
                     .cometReward(_, _, _, let network),
-                    .morphoReward(_, _, let network):
+                    .morphoReward(_, _, let network),
+                    .aaveSupply(_, _, _, let network):
                     network
             }
         }
@@ -799,6 +937,17 @@ public enum PortfolioGenerator {
                     "COMP"
                 case .morpho:
                     "MORPHO"
+            }
+        }
+
+        var defaultDecimals: Int {
+            switch self {
+                case .usdc, .usdt:
+                    6
+                case .eth, .weth, .cbeth, .link, .degen, .comp, .morpho:
+                    18
+                case .wbtc, .cbbtc:
+                    8
             }
         }
 
@@ -968,6 +1117,58 @@ public enum PortfolioGenerator {
                     fatalError(
                         "no rewards contract for comet \(self) on \(network.description) found"
                     )
+            }
+        }
+    }
+
+    public enum MockAave: Hashable, Equatable {
+        case baseMarket
+
+        var name: String {
+            switch self {
+                case .baseMarket:
+                    return "Aave V3 BASE Market"
+            }
+        }
+
+        func poolAddress(network: Network) -> EthAddress {
+            switch (network, self) {
+                case (.base, .baseMarket):
+                    return EthAddress("0xa238dd80c259a72e81d7e4664a9801593f98d1c5")
+                default:
+                    fatalError("no pool for aave \(self) on \(network.description) found")
+            }
+        }
+
+        var defaultSupplyApr: Percentage {
+            switch self {
+                case .baseMarket:
+                    // ~1.7% APR
+                    .init("17034561770251324471232865")
+            }
+        }
+
+        var defaultBorrowApr: Percentage {
+            switch self {
+                case .baseMarket:
+                    // ~2.45% APR
+                    .init("24519784560643707174154028")
+            }
+        }
+
+        var defaultCollateralLtv: Percentage {
+            switch self {
+                case .baseMarket:
+                    // 80%
+                    .init(double: 0.8)
+            }
+        }
+
+        var defaultLiquidationLtv: Percentage {
+            switch self {
+                case .baseMarket:
+                    // 83%
+                    .init(double: 0.83)
             }
         }
     }
