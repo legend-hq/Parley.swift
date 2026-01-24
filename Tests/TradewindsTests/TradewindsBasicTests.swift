@@ -1399,6 +1399,97 @@ struct TradewindsBasicTests {
         )
     }
 
+    @Test("Alternative Route Selected When First Route Fails MinFlow")
+    func testAlternativeRouteSelectedWhenFirstRouteFailsMinFlow() {
+        // This test verifies the fix for route tracking when a route fails minFlow validation.
+        //
+        // BUG SCENARIO (before fix):
+        // - Start node A has LIMITED resources (less than high minFlow route's minimum)
+        // - Route A→B has high minFlow (e.g., Across bridge with $0.50 minimum)
+        // - Route A→C has low minFlow (e.g., CCTP v2 with $0.000001 minimum)
+        // - Both routes lead to target D
+        // - Available resources ($0.002) < high minFlow ($0.50)
+        //
+        // BUGGY BEHAVIOR (before fix):
+        // - Dijkstra finds lowest-cost path using Route A→B (better rate)
+        // - Path fails minFlow validation (available $0.002 < minFlow $0.50)
+        // - Algorithm marks entire NODE A as failed (failedStartNodes)
+        // - Route A→C is NEVER tried because node A is marked as failed
+        // - Algorithm fails with "insufficient resources"
+        //
+        // CORRECT BEHAVIOR (after fix):
+        // - When Route A→B fails minFlow, only that ROUTE is marked failed (failedRoutes)
+        // - Node A remains available for other routes
+        // - Next iteration finds Route A→C which has lower minFlow
+        // - Transaction succeeds using the alternative route
+        //
+        // This is critical for cross-chain transfers where multiple bridge options exist
+        // with different minFlow requirements.
+
+        // High minFlow route (e.g., Across bridge with $0.50 minimum)
+        let highMinFlowBridge: Tradewinds.Route<TradewindsTestNode, String> = .init(
+            type: "A->B_high_minflow",
+            source: .A,
+            sink: .B,
+            rate: 0.999,  // Better rate (cheaper) - Dijkstra will try this first
+            minFlow: "0.5e6",  // $0.50 minimum (in 6 decimals)
+            maxFlow: "10000e6"
+        )
+
+        // Low minFlow route (e.g., CCTP v2 with effectively no minimum)
+        let lowMinFlowBridge: Tradewinds.Route<TradewindsTestNode, String> = .init(
+            type: "A->C_low_minflow",
+            source: .A,
+            sink: .C,  // Different intermediate node
+            rate: 0.998,  // Slightly worse rate - Dijkstra tries this second
+            minFlow: "0.000001e6",  // Effectively no minimum ($0.000001)
+            maxFlow: "10000e6"
+        )
+
+        // Route from low minFlow bridge to target
+        let toTarget: Tradewinds.Route<TradewindsTestNode, String> = .init(
+            type: "C->D_to_target",
+            source: .C,
+            sink: .D,
+            rate: 1.0,
+            minFlow: "0",
+            maxFlow: "10000e6"
+        )
+
+        // Route from high minFlow bridge to target
+        let highToTarget: Tradewinds.Route<TradewindsTestNode, String> = .init(
+            type: "B->D_to_target",
+            source: .B,
+            sink: .D,
+            rate: 1.0,
+            minFlow: "0",
+            maxFlow: "10000e6"
+        )
+
+        runFlowTest(
+            .init(
+                name: "Alternative Route Selected When First Route Fails MinFlow",
+                routes: [highMinFlowBridge, lowMinFlowBridge, toTarget, highToTarget],
+                resources: [
+                    // LIMITED resources - less than high minFlow route's minimum!
+                    // This forces the high minFlow route to fail, triggering the fix
+                    .init(amount: .exact("0.002e6"), node: .A)  // $0.002 - below high minFlow of $0.50
+                ],
+                target: .init(amount: .exact("0.001996e6"), node: .D),  // Target slightly less to account for fees
+                costFunction: Tradewinds.rateCostFunction(),
+                expect: .exactFlows(
+                    [
+                        // Should use low minFlow route since available ($0.002) < high minFlow ($0.50)
+                        // High minFlow route FAILS, algorithm retries with low minFlow route
+                        .init(route: lowMinFlowBridge, amount: "0.002e6"),  // Use all available
+                        .init(route: toTarget, amount: "0.001996e6"),  // 0.002e6 * 0.998 = 0.001996e6
+                    ],
+                    maxFlow: "0.001996e6"  // 0.002e6 * 0.998 * 1.0 = 0.001996e6
+                )
+            )
+        )
+    }
+
     @Test("Multi-Source Dijkstra Does Not Route Through Start Nodes")
     func testMultiSourceDijkstraDoesNotRouteThroughStartNodes() {
         // This test reproduces a critical bug in multi-source Dijkstra pathfinding.
@@ -1431,8 +1522,8 @@ struct TradewindsBasicTests {
         let wrapRoute: Tradewinds.Route<TradewindsTestNode, String> = .init(
             type: "A->B_wrap",
             source: .A,  // Node A (e.g., ETH)
-            sink: .B,    // Node B (e.g., WETH) - also a start node!
-            rate: 1.0,   // 1:1 conversion
+            sink: .B,  // Node B (e.g., WETH) - also a start node!
+            rate: 1.0,  // 1:1 conversion
             minFlow: "0",
             maxFlow: "1000e6"
         )
@@ -1440,7 +1531,7 @@ struct TradewindsBasicTests {
         let supplyRoute: Tradewinds.Route<TradewindsTestNode, String> = .init(
             type: "B->C_supply",
             source: .B,  // Node B (WETH)
-            sink: .C,    // Node C (target, e.g., Comet)
+            sink: .C,  // Node C (target, e.g., Comet)
             rate: 1.0,
             minFlow: "0",
             maxFlow: "1000e6"
@@ -1451,7 +1542,7 @@ struct TradewindsBasicTests {
                 name: "Multi-Source Dijkstra Does Not Route Through Start Nodes",
                 routes: [wrapRoute, supplyRoute],
                 resources: [
-                    .init(amount: .exact("5e6"), node: .A),    // Small amount at A
+                    .init(amount: .exact("5e6"), node: .A),  // Small amount at A
                     .init(amount: .exact("100e6"), node: .B),  // Large amount at B (sufficient!)
                 ],
                 target: .init(amount: .exact("10e6"), node: .C),  // Need 10 at C
