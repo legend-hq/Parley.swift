@@ -242,4 +242,87 @@ extension Array where Element == Portfolio {
     public var latestBlockTimestamp: TimeInterval {
         map { TimeInterval($0.block.timestamp) }.max() ?? 0
     }
+
+    // MARK: - Claimable Rewards
+
+    /// A key for deduplicating rewards by (symbol, chain).
+    /// ClaimRewardsIntent claims by symbol globally on a chain, so we deduplicate to avoid double-counting.
+    private struct RewardKey: Hashable {
+        let symbol: String
+        let chain: Network
+    }
+
+    /// Gathers all claimable rewards across portfolios, deduplicating by (symbol, chain).
+    ///
+    /// This aggregates rewards from:
+    /// - Earn markets (Comet, Morpho vaults)
+    /// - Borrow markets (Comet, Morpho)
+    /// - Morpho URD uniform rewards (e.g. MORPHO)
+    /// - Morpho airdrop rewards (e.g. WLD)
+    ///
+    /// Use `symbolFilter` to only include rewards for specific symbols (e.g. symbols from USDC earn markets).
+    /// When `symbolFilter` is nil, all claimable rewards are returned.
+    ///
+    /// - Parameter symbolFilter: Optional set of symbols to filter by. If nil, returns all rewards.
+    /// - Returns: Array of claimable `RewardAsset` items, deduplicated by (symbol, chain).
+    public func getClaimableRewards(symbolFilter: Set<String>? = nil) -> [RewardAsset] {
+        var seenRewards: Set<RewardKey> = []
+        var rewards: [RewardAsset] = []
+
+        let symbols = symbolFilter ?? Set(
+            earnMarkets.flatMap { $0.rewardAssets }.map { $0.symbol }
+            + borrowMarkets.flatMap { $0.rewardAssets }.map { $0.symbol }
+            + flatMap { $0.uniformRewards }.map { $0.symbol }
+            + flatMap { $0.airdropRewards }.map { $0.symbol }
+        )
+
+        for symbol in symbols {
+            let markets = getMarkets(rewardAssetSymbol: symbol)
+            for market in markets {
+                switch market {
+                case .earnMarket(let earnMarket):
+                    for rewardAsset in earnMarket.rewardAssets where rewardAsset.symbol == symbol && !rewardAsset.claimableRewardOwed.isZero {
+                        let key = RewardKey(symbol: symbol, chain: earnMarket.chain)
+                        guard !seenRewards.contains(key) else { continue }
+                        seenRewards.insert(key)
+                        rewards.append(rewardAsset)
+                    }
+                case .borrowMarket(let borrowMarket):
+                    for rewardAsset in borrowMarket.rewardAssets where rewardAsset.symbol == symbol && !rewardAsset.claimableRewardOwed.isZero {
+                        let key = RewardKey(symbol: symbol, chain: borrowMarket.chain)
+                        guard !seenRewards.contains(key) else { continue }
+                        seenRewards.insert(key)
+                        rewards.append(rewardAsset)
+                    }
+                }
+            }
+        }
+
+        for portfolio in self {
+            for uniformReward in portfolio.uniformRewards where symbols.contains(uniformReward.symbol) && !uniformReward.claimableRewardOwed.isZero {
+                let key = RewardKey(symbol: uniformReward.symbol, chain: portfolio.chain)
+                guard !seenRewards.contains(key) else { continue }
+                seenRewards.insert(key)
+                rewards.append(uniformReward)
+            }
+
+            for airdropReward in portfolio.airdropRewards where symbols.contains(airdropReward.symbol) && !airdropReward.claimableRewardOwed.isZero {
+                let key = RewardKey(symbol: airdropReward.symbol, chain: portfolio.chain)
+                guard !seenRewards.contains(key) else { continue }
+                seenRewards.insert(key)
+                rewards.append(airdropReward)
+            }
+        }
+
+        return rewards
+    }
+
+    /// Returns the total claimable reward value across all portfolios for the given symbols.
+    ///
+    /// - Parameter symbolFilter: Optional set of symbols to filter by. If nil, returns total for all rewards.
+    /// - Returns: The sum of all claimable reward values.
+    public func getTotalClaimableRewardValue(symbolFilter: Set<String>? = nil) -> Value {
+        getClaimableRewards(symbolFilter: symbolFilter)
+            .reduce(Value.zero) { $0 + $1.claimableRewardOwedValue }
+    }
 }
