@@ -419,6 +419,7 @@ public struct SwapAction: Equatable, Identifiable, Sendable {
     public let feeAmounts: [PricedAmount<Asset>]
     public let feeDescriptions: [String]
     public let isBuy: Bool
+    public let swapVenue: DApp
 
     public var id: String {
         "\(buyAmount.asset.chain.chainId):\(buyAmount.asset.address.hex):\(buyAmount.amount.underlying):\(sellAmount.asset.chain.chainId):\(sellAmount.asset.address.hex):\(sellAmount.amount.underlying)"
@@ -429,13 +430,15 @@ public struct SwapAction: Equatable, Identifiable, Sendable {
         sellAmount: PricedAmount<Asset>,
         feeAmounts: [PricedAmount<Asset>],
         feeDescriptions: [String],
-        isBuy: Bool
+        isBuy: Bool,
+        swapVenue: DApp = .ZeroEx
     ) {
         self.buyAmount = buyAmount
         self.sellAmount = sellAmount
         self.feeAmounts = feeAmounts
         self.feeDescriptions = feeDescriptions
         self.isBuy = isBuy
+        self.swapVenue = swapVenue
     }
 
     public var fees: [(String, PricedAmount<Asset>)] {

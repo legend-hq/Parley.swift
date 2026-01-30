@@ -19,6 +19,10 @@ extension ChainAgnosticAssetProtocol {
                 "ETH"
             case "wstETH":
                 "stETH"
+            case "WPOL":
+                "POL"
+            case "WHYPE":
+                "HYPE"
             default:
                 symbol
         }
@@ -77,6 +81,10 @@ extension ChainAgnosticAssetProtocol {
             case "CLANKER":
                 // overriding tokenbot
                 "Clanker"
+            case "WPOL":
+                "Polygon"
+            case "WHYPE":
+                "Hyperliquid"
             default:
                 name
         }

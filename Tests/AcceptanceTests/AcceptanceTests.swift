@@ -305,11 +305,12 @@ enum Call: CustomStringConvertible, Equatable {
             } else if let (recipient, amount, cappedMax) =
                 try? TransferActions.transferNativeTokenDecode(input: calldata)
             {
+                let nativeToken: TestHelpers.Token = network == .hyperEVM ? .hype : network == .polygon ? .pol : .eth
                 return .transferNativeToken(
                     tokenAmount: Token.getTokenAmount(
                         amount: amount,
                         network: network,
-                        address: Token.eth.address(network: network)!
+                        address: nativeToken.address(network: network)!
                     ),
                     recipient: TestHelpers.Account.from(address: recipient),
                     cappedMax: cappedMax,
@@ -907,13 +908,15 @@ enum Call: CustomStringConvertible, Equatable {
             } else if let _ = try? WrapperActions.wrapETHDecode(input: calldata) {
                 return .wrapAsset(.eth, executionType: executionTypeForCall)
             } else if let (_, amount) = try? WrapperActions.wrapETHUpToDecode(input: calldata) {
+                let nativeToken: TestHelpers.Token = network == .hyperEVM ? .hype : network == .polygon ? .pol : .eth
                 return .wrapUpTo(
-                    tokenAmount: TokenAmount(fromWei: amount, ofToken: .eth),
+                    tokenAmount: TokenAmount(fromWei: amount, ofToken: nativeToken),
                     executionType: executionTypeForCall
                 )
             } else if let (_, amount) = try? WrapperActions.unwrapWETHUpToDecode(input: calldata) {
+                let wrappedToken: TestHelpers.Token = network == .hyperEVM ? .whype : network == .polygon ? .wpol : .weth
                 return .unwrapWETHUpTo(
-                    tokenAmount: TokenAmount(fromWei: amount, ofToken: .weth),
+                    tokenAmount: TokenAmount(fromWei: amount, ofToken: wrappedToken),
                     executionType: executionTypeForCall
                 )
             }

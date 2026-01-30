@@ -48,6 +48,8 @@ extension Network {
                 "world_chain"
             case .unichain:
                 "unichain"
+            case .hyperEVM:
+                "hyper_evm"
             default:
                 nil
         }

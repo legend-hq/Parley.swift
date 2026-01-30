@@ -234,6 +234,7 @@ public extension Token {
                 .DAI,
                 .FRAX,
                 .GHO,
+                .HYPE,
                 .LDO,
                 .MKR,
                 .osETH,
@@ -243,6 +244,9 @@ public extension Token {
                 .SNX,
                 .SYRUP,
                 .UNI,
+                .USDH,
+                .WHYPE,
+                .XAUt0,
                 .UNKNOWN:
                 nil
         }

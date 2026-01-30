@@ -1,13 +1,13 @@
 {
-  "originHash" : "ef9a92927b44a13ed5b39e884ffdf6512af37ef51cf4d18633ca98e6eb0350d8",
+  "originHash" : "c47a740cf64bd83f00fe10a083aec694ef12775172088c5cbdf01ab9dd0acd2e",
   "pins" : [
     {
       "identity" : "eth.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hayesgm/Eth.swift",
       "state" : {
-        "revision" : "2da8c93229f09245b8828cd4540038d28265031d",
-        "version" : "1.0.3"
+        "revision" : "b092e3bd4f73bef3fd0a4f5d9af3aabb14751800",
+        "version" : "1.0.4"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
-        "version" : "601.0.1"
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
       }
     },
     {

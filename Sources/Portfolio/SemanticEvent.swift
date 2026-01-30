@@ -5,11 +5,12 @@ import Prelude
 public enum SwapVenue: String, Sendable {
     case uniswap
     case zeroEx
+    case projectX
 
     public init?(rawValue: String) {
         guard
             rawValue.contains("matcha") || rawValue.contains("uniswap")
-                || rawValue.contains("zero_ex")
+                || rawValue.contains("zero_ex") || rawValue.contains("project_x")
         else {
             Logger.error("Unknown SwapVenue: \(rawValue)")
             return nil
@@ -17,6 +18,8 @@ public enum SwapVenue: String, Sendable {
 
         if rawValue.contains("matcha") || rawValue.contains("zero_ex") {
             self = .zeroEx
+        } else if rawValue.contains("project_x") {
+            self = .projectX
         } else {
             self = .uniswap
         }
@@ -28,6 +31,8 @@ public enum SwapVenue: String, Sendable {
                 .ZeroEx
             case .uniswap:
                 .Uniswap
+            case .projectX:
+                .ProjectX
         }
     }
 }

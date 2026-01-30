@@ -632,4 +632,201 @@ struct BridgeTests {
             )
         )
     }
+
+    @Test("Alice transfers USDC from Base to Bob on HyperEVM via Across Bridge")
+    func testTransferUsdcFromBaseToBobOnHyperEVMViaAcross() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(100, .usdc), .base),
+                    .quote(.basic),
+                    .acrossQuote(.amt(1, .usdc), 0.01),
+                ],
+                when: .transfer(
+                    from: .alice,
+                    to: .bob,
+                    amount: .amt(50, .usdc),
+                    on: .hyperEVM
+                ),
+                expect: .success(
+                    .multi([
+                        .multicall(
+                            [
+                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
+                                .bridge(
+                                    bridge: "Across",
+                                    srcNetwork: .base,
+                                    destinationNetwork: .hyperEVM,
+                                    inputTokenAmount: .amt(51.555556, .usdc),
+                                    outputTokenAmount: .amt(50.04, .usdc),
+                                    cappedMax: false
+                                ),
+                            ],
+                            executionType: .immediate
+                        ),
+                        .multicall(
+                            [
+                                .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
+                                .transferErc20(
+                                    tokenAmount: .amt(50, .usdc),
+                                    recipient: .bob,
+                                    cappedMax: false,
+                                    network: .hyperEVM
+                                ),
+                            ],
+                            executionType: .contingent
+                        ),
+                    ])
+                )
+            )
+        )
+    }
+
+    @Test("Alice transfers USDC from Base to Bob on HyperEVM via CCTPv2 Bridge")
+    func testTransferUsdcFromBaseToBobOnHyperEVMViaCCTPv2() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(100, .usdc), .base),
+                    .quote(.basic),
+                    .cctpV2Quote(.amt(1, .usdc), 0.01),
+                ],
+                when: .transfer(
+                    from: .alice,
+                    to: .bob,
+                    amount: .amt(50, .usdc),
+                    on: .hyperEVM
+                ),
+                expect: .successWithActions(
+                    .multi([
+                        // Quote pay and CCTPv2 Burn bundled on source chain (Base)
+                        .multicall(
+                            [
+                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
+                                .bridge(
+                                    bridge: "CCTPv2",
+                                    srcNetwork: .base,
+                                    destinationNetwork: .hyperEVM,
+                                    inputTokenAmount: .amt(51.555556, .usdc),
+                                    outputTokenAmount: .amt(50.04, .usdc),
+                                    cappedMax: false,
+                                    executionType: nil
+                                ),
+                            ],
+                            executionType: .immediate
+                        ),
+                        // CCTPv2 Mint and subsequent operations on destination chain (HyperEVM)
+                        .multicall(
+                            [
+                                .bridgeMint(
+                                    network: .hyperEVM,
+                                    bridgeType: .CircleBridge,
+                                    executionType: nil
+                                ),
+                                .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
+                                .transferErc20(
+                                    tokenAmount: .amt(50, .usdc),
+                                    recipient: .bob,
+                                    cappedMax: false,
+                                    network: .hyperEVM
+                                ),
+                            ],
+                            executionType: .contingent
+                        ),
+                    ]),
+                    [
+                        // Quote pay and burn bundled on source chain
+                        .multiAction([
+                            Charter.ActionContext.quotePay(
+                                Charter.ActionContext.QuotePayActionContext(
+                                    amount: Number("20000"),  // 0.02 USDC
+                                    assetSymbol: "USDC",
+                                    chainId: Number("8453"),  // Base
+                                    price: Number("1.0e8"),
+                                    payee: EthAddress(
+                                        "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                    ),
+                                    quoteId: Hex(
+                                        "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                    ),
+                                    token: EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
+                                    )
+                                )
+                            ),
+                            Charter.ActionContext.bridge(
+                                Charter.ActionContext.BridgeActionContext(
+                                    assetSymbol: "USDC",
+                                    bridgeType: .cctpV2,
+                                    chainId: Number("8453"),  // Base
+                                    destinationChainId: Number("999"),  // HyperEVM
+                                    destinationAssetSymbol: "USDC",
+                                    inputAmount: Number("51555556"),
+                                    outputAmount: Number("50040000"),
+                                    price: Number("1.0e8"),
+                                    recipient: EthAddress(
+                                        "0x00000000000000000000000000000000000a11ce"
+                                    ),
+                                    token: EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
+                                    )
+                                )
+                            ),
+                        ]),
+                        // Mint, quote pay, and transfer happen together on destination chain
+                        .multiAction([
+                            Charter.ActionContext.bridgeMint(
+                                Charter.ActionContext.BridgeMintActionContext(
+                                    assetSymbol: "USDC",
+                                    bridgeType: .cctpV2,
+                                    chainId: Number("999"),  // HyperEVM
+                                    sourceChainId: Number("8453"),  // Base
+                                    inputAmount: Number("51555556"),
+                                    outputAmount: Number("50040000"),
+                                    maxFee: Number("1515556"),
+                                    recipient: EthAddress(
+                                        "0x00000000000000000000000000000000000a11ce"
+                                    ),
+                                    token: EthAddress(
+                                        "0xb88339cb7199b77e23db6e890353e22632ba630f"  // USDC on HyperEVM
+                                    )
+                                )
+                            ),
+                            Charter.ActionContext.quotePay(
+                                Charter.ActionContext.QuotePayActionContext(
+                                    amount: Number("40000"),  // 0.04 USDC
+                                    assetSymbol: "USDC",
+                                    chainId: Number("999"),  // HyperEVM
+                                    price: Number("1.0e8"),
+                                    payee: EthAddress(
+                                        "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                    ),
+                                    quoteId: Hex(
+                                        "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                    ),
+                                    token: EthAddress(
+                                        "0xb88339cb7199b77e23db6e890353e22632ba630f"  // USDC on HyperEVM
+                                    )
+                                )
+                            ),
+                            Charter.ActionContext.transfer(
+                                Charter.ActionContext.TransferActionContext(
+                                    amount: Number("50000000"),  // 50 USDC
+                                    assetSymbol: "USDC",
+                                    chainId: Number("999"),  // HyperEVM
+                                    price: Number("1.0e8"),
+                                    recipient: EthAddress(
+                                        "0x00000000000000000000000000000000000b0b0b"
+                                    ),
+                                    token: EthAddress(
+                                        "0xb88339cb7199b77e23db6e890353e22632ba630f"  // USDC on HyperEVM
+                                    )
+                                )
+                            ),
+                        ]),
+                    ]
+                )
+            )
+        )
+    }
 }

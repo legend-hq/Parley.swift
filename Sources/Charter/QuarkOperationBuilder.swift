@@ -367,6 +367,16 @@ extension Charter {
                 scriptCallValues = [
                     .address(destAsset.assetAddress)
                 ]
+            } else if sourceAsset.symbol == "POL" && destAsset.symbol == "WPOL" {
+                scriptFunction = WrapperActions.wrapAllETHFn
+                scriptCallValues = [
+                    .address(destAsset.assetAddress)
+                ]
+            } else if sourceAsset.symbol == "HYPE" && destAsset.symbol == "WHYPE" {
+                scriptFunction = WrapperActions.wrapAllETHFn
+                scriptCallValues = [
+                    .address(destAsset.assetAddress)
+                ]
             } else if sourceAsset.symbol == "stETH" && destAsset.symbol == "wstETH" {
                 scriptFunction = WrapperActions.wrapAllLidoStETHFn
                 scriptCallValues = [
@@ -432,7 +442,7 @@ extension Charter {
                 )
             }
 
-            if underlyingAsset.symbol == "ETH" {
+            if underlyingAsset.symbol == "ETH" || underlyingAsset.symbol == "HYPE" || underlyingAsset.symbol == "POL" {
                 scriptFunction = WrapperActions.wrapETHUpToFn
                 scriptCallValues = [
                     .address(wrappedAsset.assetAddress),
@@ -483,6 +493,18 @@ extension Charter {
             let scriptCallValues: [ABI.Value]
 
             if sourceAsset.symbol == "WETH" && destAsset.symbol == "ETH" {
+                scriptFunction = WrapperActions.unwrapWETHUpToFn
+                scriptCallValues = [
+                    .address(sourceAsset.assetAddress),
+                    .uint256(amount.underlying),
+                ]
+            } else if sourceAsset.symbol == "WHYPE" && destAsset.symbol == "HYPE" {
+                scriptFunction = WrapperActions.unwrapWETHUpToFn
+                scriptCallValues = [
+                    .address(sourceAsset.assetAddress),
+                    .uint256(amount.underlying),
+                ]
+            } else if sourceAsset.symbol == "WPOL" && destAsset.symbol == "POL" {
                 scriptFunction = WrapperActions.unwrapWETHUpToFn
                 scriptCallValues = [
                     .address(sourceAsset.assetAddress),

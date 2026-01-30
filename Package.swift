@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/GoodNotes/swift-icudata-slim.git", from: "0.2.0"),
         .package(
             url: "https://github.com/hayesgm/Eth.swift",
-            exact: "1.0.3"
+            exact: "1.0.4"
         ),
         .package(
             url: "git@github.com:legend-hq/SwiftNumber",

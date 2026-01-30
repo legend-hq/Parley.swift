@@ -85,7 +85,17 @@ extension Charter.Chart.Action {
 extension Charter.ActionContext.TransferActionContext: ActionConvertible {
     public func toTransferAction(portfolios: [Portfolio]) -> TransferAction? {
         let network = Network.fromChainId(chainId)
-        let assetSymbol = self.assetSymbol == "ETH" ? "WETH" : self.assetSymbol
+        let assetSymbol: String
+        switch self.assetSymbol {
+        case "ETH":
+            assetSymbol = "WETH"
+        case "POL":
+            assetSymbol = "WPOL"
+        case "HYPE":
+            assetSymbol = "WHYPE"
+        default:
+            assetSymbol = self.assetSymbol
+        }
 
         guard let asset = portfolios.getAsset(symbol: assetSymbol, chain: network) else {
             return nil

@@ -16,6 +16,7 @@ public enum DApp: String, CaseIterable, Identifiable, Sendable {
     case Stargate
     case Uniswap
     case ZeroEx = "0x"
+    case ProjectX
 
     public var displayName: String {
         switch self {

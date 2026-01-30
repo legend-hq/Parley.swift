@@ -130,6 +130,10 @@ extension Portfolio: Identifiable {
             if let underlyingToken = tokens.first(where: { $0.symbol == "POL" }) {
                 return getBalances(token: token, underlyingToken: underlyingToken)
             }
+        } else if token.symbol == "WHYPE" {
+            if let underlyingToken = tokens.first(where: { $0.symbol == "HYPE" }) {
+                return getBalances(token: token, underlyingToken: underlyingToken)
+            }
         }
 
         return token.balances.map {

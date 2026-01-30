@@ -17,7 +17,7 @@ public class PortfolioState {
         [Network: [MorphoDistributor: [(Account, Token, Number, MorphoClaimProof)]]] = [:]
     var aavePositions: [Network: [AavePool: [Account: [Token: (Number, Number)]]]] = [:]
 
-    let allNetworks: [Network] = [.ethereum, .base, .arbitrum, .optimism, .worldChain]
+    let allNetworks: [Network] = [.ethereum, .base, .arbitrum, .optimism, .worldChain, .hyperEVM]
 
     public init() {}
 
@@ -183,25 +183,55 @@ public class PortfolioState {
                 morphoRewardPositions: reifyMorphoRewardPositionsV2(network: network),
                 quarkNonceStatuses: [],
                 acrossFillStatuses: [],
-                tokenWrapperQuotes: [
-                    .init(
-                        underlying: .init(
-                            address: Token.eth.address(network: network)!,
-                            decimals: 18,
-                            name: "Ether",
-                            symbol: "ETH"
-                        ),
-                        wrapped: .init(
-                            address: Token.weth.address(network: network)!,
-                            decimals: 18,
-                            name: "Wrapped Ether",
-                            symbol: "WETH"
-                        ),
-                        underlyingHasToken: true,
-                        unwrapQuote: .init(double: 1.00)
-                    )
-                ]
+                tokenWrapperQuotes: tokenWrapperQuotes(for: network)
             )
+        }
+    }
+
+    private func tokenWrapperQuotes(for network: Network) -> [Portfolio.TokenWrapperQuote] {
+        switch network {
+        case .hyperEVM:
+            return [
+                .init(
+                    underlying: .init(
+                        address: Token.hype.address(network: network)!,
+                        decimals: 18,
+                        name: "Hyperliquid",
+                        symbol: "HYPE"
+                    ),
+                    wrapped: .init(
+                        address: Token.whype.address(network: network)!,
+                        decimals: 18,
+                        name: "Wrapped HYPE",
+                        symbol: "WHYPE"
+                    ),
+                    underlyingHasToken: true,
+                    unwrapQuote: .init(double: 1.00)
+                )
+            ]
+        default:
+            guard let ethAddress = Token.eth.address(network: network),
+                  let wethAddress = Token.weth.address(network: network) else {
+                return []
+            }
+            return [
+                .init(
+                    underlying: .init(
+                        address: ethAddress,
+                        decimals: 18,
+                        name: "Ether",
+                        symbol: "ETH"
+                    ),
+                    wrapped: .init(
+                        address: wethAddress,
+                        decimals: 18,
+                        name: "Wrapped Ether",
+                        symbol: "WETH"
+                    ),
+                    underlyingHasToken: true,
+                    unwrapQuote: .init(double: 1.00)
+                )
+            ]
         }
     }
 

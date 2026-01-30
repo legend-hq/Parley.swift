@@ -649,10 +649,15 @@ public enum Token: Hashable, Equatable, Sendable {
     case cbeth
     case cbbtc
     case comp
+    case hype
+    case whype
+    case pol
+    case wpol
     case unknownToken(EthAddress)
 
     public static let knownCases: [Token] = [
-        .usdc, .eth, .weth, .link, .usdt, .wbtc, .degen, .cbeth, .cbbtc, .comp,
+        .usdc, .eth, .weth, .link, .usdt, .wbtc, .degen, .cbeth, .cbbtc, .comp, .hype, .whype,
+        .pol, .wpol,
     ]
 
     public static let networkTokenAddress: [Network: [Token: EthAddress]] = [
@@ -700,7 +705,14 @@ public enum Token: Hashable, Equatable, Sendable {
         .unichain: [
             .usdc: EthAddress("0x078d782b760474a361dda0af3839290b0ef57ad6"),
         ],
+        .hyperEVM: [
+            .usdc: EthAddress("0xb88339cb7199b77e23db6e890353e22632ba630f"),
+            .hype: EthAddress("0x000000000000000000000000000000000000b49e"),
+            .whype: EthAddress("0x5555555555555555555555555555555555555555"),
+        ],
         .polygon: [
+            .pol: EthAddress("0x0000000000000000000000000000000000001010"),
+            .wpol: EthAddress("0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"),
             .weth: EthAddress("0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"),
             .usdc: EthAddress("0x3c499c542cef5e3811e1192ce70d8cc03d5c3359"),
         ],
@@ -757,6 +769,14 @@ public enum Token: Hashable, Equatable, Sendable {
                 return "cbBTC"
             case .comp:
                 return "COMP"
+            case .hype:
+                return "HYPE"
+            case .whype:
+                return "WHYPE"
+            case .pol:
+                return "POL"
+            case .wpol:
+                return "WPOL"
             case .unknownToken(let address):
                 return "UnknownToken(\(address.description))"
         }
@@ -768,7 +788,7 @@ public enum Token: Hashable, Equatable, Sendable {
                 return 6
             case .wbtc, .cbbtc:
                 return 8
-            case .eth, .weth, .link, .degen, .cbeth, .comp:
+            case .eth, .weth, .link, .degen, .cbeth, .comp, .hype, .whype, .pol, .wpol:
                 return 18
             case .unknownToken:
                 return 0
@@ -789,6 +809,10 @@ public enum Token: Hashable, Equatable, Sendable {
                 return 2.0
             case .comp:
                 return 40.0
+            case .hype, .whype:
+                return 25.0
+            case .pol, .wpol:
+                return 0.5
             case .unknownToken:
                 return 0
         }
@@ -832,6 +856,8 @@ public enum QuotePay: Hashable, Equatable, Sendable {
                         .arbitrum: 0.04,
                         .optimism: 0.06,
                         .worldChain: 0.10,
+                        .hyperEVM: 0.04,
+                        .polygon: 0.0008,
                     ]
                 )
         }

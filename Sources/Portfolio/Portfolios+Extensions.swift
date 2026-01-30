@@ -232,6 +232,16 @@ extension Array where Element == Portfolio {
             return getAsset(symbol: "WETH", chain: chain)
         }
 
+        // Native POL is an underlying asset of WPOL. Fall back to WPOL lookup.
+        if token.hex.lowercased() == "0x0000000000000000000000000000000000001010" {
+            return getAsset(symbol: "WPOL", chain: chain)
+        }
+
+        // Native HYPE is an underlying asset of WHYPE. Fall back to WHYPE lookup.
+        if token.hex.lowercased() == "0x000000000000000000000000000000000000b49e" {
+            return getAsset(symbol: "WHYPE", chain: chain)
+        }
+
         return nil
     }
 

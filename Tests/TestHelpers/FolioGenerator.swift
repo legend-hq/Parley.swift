@@ -43,6 +43,40 @@ public func generateFolio(from givens: [Given]) -> Folio {
                 wrappedSymbol: "WETH"
             )
         )
+
+        // HYPE -> WHYPE wrap (for HyperEVM)
+        if network == .hyperEVM {
+            folio.swapHints.updateValue(
+                .init(
+                    minAmount: Amount(0, decimals: 18),
+                    maxAmount: nil,
+                    exchangeRate: Percentage(fromDouble: 1.0)  // 1:1 exchange rate
+                ),
+                forKey: .wrapper(
+                    underlyingNetwork: network,
+                    underlyingSymbol: "HYPE",
+                    wrappedNetwork: network,
+                    wrappedSymbol: "WHYPE"
+                )
+            )
+        }
+
+        // POL -> WPOL wrap (for Polygon)
+        if network == .polygon {
+            folio.swapHints.updateValue(
+                .init(
+                    minAmount: Amount(0, decimals: 18),
+                    maxAmount: nil,
+                    exchangeRate: Percentage(fromDouble: 1.0)  // 1:1 exchange rate
+                ),
+                forKey: .wrapper(
+                    underlyingNetwork: network,
+                    underlyingSymbol: "POL",
+                    wrappedNetwork: network,
+                    wrappedSymbol: "WPOL"
+                )
+            )
+        }
     }
 
     // print("folio: \(folio)")

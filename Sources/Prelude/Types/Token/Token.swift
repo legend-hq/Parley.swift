@@ -35,6 +35,7 @@ public enum Token: String, CaseIterable, Identifiable, Sendable {
     case GHO
     case GMX
     case HIGHER
+    case HYPE
     case ICP
     case JUP
     case KAITO
@@ -62,6 +63,7 @@ public enum Token: String, CaseIterable, Identifiable, Sendable {
     case UNI
     case USDC
     case USDe
+    case USDH
     case USDT
     case uSOL
     case uXRP
@@ -72,9 +74,11 @@ public enum Token: String, CaseIterable, Identifiable, Sendable {
     case WELL
     case WETH
     case WLD
+    case WHYPE
     case WPOL
     case wstETH
     case XAUt
+    case XAUt0
     case ZORA
     case ZRO
     case UNKNOWN
@@ -100,6 +104,10 @@ public extension Token {
                 "stETH"
             case .WPOL:
                 "POL"
+            case .WHYPE:
+                "HYPE"
+            case .XAUt0:
+                "XAUt"
             default:
                 rawValue
         }

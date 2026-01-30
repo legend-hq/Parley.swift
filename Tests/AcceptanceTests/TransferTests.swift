@@ -1282,25 +1282,41 @@ struct TransferTests {
                                         payee: .stax,
                                         quote: .basic
                                     ),
+                                    // Bridge includes extra for Polygon fee (0.0000002 WETH)
                                     .bridge(
                                         bridge: "Across",
                                         srcNetwork: .base,
                                         destinationNetwork: .polygon,
                                         inputTokenAmount: TokenAmount(
-                                            fromWei: "0.717171717171717172e18",
+                                            fromWei: "717171919191919192",
                                             ofToken: TestHelpers.Token.weth
                                         ),
-                                        outputTokenAmount: .amt(0.70, .weth),
+                                        outputTokenAmount: TokenAmount(
+                                            fromWei: "700000200000000000",
+                                            ofToken: TestHelpers.Token.weth
+                                        ),
                                         cappedMax: false
                                     ),
                                 ],
                                 executionType: .immediate
                             ),
-                            .transferErc20(
-                                tokenAmount: .amt(0.70  , .weth),
-                                recipient: .bob,
-                                cappedMax: false,
-                                network: .polygon,
+                            .multicall(
+                                [
+                                    .quotePay(
+                                        payment: TokenAmount(
+                                            fromWei: "200000000000",
+                                            ofToken: TestHelpers.Token.weth
+                                        ),
+                                        payee: .stax,
+                                        quote: .basic
+                                    ),
+                                    .transferErc20(
+                                        tokenAmount: .amt(0.70, .weth),
+                                        recipient: .bob,
+                                        cappedMax: false,
+                                        network: .polygon
+                                    ),
+                                ],
                                 executionType: .contingent
                             ),
                         ]
@@ -1311,7 +1327,7 @@ struct TransferTests {
                                 Charter.ActionContext.wrap(
                                     Charter.ActionContext.WrapActionContext(
                                         chainId: Number("8453"),
-                                        amount: Number("0.717176717171717172e18"),
+                                        amount: Number("717176919191919192"),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                         ),
@@ -1343,8 +1359,8 @@ struct TransferTests {
                                         chainId: Number("8453"),
                                         destinationChainId: Number("137"),
                                         destinationAssetSymbol: "WETH",
-                                        inputAmount: Number("0.717171717171717172e18"),
-                                        outputAmount: Number("0.7e18"),
+                                        inputAmount: Number("717171919191919192"),
+                                        outputAmount: Number("700000200000000000"),
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1356,19 +1372,40 @@ struct TransferTests {
                                 ),
                             ]
                         ),
-                        Charter.ActionContext.transfer(
-                            Charter.ActionContext.TransferActionContext(
-                                amount: Number("0.7e18"),
-                                assetSymbol: "WETH",
-                                chainId: Number("137"),
-                                price: Number("4000e8"),
-                                recipient: EthAddress(
-                                    "0x00000000000000000000000000000000000b0b0b"
+                        .multiAction(
+                            [
+                                Charter.ActionContext.quotePay(
+                                    Charter.ActionContext.QuotePayActionContext(
+                                        amount: Number("200000000000"),
+                                        assetSymbol: "WETH",
+                                        chainId: Number("137"),
+                                        price: Number("4000e8"),
+                                        payee: EthAddress(
+                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                        ),
+                                        quoteId: Hex(
+                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                        ),
+                                        token: EthAddress(
+                                            "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
+                                        )
+                                    )
                                 ),
-                                token: EthAddress(
-                                    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
-                                )
-                            )
+                                Charter.ActionContext.transfer(
+                                    Charter.ActionContext.TransferActionContext(
+                                        amount: Number("0.7e18"),
+                                        assetSymbol: "WETH",
+                                        chainId: Number("137"),
+                                        price: Number("4000e8"),
+                                        recipient: EthAddress(
+                                            "0x00000000000000000000000000000000000b0b0b"
+                                        ),
+                                        token: EthAddress(
+                                            "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
+                                        )
+                                    )
+                                ),
+                            ]
                         ),
                     ]
                 )
@@ -1396,25 +1433,41 @@ struct TransferTests {
                                         payee: .stax,
                                         quote: .basic
                                     ),
+                                    // Bridge includes extra for Polygon fee (0.0000002 WETH)
                                     .bridge(
                                         bridge: "Across",
                                         srcNetwork: .base,
                                         destinationNetwork: .polygon,
                                         inputTokenAmount: TokenAmount(
-                                            fromWei: "0.717171717171717172e18",
+                                            fromWei: "717171919191919192",
                                             ofToken: TestHelpers.Token.weth
                                         ),
-                                        outputTokenAmount: .amt(0.70, .weth),
+                                        outputTokenAmount: TokenAmount(
+                                            fromWei: "700000200000000000",
+                                            ofToken: TestHelpers.Token.weth
+                                        ),
                                         cappedMax: false
                                     ),
                                 ],
                                 executionType: .immediate
                             ),
-                            .transferErc20(
-                                tokenAmount: .amt(0.70  , .weth),
-                                recipient: .bob,
-                                cappedMax: false,
-                                network: .polygon,
+                            .multicall(
+                                [
+                                    .quotePay(
+                                        payment: TokenAmount(
+                                            fromWei: "200000000000",
+                                            ofToken: TestHelpers.Token.weth
+                                        ),
+                                        payee: .stax,
+                                        quote: .basic
+                                    ),
+                                    .transferErc20(
+                                        tokenAmount: .amt(0.70, .weth),
+                                        recipient: .bob,
+                                        cappedMax: false,
+                                        network: .polygon
+                                    ),
+                                ],
                                 executionType: .contingent
                             ),
                         ]
@@ -1446,8 +1499,8 @@ struct TransferTests {
                                         chainId: Number("8453"),
                                         destinationChainId: Number("137"),
                                         destinationAssetSymbol: "WETH",
-                                        inputAmount: Number("0.717171717171717172e18"),
-                                        outputAmount: Number("0.7e18"),
+                                        inputAmount: Number("717171919191919192"),
+                                        outputAmount: Number("700000200000000000"),
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1459,19 +1512,40 @@ struct TransferTests {
                                 ),
                             ]
                         ),
-                        Charter.ActionContext.transfer(
-                            Charter.ActionContext.TransferActionContext(
-                                amount: Number("0.7e18"),
-                                assetSymbol: "WETH",
-                                chainId: Number("137"),
-                                price: Number("4000e8"),
-                                recipient: EthAddress(
-                                    "0x00000000000000000000000000000000000b0b0b"
+                        .multiAction(
+                            [
+                                Charter.ActionContext.quotePay(
+                                    Charter.ActionContext.QuotePayActionContext(
+                                        amount: Number("200000000000"),
+                                        assetSymbol: "WETH",
+                                        chainId: Number("137"),
+                                        price: Number("4000e8"),
+                                        payee: EthAddress(
+                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                        ),
+                                        quoteId: Hex(
+                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                        ),
+                                        token: EthAddress(
+                                            "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
+                                        )
+                                    )
                                 ),
-                                token: EthAddress(
-                                    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
-                                )
-                            )
+                                Charter.ActionContext.transfer(
+                                    Charter.ActionContext.TransferActionContext(
+                                        amount: Number("0.7e18"),
+                                        assetSymbol: "WETH",
+                                        chainId: Number("137"),
+                                        price: Number("4000e8"),
+                                        recipient: EthAddress(
+                                            "0x00000000000000000000000000000000000b0b0b"
+                                        ),
+                                        token: EthAddress(
+                                            "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
+                                        )
+                                    )
+                                ),
+                            ]
                         ),
                     ]
                 )
@@ -1545,6 +1619,232 @@ struct TransferTests {
                             executionType: .contingent
                         ),
                     ])
+                )
+            )
+        )
+    }
+
+    @Test("Alice transfers HYPE. WHYPE is unwrapped and HYPE is transferred")
+    func testTransferHYPETest() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(0.5, .hype), .hyperEVM),
+                    .tokenBalance(.alice, .amt(0.21, .whype), .hyperEVM),
+                    .quote(.basic),
+                ],
+                when: .transfer(from: .alice, to: .bob, amount: .amt(0.7, .hype), on: .hyperEVM),
+                expect: .successWithActions(
+                    .single(
+                        .multicall(
+                            [
+                                .unwrapWETHUpTo(
+                                    tokenAmount: .amt(0.2016, .whype)
+                                ),
+                                .wrapUpTo(
+                                    tokenAmount: .amt(0.0016, .hype)
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.0016, .whype),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .unwrapWETHUpTo(
+                                    tokenAmount: .amt(0.7, .whype)
+                                ),
+                                .transferNativeToken(
+                                    tokenAmount: .amt(0.7, .hype),
+                                    recipient: .bob,
+                                    cappedMax: false,
+                                    network: .hyperEVM
+                                ),
+                            ],
+                            executionType: .immediate
+                        )
+                    ),
+                    [
+                        .multiAction(
+                            [
+                                Charter.ActionContext.unwrap(
+                                    Charter.ActionContext.UnwrapActionContext(
+                                        chainId: Number("999"),
+                                        amount: Number("201600000000000000"),
+                                        token: EthAddress(
+                                            "0x5555555555555555555555555555555555555555"
+                                        ),
+                                        fromAssetSymbol: "WHYPE",
+                                        toAssetSymbol: "HYPE"
+                                    )
+                                ),
+                                Charter.ActionContext.wrap(
+                                    Charter.ActionContext.WrapActionContext(
+                                        chainId: Number("999"),
+                                        amount: Number("1600000000000000"),
+                                        token: EthAddress(
+                                            "0x000000000000000000000000000000000000b49e"
+                                        ),
+                                        fromAssetSymbol: "HYPE",
+                                        toAssetSymbol: "WHYPE"
+                                    )
+                                ),
+                                Charter.ActionContext.quotePay(
+                                    Charter.ActionContext.QuotePayActionContext(
+                                        amount: Number("1600000000000000"),
+                                        assetSymbol: "WHYPE",
+                                        chainId: Number("999"),
+                                        price: Number("2500000000"),
+                                        payee: EthAddress(
+                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                        ),
+                                        quoteId: Hex(
+                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                        ),
+                                        token: EthAddress(
+                                            "0x5555555555555555555555555555555555555555"
+                                        )
+                                    )
+                                ),
+                                Charter.ActionContext.unwrap(
+                                    Charter.ActionContext.UnwrapActionContext(
+                                        chainId: Number("999"),
+                                        amount: Number("700000000000000000"),
+                                        token: EthAddress(
+                                            "0x5555555555555555555555555555555555555555"
+                                        ),
+                                        fromAssetSymbol: "WHYPE",
+                                        toAssetSymbol: "HYPE"
+                                    )
+                                ),
+                                Charter.ActionContext.transfer(
+                                    Charter.ActionContext.TransferActionContext(
+                                        amount: Number("700000000000000000"),
+                                        assetSymbol: "HYPE",
+                                        chainId: Number("999"),
+                                        price: Number("2500000000"),
+                                        recipient: EthAddress(
+                                            "0x00000000000000000000000000000000000b0b0b"
+                                        ),
+                                        token: EthAddress(
+                                            "0x000000000000000000000000000000000000b49e"
+                                        )
+                                    )
+                                ),
+                            ]
+                        )
+                    ]
+                )
+            )
+        )
+    }
+
+    @Test("Alice transfers POL. WPOL is unwrapped and POL is transferred")
+    func testTransferPOLTest() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(0.5, .pol), .polygon),
+                    .tokenBalance(.alice, .amt(0.21, .wpol), .polygon),
+                    .quote(.basic),
+                ],
+                when: .transfer(from: .alice, to: .bob, amount: .amt(0.7, .pol), on: .polygon),
+                expect: .successWithActions(
+                    .single(
+                        .multicall(
+                            [
+                                .unwrapWETHUpTo(
+                                    tokenAmount: .amt(0.2016, .wpol)
+                                ),
+                                .wrapUpTo(
+                                    tokenAmount: .amt(0.0016, .pol)
+                                ),
+                                .quotePay(
+                                    payment: .amt(0.0016, .wpol),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .unwrapWETHUpTo(
+                                    tokenAmount: .amt(0.7, .wpol)
+                                ),
+                                .transferNativeToken(
+                                    tokenAmount: .amt(0.7, .pol),
+                                    recipient: .bob,
+                                    cappedMax: false,
+                                    network: .polygon
+                                ),
+                            ],
+                            executionType: .immediate
+                        )
+                    ),
+                    [
+                        .multiAction(
+                            [
+                                Charter.ActionContext.unwrap(
+                                    Charter.ActionContext.UnwrapActionContext(
+                                        chainId: Number("137"),
+                                        amount: Number("201600000000000000"),
+                                        token: EthAddress(
+                                            "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+                                        ),
+                                        fromAssetSymbol: "WPOL",
+                                        toAssetSymbol: "POL"
+                                    )
+                                ),
+                                Charter.ActionContext.wrap(
+                                    Charter.ActionContext.WrapActionContext(
+                                        chainId: Number("137"),
+                                        amount: Number("1600000000000000"),
+                                        token: EthAddress(
+                                            "0x0000000000000000000000000000000000001010"
+                                        ),
+                                        fromAssetSymbol: "POL",
+                                        toAssetSymbol: "WPOL"
+                                    )
+                                ),
+                                Charter.ActionContext.quotePay(
+                                    Charter.ActionContext.QuotePayActionContext(
+                                        amount: Number("1600000000000000"),
+                                        assetSymbol: "WPOL",
+                                        chainId: Number("137"),
+                                        price: Number("50000000"),
+                                        payee: EthAddress(
+                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
+                                        ),
+                                        quoteId: Hex(
+                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
+                                        ),
+                                        token: EthAddress(
+                                            "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+                                        )
+                                    )
+                                ),
+                                Charter.ActionContext.unwrap(
+                                    Charter.ActionContext.UnwrapActionContext(
+                                        chainId: Number("137"),
+                                        amount: Number("700000000000000000"),
+                                        token: EthAddress(
+                                            "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+                                        ),
+                                        fromAssetSymbol: "WPOL",
+                                        toAssetSymbol: "POL"
+                                    )
+                                ),
+                                Charter.ActionContext.transfer(
+                                    Charter.ActionContext.TransferActionContext(
+                                        amount: Number("700000000000000000"),
+                                        assetSymbol: "POL",
+                                        chainId: Number("137"),
+                                        price: Number("50000000"),
+                                        recipient: EthAddress(
+                                            "0x00000000000000000000000000000000000b0b0b"
+                                        ),
+                                        token: EthAddress(
+                                            "0x0000000000000000000000000000000000001010"
+                                        )
+                                    )
+                                ),
+                            ]
+                        )
+                    ]
                 )
             )
         )

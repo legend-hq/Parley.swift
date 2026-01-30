@@ -117,12 +117,13 @@ struct BridgeRoutingTests {
                                     quote: .basic
                                 ),
                                 // Base→Polygon: stages tokens for the Polygon→Optimism bridge
+                                // Includes extra 0.0008 USDC for Polygon operation fee
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
                                     destinationNetwork: .polygon,
-                                    inputTokenAmount: .amt(9.11, .usdc),  // 9.11 in
-                                    outputTokenAmount: .amt(9.10, .usdc),  // 9.10 out (minus 0.01 fee)
+                                    inputTokenAmount: .amt(9.1108, .usdc),  // 9.1108 in
+                                    outputTokenAmount: .amt(9.1008, .usdc),  // 9.1008 out (minus 0.01 fee)
                                     cappedMax: false
                                 ),
                                 .quotePay(
@@ -143,19 +144,28 @@ struct BridgeRoutingTests {
                             executionType: .immediate
                         ),
                         // Step 2: Polygon→Optimism - waits for tokens to arrive from Base→Polygon
-                        .bridge(
-                            bridge: "Across",
-                            srcNetwork: .polygon,
-                            destinationNetwork: .optimism,
-                            inputTokenAmount: .amt(9.10, .usdc),  // 9.10 in
-                            outputTokenAmount: .amt(9.09, .usdc),  // 9.09 out (minus 0.01 fee)
-                            cappedMax: false,
+                        .multicall(
+                            [
+                                .quotePay(
+                                    payment: .amt(0.0008, .usdc),
+                                    payee: .stax,
+                                    quote: .basic
+                                ),
+                                .bridge(
+                                    bridge: "Across",
+                                    srcNetwork: .polygon,
+                                    destinationNetwork: .optimism,
+                                    inputTokenAmount: .amt(9.10, .usdc),  // 9.10 in
+                                    outputTokenAmount: .amt(9.09, .usdc),  // 9.09 out (minus 0.01 fee)
+                                    cappedMax: false
+                                ),
+                            ],
                             executionType: .contingent
                         ),
                         // Step 3: Final transfer - waits for all bridges to complete
                         .multicall(
                             [
-                                // Total quotePay: 0.02 + 0.02 + 0.02 = 0.06 USDC
+                                // Total quotePay: 0.02 + 0.02 + 0.06 = 0.06 USDC
                                 .quotePay(
                                     payment: .amt(0.06, .usdc),
                                     payee: .stax,

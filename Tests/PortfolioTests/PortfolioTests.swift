@@ -1724,6 +1724,28 @@ struct PortfolioTests {
                         maxAmount: nil,
                         exchangeRate: .one
                     ),
+                Prelude.Folio.SwapHintType.wrapper(
+                    underlyingNetwork: Eth.Network.hyperEVM,
+                    underlyingSymbol: "HYPE",
+                    wrappedNetwork: Eth.Network.hyperEVM,
+                    wrappedSymbol: "WHYPE"
+                ): Prelude.Folio
+                    .SwapHint(
+                        minAmount: nil,
+                        maxAmount: nil,
+                        exchangeRate: .one
+                    ),
+                Prelude.Folio.SwapHintType.wrapper(
+                    underlyingNetwork: Eth.Network.polygon,
+                    underlyingSymbol: "POL",
+                    wrappedNetwork: Eth.Network.polygon,
+                    wrappedSymbol: "WPOL"
+                ): Prelude.Folio
+                    .SwapHint(
+                        minAmount: nil,
+                        maxAmount: nil,
+                        exchangeRate: .one
+                    ),
             ],
             bridgeHints: [:],
             hexData: [:],
