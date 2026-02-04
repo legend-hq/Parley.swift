@@ -1115,23 +1115,38 @@ extension Charter {
                     // Fall back to singular fields (old format)
                     let legacyContainer = try decoder.container(keyedBy: LegacyCodingKeys.self)
 
-                    let singleAmount = try legacyContainer.decode(Number.self, forKey: .feeAmount)
-                    let singleSymbol = try legacyContainer.decode(
-                        String.self,
-                        forKey: .feeAssetSymbol
-                    )
-                    let singleToken = try legacyContainer.decode(EthAddress.self, forKey: .feeToken)
-                    let singlePrice = try legacyContainer.decode(
+                    // Fee fields are optional - if not present, default to empty arrays
+                    if let singleAmount = try legacyContainer.decodeIfPresent(
                         Number.self,
-                        forKey: .feeTokenPrice
-                    )
+                        forKey: .feeAmount
+                    ) {
+                        let singleSymbol = try legacyContainer.decode(
+                            String.self,
+                            forKey: .feeAssetSymbol
+                        )
+                        let singleToken = try legacyContainer.decode(
+                            EthAddress.self,
+                            forKey: .feeToken
+                        )
+                        let singlePrice = try legacyContainer.decode(
+                            Number.self,
+                            forKey: .feeTokenPrice
+                        )
 
-                    // Convert to arrays
-                    feeAmounts = [singleAmount]
-                    feeAssetSymbols = [singleSymbol]
-                    feeTokens = [singleToken]
-                    feeTokenPrices = [singlePrice]
-                    feeDescriptions = ["ZERO_EX"]
+                        // Convert to arrays
+                        feeAmounts = [singleAmount]
+                        feeAssetSymbols = [singleSymbol]
+                        feeTokens = [singleToken]
+                        feeTokenPrices = [singlePrice]
+                        feeDescriptions = ["ZERO_EX"]
+                    } else {
+                        // No fee fields present - default to empty arrays
+                        feeAmounts = []
+                        feeAssetSymbols = []
+                        feeTokens = []
+                        feeTokenPrices = []
+                        feeDescriptions = []
+                    }
                 }
             }
 
@@ -1991,10 +2006,17 @@ extension Charter {
                 swapVenue = try container.decode(String.self, forKey: .swapVenue)
                 borrowVenue = try container.decode(String.self, forKey: .borrowVenue)
                 borrowMarketId = try container.decode(Hex.self, forKey: .borrowMarketId)
-                feeAmount = try container.decode(Number.self, forKey: .feeAmount)
-                feeAssetSymbol = try container.decode(String.self, forKey: .feeAssetSymbol)
-                feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
-                feeTokenPrice = try container.decode(Number.self, forKey: .feeTokenPrice)
+                if let decodedFeeAmount = try container.decodeIfPresent(Number.self, forKey: .feeAmount) {
+                    feeAmount = decodedFeeAmount
+                    feeAssetSymbol = try container.decode(String.self, forKey: .feeAssetSymbol)
+                    feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
+                    feeTokenPrice = try container.decode(Number.self, forKey: .feeTokenPrice)
+                } else {
+                    feeAmount = .zero
+                    feeAssetSymbol = backingAssetSymbol
+                    feeToken = backingToken
+                    feeTokenPrice = backingTokenPrice
+                }
             }
 
             public static func fromLoopLongActionContext(_ context: Actions.LoopLongActionContext)
@@ -2108,6 +2130,36 @@ extension Charter {
                 self.feeTokenPrice = feeTokenPrice
             }
 
+            public init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+                backingToken = try container.decode(EthAddress.self, forKey: .backingToken)
+                backingTokenPrice = try container.decode(Number.self, forKey: .backingTokenPrice)
+                minSwapBackingAmount = try container.decode(Number.self, forKey: .minSwapBackingAmount)
+                providedBackingAmount = try container.decode(Number.self, forKey: .providedBackingAmount)
+                chainId = try container.decode(Number.self, forKey: .chainId)
+                isIncrease = try container.decodeIfPresent(Bool.self, forKey: .isIncrease) ?? false
+                exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+                exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+                exposureToken = try container.decode(EthAddress.self, forKey: .exposureToken)
+                exposureTokenPrice = try container.decode(Number.self, forKey: .exposureTokenPrice)
+                swapVenue = try container.decode(String.self, forKey: .swapVenue)
+                borrowVenue = try container.decode(String.self, forKey: .borrowVenue)
+                borrowMarketId = try container.decode(Hex.self, forKey: .borrowMarketId)
+                // Fee fields are optional - if feeAmount is present, decode all; otherwise default to backing asset with zero fee
+                if let decodedFeeAmount = try container.decodeIfPresent(Number.self, forKey: .feeAmount) {
+                    feeAmount = decodedFeeAmount
+                    feeAssetSymbol = try container.decode(String.self, forKey: .feeAssetSymbol)
+                    feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
+                    feeTokenPrice = try container.decode(Number.self, forKey: .feeTokenPrice)
+                } else {
+                    feeAmount = .zero
+                    feeAssetSymbol = backingAssetSymbol
+                    feeToken = backingToken
+                    feeTokenPrice = backingTokenPrice
+                }
+            }
+
             public static func fromLoopShortActionContext(_ context: Actions.LoopShortActionContext)
                 -> LoopShortActionContext
             {
@@ -2215,6 +2267,35 @@ extension Charter {
                 self.feeTokenPrice = feeTokenPrice
             }
 
+            public init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+                backingToken = try container.decode(EthAddress.self, forKey: .backingToken)
+                backingTokenPrice = try container.decode(Number.self, forKey: .backingTokenPrice)
+                minSwapBackingAmount = try container.decode(Number.self, forKey: .minSwapBackingAmount)
+                backingAmountToExit = try container.decode(Number.self, forKey: .backingAmountToExit)
+                chainId = try container.decode(Number.self, forKey: .chainId)
+                exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+                exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+                exposureToken = try container.decode(EthAddress.self, forKey: .exposureToken)
+                exposureTokenPrice = try container.decode(Number.self, forKey: .exposureTokenPrice)
+                swapVenue = try container.decode(String.self, forKey: .swapVenue)
+                borrowVenue = try container.decode(String.self, forKey: .borrowVenue)
+                borrowMarketId = try container.decode(Hex.self, forKey: .borrowMarketId)
+                // Fee fields are optional - if feeAmount is present, decode all; otherwise default to backing asset with zero fee
+                if let decodedFeeAmount = try container.decodeIfPresent(Number.self, forKey: .feeAmount) {
+                    feeAmount = decodedFeeAmount
+                    feeAssetSymbol = try container.decode(String.self, forKey: .feeAssetSymbol)
+                    feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
+                    feeTokenPrice = try container.decode(Number.self, forKey: .feeTokenPrice)
+                } else {
+                    feeAmount = .zero
+                    feeAssetSymbol = backingAssetSymbol
+                    feeToken = backingToken
+                    feeTokenPrice = backingTokenPrice
+                }
+            }
+
             public static func fromUnloopLongActionContext(
                 _ context: Actions.UnloopLongActionContext
             ) -> UnloopLongActionContext {
@@ -2315,6 +2396,34 @@ extension Charter {
                 self.feeAssetSymbol = feeAssetSymbol
                 self.feeToken = feeToken
                 self.feeTokenPrice = feeTokenPrice
+            }
+
+            public init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+                backingToken = try container.decode(EthAddress.self, forKey: .backingToken)
+                backingTokenPrice = try container.decode(Number.self, forKey: .backingTokenPrice)
+                maxSwapBackingAmount = try container.decode(Number.self, forKey: .maxSwapBackingAmount)
+                chainId = try container.decode(Number.self, forKey: .chainId)
+                exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+                exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+                exposureToken = try container.decode(EthAddress.self, forKey: .exposureToken)
+                exposureTokenPrice = try container.decode(Number.self, forKey: .exposureTokenPrice)
+                swapVenue = try container.decode(String.self, forKey: .swapVenue)
+                borrowVenue = try container.decode(String.self, forKey: .borrowVenue)
+                borrowMarketId = try container.decode(Hex.self, forKey: .borrowMarketId)
+                // Fee fields are optional - if feeAmount is present, decode all; otherwise default to backing asset with zero fee
+                if let decodedFeeAmount = try container.decodeIfPresent(Number.self, forKey: .feeAmount) {
+                    feeAmount = decodedFeeAmount
+                    feeAssetSymbol = try container.decode(String.self, forKey: .feeAssetSymbol)
+                    feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
+                    feeTokenPrice = try container.decode(Number.self, forKey: .feeTokenPrice)
+                } else {
+                    feeAmount = .zero
+                    feeAssetSymbol = backingAssetSymbol
+                    feeToken = backingToken
+                    feeTokenPrice = backingTokenPrice
+                }
             }
 
             public static func fromUnloopShortActionContext(
