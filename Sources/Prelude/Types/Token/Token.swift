@@ -119,6 +119,10 @@ public extension Token {
                 URL(string: "https://polygon.technology")
             case .USDC:
                 URL(string: "https://www.circle.com/en/usdc")
+            case .USDH:
+                URL(string: "https://nativemarkets.com")
+            case .HYPE, .WHYPE:
+                URL(string: "https://hyperfoundation.org")
             default:
                 nil
         }
