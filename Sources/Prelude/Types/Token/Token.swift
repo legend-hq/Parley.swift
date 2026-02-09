@@ -78,7 +78,6 @@ public enum Token: String, CaseIterable, Identifiable, Sendable {
     case WPOL
     case wstETH
     case XAUt
-    case XAUt0
     case ZORA
     case ZRO
     case UNKNOWN
@@ -106,8 +105,6 @@ public extension Token {
                 "POL"
             case .WHYPE:
                 "HYPE"
-            case .XAUt0:
-                "XAUt"
             default:
                 rawValue
         }

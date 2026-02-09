@@ -246,7 +246,6 @@ public extension Token {
                 .UNI,
                 .USDH,
                 .WHYPE,
-                .XAUt0,
                 .UNKNOWN:
                 nil
         }
