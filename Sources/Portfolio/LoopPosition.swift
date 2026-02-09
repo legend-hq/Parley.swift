@@ -400,7 +400,7 @@ public struct LoopPosition: Identifiable, Sendable {
             }
         }
 
-        return Array(loopPositions.values)
+        return Array(loopPositions.values).filter { $0.pending || $0.collateralValue > .zero }
     }
 
     public var backingValue: Value {
