@@ -246,6 +246,30 @@ public struct ActivityMetadata: Codable, Equatable, Sendable {
         .first
     }
 
+    public var cctpV2SourceDomain: UInt32? {
+        semanticEventContexts.compactMap { event in
+            switch event.type {
+                case .bridgeSend(let bridgeSend):
+                    return bridgeSend.sourceDomain
+                default:
+                    return nil
+            }
+        }
+        .first
+    }
+
+    public var cctpV2Nonce: Hex? {
+        semanticEventContexts.compactMap { event in
+            switch event.type {
+                case .bridgeSend(let bridgeSend):
+                    return bridgeSend.nonce
+                default:
+                    return nil
+            }
+        }
+        .first
+    }
+
     /// Returns whether or not this activity metadata is included in the given portfolio.
     /// Note: returns nil when that state is unknown (i.e. because the quark nonce status is not included in the portfolio)
     public func isIncluded(inPortfolio portfolio: Portfolio) -> Bool? {
@@ -276,11 +300,11 @@ public struct ActivityMetadata: Codable, Equatable, Sendable {
 
     /// Returns whether or not this activity metadata is a CCTPv2 bridge which is filled in the given portfolio.
     /// Note: returns nil when that state is unknown (i.e. because the cctp_v2 fill status is not included in the portfolio)
-    /// Note: returns nil if we don't have a transaction hash for this activity metadata.
+    /// Note: returns nil if we don't have a source domain and nonce for this activity metadata.
     public func isCctpV2BridgeFilled(inPortfolio portfolio: Portfolio) -> Bool? {
-        if let transactionHash {
+        if let cctpV2SourceDomain, let cctpV2Nonce {
             for status in portfolio.cctpV2FillStatuses {
-                if status.burnTransactionHash == transactionHash {
+                if status.sourceDomain == cctpV2SourceDomain && status.nonce == cctpV2Nonce {
                     return status.filled
                 }
             }

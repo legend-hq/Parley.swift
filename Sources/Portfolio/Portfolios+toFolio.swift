@@ -354,7 +354,8 @@ extension Array where Element == Portfolio {
                         true,
                         forKey: .cctpV2Fill(
                             wallet: cctpV2FillStatus.quarkWallet,
-                            burnTransactionHash: cctpV2FillStatus.burnTransactionHash
+                            sourceDomain: cctpV2FillStatus.sourceDomain,
+                            nonce: cctpV2FillStatus.nonce
                         )
                     )
                 }
