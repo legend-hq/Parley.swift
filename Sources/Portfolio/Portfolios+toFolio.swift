@@ -349,6 +349,16 @@ extension Array where Element == Portfolio {
                     )
                 }
 
+                for cctpV2FillStatus in portfolio.cctpV2FillStatuses {
+                    folio.completionStatuses.updateValue(
+                        true,
+                        forKey: .cctpV2Fill(
+                            wallet: cctpV2FillStatus.quarkWallet,
+                            burnTransactionHash: cctpV2FillStatus.burnTransactionHash
+                        )
+                    )
+                }
+
                 for quarkNonceStatus in portfolio.quarkNonceStatuses {
                     folio.completionStatuses.updateValue(
                         true,

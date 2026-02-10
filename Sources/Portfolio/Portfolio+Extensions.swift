@@ -22,6 +22,7 @@ extension Portfolio: Identifiable {
         morphoRewardPositions: [Portfolio.MorphoRewardPosition]? = nil,
         quarkNonceStatuses: [Portfolio.QuarkNonceStatus]? = nil,
         acrossFillStatuses: [Portfolio.AcrossFillStatus]? = nil,
+        cctpV2FillStatuses: [Portfolio.CctpV2FillStatus]? = nil,
         tokenWrapperQuotes: [Portfolio.TokenWrapperQuote]? = nil
     ) -> Portfolio {
         Portfolio(
@@ -37,6 +38,7 @@ extension Portfolio: Identifiable {
             morphoRewardPositions: morphoRewardPositions ?? portfolio.morphoRewardPositions,
             quarkNonceStatuses: quarkNonceStatuses ?? portfolio.quarkNonceStatuses,
             acrossFillStatuses: acrossFillStatuses ?? portfolio.acrossFillStatuses,
+            cctpV2FillStatuses: cctpV2FillStatuses ?? portfolio.cctpV2FillStatuses,
             tokenWrapperQuotes: tokenWrapperQuotes ?? portfolio.tokenWrapperQuotes
         )
     }

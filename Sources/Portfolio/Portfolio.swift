@@ -201,6 +201,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
         try container.encode(morphoRewardPositions, forKey: .morphoRewardPositions)
         try container.encode(quarkNonceStatuses, forKey: .quarkNonceStatuses)
         try container.encode(acrossFillStatuses, forKey: .acrossFillStatuses)
+        try container.encode(cctpV2FillStatuses, forKey: .cctpV2FillStatuses)
         try container.encode(tokenWrapperQuotes, forKey: .tokenWrapperQuotes)
     }
 
