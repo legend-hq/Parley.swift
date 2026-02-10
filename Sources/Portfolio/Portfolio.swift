@@ -16,6 +16,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
     public let morphoRewardPositions: [MorphoRewardPosition]
     public let quarkNonceStatuses: [QuarkNonceStatus]
     public let acrossFillStatuses: [AcrossFillStatus]
+    public let cctpV2FillStatuses: [CctpV2FillStatus]
     public let tokenWrapperQuotes: [TokenWrapperQuote]
 
     // Exposed Types
@@ -48,6 +49,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
         case morphoRewardPositions = "morpho_reward_positions"
         case quarkNonceStatuses = "quark_nonce_statuses"
         case acrossFillStatuses = "across_fill_statuses"
+        case cctpV2FillStatuses = "cctp_v2_fill_statuses"
         case tokenWrapperQuotes = "token_wrapper_quotes"
     }
 
@@ -64,6 +66,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
         morphoRewardPositions: [MorphoRewardPosition],
         quarkNonceStatuses: [QuarkNonceStatus] = [],
         acrossFillStatuses: [AcrossFillStatus] = [],
+        cctpV2FillStatuses: [CctpV2FillStatus] = [],
         tokenWrapperQuotes: [TokenWrapperQuote] = []
     ) {
         self.wallets = wallets
@@ -78,6 +81,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
         self.morphoRewardPositions = morphoRewardPositions
         self.quarkNonceStatuses = quarkNonceStatuses
         self.acrossFillStatuses = acrossFillStatuses
+        self.cctpV2FillStatuses = cctpV2FillStatuses
         self.tokenWrapperQuotes = tokenWrapperQuotes
 
         let chain = Network.fromChainId(UInt(chainId))
@@ -156,6 +160,10 @@ public struct Portfolio: Codable, Equatable, Sendable {
             [AcrossFillStatus].self,
             forKey: .acrossFillStatuses
         )
+        let cctpV2FillStatuses = try container.decodeIfPresent(
+            [CctpV2FillStatus].self,
+            forKey: .cctpV2FillStatuses
+        ) ?? []
         let tokenWrapperQuotes = try container.decode(
             [TokenWrapperQuote].self,
             forKey: .tokenWrapperQuotes
@@ -174,6 +182,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
             morphoRewardPositions: morphoRewardPositions,
             quarkNonceStatuses: quarkNonceStatuses,
             acrossFillStatuses: acrossFillStatuses,
+            cctpV2FillStatuses: cctpV2FillStatuses,
             tokenWrapperQuotes: tokenWrapperQuotes
         )
     }
@@ -1610,6 +1619,24 @@ public struct Portfolio: Codable, Equatable, Sendable {
         enum CodingKeys: String, CodingKey {
             case quarkWallet = "quark_wallet"
             case relayHash = "relay_hash"
+            case filled
+        }
+    }
+
+    public struct CctpV2FillStatus: Codable, Equatable, Sendable {
+        public let quarkWallet: EthAddress
+        public let burnTransactionHash: Hex
+        public let filled: Bool
+
+        public init(quarkWallet: EthAddress, burnTransactionHash: Hex, filled: Bool) {
+            self.quarkWallet = quarkWallet
+            self.burnTransactionHash = burnTransactionHash
+            self.filled = filled
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case quarkWallet = "quark_wallet"
+            case burnTransactionHash = "burn_transaction_hash"
             case filled
         }
     }
