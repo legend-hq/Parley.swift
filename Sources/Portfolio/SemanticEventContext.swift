@@ -1207,7 +1207,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
         public let bridge: String
         public let depositId: Number?
         public let relayHash: Hex?
-        public let sourceDomain: UInt32?
+        public let sourceChainId: UInt64?
         public let nonce: Hex?
 
         public init(
@@ -1221,7 +1221,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
             bridge: String,
             depositId: Number?,
             relayHash: Hex?,
-            sourceDomain: UInt32? = nil,
+            sourceChainId: UInt64? = nil,
             nonce: Hex? = nil
         ) {
             self.token = token
@@ -1234,7 +1234,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
             self.bridge = bridge
             self.depositId = depositId
             self.relayHash = relayHash
-            self.sourceDomain = sourceDomain
+            self.sourceChainId = sourceChainId
             self.nonce = nonce
         }
 
@@ -1249,7 +1249,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
             case bridge
             case depositId = "deposit_id"
             case relayHash = "relay_hash"
-            case sourceDomain = "source_domain"
+            case sourceChainId = "source_chain_id"
             case nonce
         }
 
@@ -1270,7 +1270,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
 
             self.relayHash = try container.decodeIfPresent(Hex.self, forKey: .relayHash)
             self.depositId = try container.decodeIfPresent(Number.self, forKey: .depositId)
-            self.sourceDomain = try container.decodeIfPresent(UInt32.self, forKey: .sourceDomain)
+            self.sourceChainId = try container.decodeIfPresent(UInt64.self, forKey: .sourceChainId)
             self.nonce = try container.decodeIfPresent(Hex.self, forKey: .nonce)
         }
 
