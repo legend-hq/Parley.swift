@@ -525,8 +525,8 @@ extension Folio.CompletionStatusType: StringListCodable {
                 return ["quark_nonce", wallet.hex, nonce.hex]
             case .acrossFill(let wallet, let relayHash):
                 return ["across_fill", wallet.hex, relayHash.hex]
-            case .cctpV2Fill(let wallet, let sourceChainId, let nonce):
-                return ["cctp_v2_fill", wallet.hex, String(sourceChainId), nonce.hex]
+            case .cctpV2Fill(let wallet, let nonce):
+                return ["cctp_v2_fill", wallet.hex, nonce.hex]
         }
     }
 
@@ -557,17 +557,14 @@ extension Folio.CompletionStatusType: StringListCodable {
                 )
 
             case "cctp_v2_fill":
-                guard values.count >= 4 else {
-                    throw StringListCodableError.insufficientValues(expected: 4, got: values.count)
+                guard values.count >= 3 else {
+                    throw StringListCodableError.insufficientValues(expected: 3, got: values.count)
                 }
                 let wallet = try EthAddress.fromString(values[1])
-                guard let sourceChainId = UInt64(values[2]) else {
-                    throw StringListCodableError.unknownDiscriminator(values[2])
-                }
-                let nonce = Hex(stringLiteral: values[3])
+                let nonce = Hex(stringLiteral: values[2])
                 return (
-                    .cctpV2Fill(wallet: wallet, sourceChainId: sourceChainId, nonce: nonce),
-                    Array(values.dropFirst(4))
+                    .cctpV2Fill(wallet: wallet, nonce: nonce),
+                    Array(values.dropFirst(3))
                 )
 
             default:

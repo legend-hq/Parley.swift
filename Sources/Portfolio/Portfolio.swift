@@ -1626,20 +1626,17 @@ public struct Portfolio: Codable, Equatable, Sendable {
 
     public struct CctpV2FillStatus: Codable, Equatable, Sendable {
         public let quarkWallet: EthAddress
-        public let sourceChainId: UInt64
         public let nonce: Hex
         public let filled: Bool
 
-        public init(quarkWallet: EthAddress, sourceChainId: UInt64, nonce: Hex, filled: Bool) {
+        public init(quarkWallet: EthAddress, nonce: Hex, filled: Bool) {
             self.quarkWallet = quarkWallet
-            self.sourceChainId = sourceChainId
             self.nonce = nonce
             self.filled = filled
         }
 
         enum CodingKeys: String, CodingKey {
             case quarkWallet = "quark_wallet"
-            case sourceChainId = "source_chain_id"
             case nonce
             case filled
         }

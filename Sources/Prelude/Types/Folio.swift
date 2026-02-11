@@ -230,7 +230,7 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
     public enum CompletionStatusType: Codable, Equatable, Hashable, Sendable {
         case quarkNonce(wallet: EthAddress, nonce: Hex)
         case acrossFill(wallet: EthAddress, relayHash: Hex)
-        case cctpV2Fill(wallet: EthAddress, sourceChainId: UInt64, nonce: Hex)
+        case cctpV2Fill(wallet: EthAddress, nonce: Hex)
     }
 }
 

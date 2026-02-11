@@ -300,11 +300,11 @@ public struct ActivityMetadata: Codable, Equatable, Sendable {
 
     /// Returns whether or not this activity metadata is a CCTPv2 bridge which is filled in the given portfolio.
     /// Note: returns nil when that state is unknown (i.e. because the cctp_v2 fill status is not included in the portfolio)
-    /// Note: returns nil if we don't have a source chain id and nonce for this activity metadata.
+    /// Note: returns nil if we don't have a nonce for this activity metadata.
     public func isCctpV2BridgeFilled(inPortfolio portfolio: Portfolio) -> Bool? {
-        if let cctpV2SourceChainId, let cctpV2Nonce {
+        if let cctpV2Nonce {
             for status in portfolio.cctpV2FillStatuses {
-                if status.sourceChainId == cctpV2SourceChainId && status.nonce == cctpV2Nonce {
+                if status.nonce == cctpV2Nonce {
                     return status.filled
                 }
             }
