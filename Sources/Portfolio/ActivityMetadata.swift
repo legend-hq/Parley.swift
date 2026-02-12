@@ -274,6 +274,25 @@ public struct ActivityMetadata: Codable, Equatable, Sendable {
         }
     }
 
+    /// Returns whether or not this activity metadata is a CCTPv2 bridge which is filled in the given portfolio.
+    /// Note: returns nil when that state is unknown (i.e. because the cctp_v2 fill status is not included in the portfolio)
+    /// Note: returns nil if we don't have a transaction hash for this activity metadata.
+    public func isCctpV2BridgeFilled(inPortfolio portfolio: Portfolio) -> Bool? {
+        guard let bridgeActionContext,
+              bridgeActionContext.bridgeType == .cctpV2,
+              let transactionHash
+        else {
+            return nil
+        }
+
+        for status in portfolio.cctpV2FillStatuses {
+            if status.burnTransactionHash == transactionHash {
+                return status.filled
+            }
+        }
+        return nil
+    }
+
     public func shouldPatchPortfolio(_ portfolio: Portfolio) -> Bool {
         guard revertedAt == nil else {
             return false
