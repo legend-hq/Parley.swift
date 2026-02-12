@@ -2,7 +2,7 @@ import Foundation
 
 extension String {
     /// Split a path string on unescaped forward slashes
-    fileprivate func splitPath() -> [String] {
+    func splitPath() -> [String] {
         var components: [String] = []
         var current = ""
         var escaped = false

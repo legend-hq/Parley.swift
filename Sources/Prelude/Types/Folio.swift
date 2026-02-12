@@ -12,6 +12,7 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
     @PathDict public var bridgeHints: [BridgeHintType: BridgeHint]
     @PathDict public var hexData: [HexDataType: Hex]
     @PathDict public var completionStatuses: [CompletionStatusType: Bool]
+    @PathDict public var patches: [CompletionStatusType: [Patch]]
 
     public init(
         balances: [BalanceType: Amount] = [:],
@@ -22,7 +23,8 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         swapHints: [SwapHintType: SwapHint] = [:],
         bridgeHints: [BridgeHintType: BridgeHint] = [:],
         hexData: [HexDataType: Hex] = [:],
-        completionStatuses: [CompletionStatusType: Bool] = [:]
+        completionStatuses: [CompletionStatusType: Bool] = [:],
+        patches: [CompletionStatusType: [Patch]] = [:]
     ) {
         self.balances = balances
         self.prices = prices
@@ -33,6 +35,7 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         self.bridgeHints = bridgeHints
         self.hexData = hexData
         self.completionStatuses = completionStatuses
+        self.patches = patches
     }
 
     public enum BalanceType: Codable, Equatable, Hashable, Sendable {
@@ -64,13 +67,13 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
     public struct YieldMarket: Codable, Equatable, Hashable, Sendable {
         @Scientific public var supplyApr: Percentage
         @Scientific public var supplyRewardsApr: Percentage
-        @ScientificNil public var supplyCap: Percentage?
+        @ScientificNil public var supplyCap: Amount?
         @Scientific public var totalSupply: Amount
 
         public init(
             supplyApr: Percentage,
             supplyRewardsApr: Percentage,
-            supplyCap: Percentage?,
+            supplyCap: Amount?,
             totalSupply: Amount
         ) {
             self.supplyApr = supplyApr
@@ -232,6 +235,39 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         case acrossFill(wallet: EthAddress, relayHash: Hex)
         case cctpV2Fill(wallet: EthAddress, nonce: Hex)
     }
+
+    public struct Patch: Equatable, Hashable, Sendable {
+        public var target: BalanceType
+        public var delta: SignedAmount
+        public var operationId: Hex?
+        public var metadata: PatchMetadata?
+
+        public init(
+            target: BalanceType,
+            delta: SignedAmount,
+            operationId: Hex? = nil,
+            metadata: PatchMetadata? = nil
+        ) {
+            self.target = target
+            self.delta = delta
+            self.operationId = operationId
+            self.metadata = metadata
+        }
+    }
+
+    public struct PatchMetadata: Codable, Equatable, Hashable, Sendable {
+        public var operationType: OperationType?
+        public var estimatedEta: Int?
+
+        public init(operationType: OperationType? = nil, estimatedEta: Int? = nil) {
+            self.operationType = operationType
+            self.estimatedEta = estimatedEta
+        }
+    }
+
+    public enum OperationType: String, Codable, Equatable, Hashable, Sendable {
+        case slowRefund = "slow_refund"
+    }
 }
 
 // MARK: - CodingKeys for snake_case JSON
@@ -247,6 +283,7 @@ extension Folio {
         case bridgeHints = "bridge_hints"
         case hexData = "hex_data"
         case completionStatuses = "completion_statuses"
+        case patches
     }
 }
 
@@ -296,6 +333,48 @@ extension Folio.BridgeHint {
         case estimatedFillTimeSec = "estimated_fill_time_sec"
         case fixedCost = "fixed_cost"
         case rate
+    }
+}
+
+// MARK: - Custom Codable for Patch
+
+extension Folio.Patch: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case target, delta
+        case operationId = "operation_id"
+        case metadata
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let targetPath = try container.decode(String.self, forKey: .target)
+        let components = targetPath.splitPath()
+        let (target, _) = try Folio.BalanceType.fromStringList(components)
+        self.target = target
+
+        let deltaStr = try container.decode(String.self, forKey: .delta)
+        self.delta = try SignedAmount(scientificString: deltaStr)
+
+        self.operationId = try container.decodeIfPresent(Hex.self, forKey: .operationId)
+        self.metadata = try container.decodeIfPresent(Folio.PatchMetadata.self, forKey: .metadata)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let pathComponents = target.toStringList().map { $0.escapingSlashes() }
+        try container.encode(pathComponents.joined(separator: "/"), forKey: .target)
+        try container.encode(delta.scientific, forKey: .delta)
+        try container.encodeIfPresent(operationId, forKey: .operationId)
+        try container.encodeIfPresent(metadata, forKey: .metadata)
+    }
+}
+
+// MARK: - CodingKeys for PatchMetadata
+
+extension Folio.PatchMetadata {
+    private enum CodingKeys: String, CodingKey {
+        case operationType = "operation_type"
+        case estimatedEta = "estimated_eta"
     }
 }
 

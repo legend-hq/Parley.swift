@@ -791,6 +791,7 @@
   "bridge_hints": {},
   "completion_statuses": {},
   "hex_data": {},
+  "patches": {},
   "prices": {
     "token/ezETH": "2585.17579594",
     "token/wsteth": "3058.51",

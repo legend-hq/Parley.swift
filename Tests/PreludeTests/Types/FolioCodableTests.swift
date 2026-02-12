@@ -41,6 +41,9 @@ struct FolioCodableTests {
               "hex_data" : {
 
               },
+              "patches" : {
+
+              },
               "prices" : {
 
               },
@@ -97,6 +100,9 @@ struct FolioCodableTests {
               "hex_data" : {
 
               },
+              "patches" : {
+
+              },
               "prices" : {
 
               },
@@ -151,7 +157,7 @@ struct FolioCodableTests {
                 .aave(network: .base, pool: pool, underlyingSymbol: "USDC"): Folio.YieldMarket(
                     supplyApr: Percentage(fromBps: Number("250")),  // 2.5%
                     supplyRewardsApr: Percentage(fromBps: Number("100")),  // 1%
-                    supplyCap: Percentage(fromBps: Number("9500")),  // 95%
+                    supplyCap: Amount("9500000000", decimals: 6),
                     totalSupply: Amount("1000000000", decimals: 6)
                 )
             ]
@@ -166,7 +172,7 @@ struct FolioCodableTests {
         // Check scientific encoding of values
         #expect(json.contains("\"supply_apr\" : \"0.025\""))
         #expect(json.contains("\"supply_rewards_apr\" : \"0.01\""))
-        #expect(json.contains("\"supply_cap\" : \"0.95\""))
+        #expect(json.contains("\"supply_cap\" : \"9500e6\""))
         #expect(json.contains("\"total_supply\" : \"1000e6\""))  // Should use scientific notation
 
         let decoded = try decoder.decode(Folio.self, from: data)
@@ -457,6 +463,9 @@ struct FolioCodableTests {
               },
               "hex_data" : {
                 "nonce_secret/base/0x00000000000000000000000000000000000a11ce" : "0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe"
+              },
+              "patches" : {
+
               },
               "prices" : {
                 "token/USDC" : "1"
