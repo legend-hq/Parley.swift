@@ -1628,17 +1628,20 @@ public struct Portfolio: Codable, Equatable, Sendable {
         public let quarkWallet: EthAddress
         public let nonce: Hex
         public let filled: Bool
+        public let burnTransactionHash: Hex
 
-        public init(quarkWallet: EthAddress, nonce: Hex, filled: Bool) {
+        public init(quarkWallet: EthAddress, nonce: Hex, filled: Bool, burnTransactionHash: Hex) {
             self.quarkWallet = quarkWallet
             self.nonce = nonce
             self.filled = filled
+            self.burnTransactionHash = burnTransactionHash
         }
 
         enum CodingKeys: String, CodingKey {
             case quarkWallet = "quark_wallet"
             case nonce
             case filled
+            case burnTransactionHash = "burn_transaction_hash"
         }
     }
 
