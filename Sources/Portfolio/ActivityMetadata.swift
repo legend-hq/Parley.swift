@@ -282,13 +282,19 @@ public struct ActivityMetadata: Codable, Equatable, Sendable {
               bridgeActionContext.bridgeType == .cctpV2,
               let transactionHash
         else {
+            print("[CCTPv2 DEBUG] isCctpV2BridgeFilled: guard failed — bridgeActionContext=\(String(describing: self.bridgeActionContext)), bridgeType=\(String(describing: self.bridgeActionContext?.bridgeType)), transactionHash=\(String(describing: self.transactionHash))")
             return nil
         }
+
+        print("[CCTPv2 DEBUG] isCctpV2BridgeFilled: chain=\(portfolio.chain.chainId), transactionHash=\(transactionHash), fillStatuses count=\(portfolio.cctpV2FillStatuses.count)")
         for status in portfolio.cctpV2FillStatuses {
+            print("[CCTPv2 DEBUG]   status: wallet=\(status.quarkWallet), nonce=\(status.nonce), filled=\(status.filled), burnTxHash=\(status.burnTransactionHash)")
             if status.burnTransactionHash == transactionHash {
+                print("[CCTPv2 DEBUG]   MATCHED! filled=\(status.filled)")
                 return status.filled
             }
         }
+        print("[CCTPv2 DEBUG]   NO MATCH found for transactionHash=\(transactionHash)")
         return nil
     }
 
