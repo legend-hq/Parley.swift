@@ -150,7 +150,7 @@ public class PortfolioState {
                     currentSupply + amount.amount
             // Cases that don't affect portfolio state are ignored
             case .quote, .prices, .acrossQuote, .acrossQuoteWithMin, .acrossQuoteWithMax, .cometBorrowCapacity, .morphoBorrowCapacity, .cctpV2Quote,
-                .cctpV2QuoteWithMin:
+                .cctpV2QuoteWithMin, .swapHint:
                 break
         }
     }

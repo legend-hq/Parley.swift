@@ -85,6 +85,17 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
     // This shadow node acts as a single target point where all claimed reward tokens converge,
     // solving Tradewinds' single-commodity limitation for multi-token reward claims.
     case rewardSettlement(wallet: EthAddress)
+    // Virtual aggregation node for swap settlement in Tradewinds flow optimization.
+    // This shadow node enables cross-chain swap target aggregation, allowing Tradewinds to
+    // maximize total buyAsset received across all chains rather than targeting a single chain.
+    case swapSettlement(wallet: EthAddress)
+    // Virtual balance node for aggregating balances across chains with a global constraint.
+    // This node holds the total amount to distribute as its resource.
+    // Routes from this node to each chain's token balance have maxFlow = that chain's actual balance.
+    // Token balances receive flow from this node and pass it to swaps/bridges.
+    // For exact amounts: resource = amount constrains total flow globally
+    // For max intent: resource = MAX_UINT_256 (no constraint)
+    case virtualBalance(symbol: String, wallet: EthAddress)
     // Virtual intermediate node for CCTPv2 bridge operation
     // - sourceNetwork: The network where the burn operation occurs (needed for graph uniqueness)
     // - destNetwork: The network where the mint operation executes (this becomes the node's network property)
@@ -128,6 +139,10 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
                 return "CometReward(\(comet))(\(network))(\(token))(\(wallet))"
             case .rewardSettlement(let wallet):
                 return "RewardSettlement(\(wallet))"
+            case .swapSettlement(let wallet):
+                return "SwapSettlement(\(wallet))"
+            case .virtualBalance(let symbol, let wallet):
+                return "VirtualBalance(\(symbol))(\(wallet))"
             case .cctpBridge(let sourceNetwork, let destNetwork, _, let wallet):
                 return "CCTP Bridge(\(sourceNetwork)->(\(destNetwork))(\(wallet))"
             case .virtualNode(let network, let routeType, let wallet):
@@ -243,6 +258,12 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .rewardSettlement(let wallet):
                 let walletSuffix = String(wallet.address.description.suffix(6))
                 return "RewardSettlement[0x\(walletSuffix)]"
+            case .swapSettlement(let wallet):
+                let walletSuffix = String(wallet.address.description.suffix(6))
+                return "SwapSettlement[0x\(walletSuffix)]"
+            case .virtualBalance(let symbol, let wallet):
+                let walletSuffix = String(wallet.address.description.suffix(6))
+                return "VirtualBalance[\(symbol)][0x\(walletSuffix)]"
             case .cctpBridge(let sourceNetwork, let destNetwork, _, let wallet):
                 let walletSuffix = String(wallet.address.description.suffix(6))
                 return "CCTP Bridge[\(sourceNetwork)->(\(destNetwork))][0x\(walletSuffix)]"
@@ -269,6 +290,8 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .morphoReward(_, _, _, let wallet): wallet
             case .cometReward(_, _, _, let wallet): wallet
             case .rewardSettlement(let wallet): wallet
+            case .swapSettlement(let wallet): wallet
+            case .virtualBalance(_, let wallet): wallet
             case .loopVenue(_, _, _, _, let wallet): wallet
             case .cctpBridge(_, _, _, let wallet): wallet
             case .virtualNode(_, _, let wallet): wallet
@@ -293,6 +316,8 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .morphoReward(let network, _, _, _): network
             case .cometReward(let network, _, _, _): network
             case .rewardSettlement: nil
+            case .swapSettlement: nil
+            case .virtualBalance: nil  // Virtual node, no network
             case .cctpBridge(_, let destNetwork, _, _): destNetwork
             case .virtualNode(let network, _, _): network
             case .never: nil
@@ -315,6 +340,8 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .morphoReward(_, _, let token, _): token
             case .cometReward(_, _, let token, _): token
             case .rewardSettlement(_): nil
+            case .swapSettlement(_): nil
+            case .virtualBalance: nil  // Virtual node, no asset address
             case .cctpBridge(_, _, let destAsset, _): destAsset
             case .virtualNode(_, _, _): nil
             case .never: nil

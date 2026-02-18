@@ -397,6 +397,11 @@ extension Folio.SwapHintType: StringListCodable {
                     "wrapper", underlyingNetwork.networkIdent, underlyingSymbol,
                     wrappedNetwork.networkIdent, wrappedSymbol,
                 ]
+            case .swap(let network, let sellSymbol, let buySymbol, let venue, let tierAmount):
+                return [
+                    "swap", network.networkIdent, sellSymbol, buySymbol, venue,
+                    tierAmount.description,
+                ]
         }
     }
 
@@ -420,6 +425,25 @@ extension Folio.SwapHintType: StringListCodable {
                         wrappedSymbol: values[4]
                     ),
                     Array(values.dropFirst(5))
+                )
+
+            case "swap":
+                guard values.count >= 6 else {
+                    throw StringListCodableError.insufficientValues(expected: 6, got: values.count)
+                }
+                let network = try Network(fromIdent: values[1])
+                guard let tierAmount = Number(values[5]) else {
+                    throw StringListCodableError.invalidFormat("Invalid tierAmount: \(values[5])")
+                }
+                return (
+                    .swap(
+                        network: network,
+                        sellSymbol: values[2],
+                        buySymbol: values[3],
+                        venue: values[4],
+                        tierAmount: tierAmount
+                    ),
+                    Array(values.dropFirst(6))
                 )
 
             default:

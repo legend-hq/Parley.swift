@@ -58,6 +58,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         folio: Folio,
         blockTimestamp: Number,
         isCappedMax: Bool,
+        displayInfo: DisplayInfo?,
         logger: Charter.Logger?
     ) -> Result<
         [Charter.QuarkOperationBuilder.ImmedatiateOperationDetails], Charter.CharterError
@@ -66,6 +67,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
             folio: folio,
             blockTimestamp: blockTimestamp,
             isCappedMax: isCappedMax,
+            displayInfo: displayInfo,
             logger: logger
         )
 
@@ -144,6 +146,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         folio: Folio,
         blockTimestamp: Number,
         isCappedMax: Bool,
+        displayInfo: DisplayInfo?,
         logger: Charter.Logger?
     ) -> Result<
         [Charter.QuarkOperationBuilder.ImmedatiateOperationDetails], Charter.CharterError
@@ -381,8 +384,8 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 let feeToken,
                 let feeAmount,
                 let isExactOut,
-                let isBuy,
-                let isCappedMax
+                let isCappedMax,
+                _  // venue
             ):
                 guard case .success(let sourceNetwork) = sourceNetworkRes else {
                     return .failure(sourceNetworkRes.asFailure)
@@ -423,28 +426,18 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(.error("Fee asset not supported: \(feeToken)"))
                 }
 
-                let actualSellAmount: Number
-                let actualBuyAmount: Number
-                let actualFeeAmount: Number
-
-                if isCappedMax {
-                    actualSellAmount = self.amountLessInFee
-
-                    // Scale buyAmount (matches QuarkBuilder; respects user's minimum output guarantee)
-                    // Note: LegendApp always sets buyAmount == swapQuoteBuyAmount (both from swapQuote.buyAmount.underlying)
-                    actualBuyAmount = Number(
-                        (SNumber(buyAmount) * SNumber(actualSellAmount))
-                            / SNumber(swapQuoteSellAmount)
-                    )
-                    actualFeeAmount = Number(
-                        (SNumber(feeAmount) * SNumber(actualSellAmount))
-                            / SNumber(swapQuoteSellAmount)
-                    )
-                } else {
-                    actualSellAmount = self.amountLessInFee
-                    actualBuyAmount = buyAmount
-                    actualFeeAmount = feeAmount
-                }
+                // Prorate buyAmount/feeAmount based on actual sell amount vs quoted sell amount.
+                // This handles swap hints where the route's buyAmount represents the full tier capacity,
+                // but we may only be using a portion of the tier.
+                let actualSellAmount = self.amountLessInFee
+                let actualBuyAmount = Number(
+                    (SNumber(buyAmount) * SNumber(actualSellAmount))
+                        / SNumber(swapQuoteSellAmount)
+                )
+                let actualFeeAmount = Number(
+                    (SNumber(feeAmount) * SNumber(actualSellAmount))
+                        / SNumber(swapQuoteSellAmount)
+                )
 
                 return Charter.QuarkOperationBuilder.swap(
                     network: sourceNetwork,
@@ -457,7 +450,8 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     feeToken: feeToken,
                     feeAmount: Amount(actualFeeAmount, decimals: Int(feeAsset.decimals)),
                     isExactOut: isExactOut,
-                    isBuy: isBuy,
+                    // TODO: Is `false` by default correct here?
+                    isBuy: displayInfo?.isBuy ?? false,
                     isCappedMax: isCappedMax,
                     sender: sourceWallet,
                     blockTimestamp: blockTimestamp
@@ -1552,6 +1546,14 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 // Virtual route that generates no operations
                 return .success([])
 
+            case .swapSettlement:
+                // Virtual route that generates no operations
+                return .success([])
+
+            case .balancePassthrough:
+                // Virtual route that generates no operations
+                return .success([])
+
             case .loopLong(
                 let marketId,
                 let exposureAsset,
@@ -1932,6 +1934,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         nonceSecret: Hex,
         blockTimestamp: Number,
         isCappedMax: Bool,
+        displayInfo: DisplayInfo? = nil,
         logger: Charter.Logger?
     ) -> Result<
         [Charter.QuarkOperationAction], Charter.CharterError
@@ -1940,6 +1943,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
             folio: folio,
             blockTimestamp: blockTimestamp,
             isCappedMax: isCappedMax,
+            displayInfo: displayInfo,
             logger: logger
         )
         logger?.log("Intermediate actions: \(String(describing: intermediateActions))")

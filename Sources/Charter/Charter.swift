@@ -385,7 +385,11 @@ public enum Charter {
 
         logger?.log("Flow Result: \(String(describing: flowResult))")
 
-        for flow in flowResult.flows {
+        // Aggregate swap hint flows with the same venue into single operations
+        let aggregatedFlows = SwapHints.aggregateFlows(flowResult.flows)
+        let displayInfo = DisplayInfo.from(intent: intent)
+
+        for flow in aggregatedFlows {
             guard
                 let sourceNetwork = flow.route.source.network,
                 let sourceWallet = flow.route.source.wallet,
@@ -413,6 +417,7 @@ public enum Charter {
                 nonceSecret: nonceSecret,
                 blockTimestamp: blockTimestamp,
                 isCappedMax: intent.isMaxIntent,
+                displayInfo: displayInfo,
                 logger: logger
             )
             {

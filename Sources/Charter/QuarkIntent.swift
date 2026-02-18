@@ -32,6 +32,7 @@ extension Charter {
             case supply(SupplyIntent)
             case swapAndSupply(SwapAndSupplyIntent)
             case swap(SwapIntent)
+            case swapV2(SwapIntentV2)
             case transfer(TransferIntent)
             case unloopLong(UnloopLongIntent)
             case unloopShort(UnloopShortIntent)
@@ -60,6 +61,7 @@ extension Charter {
                     case .supply: return "supply"
                     case .swapAndSupply: return "swap_and_supply"
                     case .swap: return "swap"
+                    case .swapV2: return "swap_v2"
                     case .transfer: return "transfer"
                     case .unloopLong: return "unloop_long"
                     case .unloopShort: return "unloop_short"
@@ -146,6 +148,8 @@ extension Charter {
                         return swapAndSupplyIntent.supplyIntent.amount.isMaxUint256
                     case .swap(let swapIntent):
                         return swapIntent.sellAmount.isMaxUint256
+                    case .swapV2(let swapIntentV2):
+                        return swapIntentV2.sellAmount.isMaxUint256
                     case .unloopLong(let unloopLongIntent):
                         return unloopLongIntent.exposureAmount.isMaxUint256
                     case .unloopShort(let unloopShortIntent):
@@ -497,6 +501,16 @@ extension Charter {
                                 isBuy: swapIntent.isBuy
                             )
                         )
+                    case .swapV2(let swapIntentV2):
+                        return .swapV2(
+                            SwapIntentV2(
+                                sellAssetSymbol: swapIntentV2.sellAssetSymbol,
+                                buyAssetSymbol: swapIntentV2.buyAssetSymbol,
+                                sellAmount: Number.MAX_UINT_256,
+                                sender: swapIntentV2.sender,
+                                isBuy: swapIntentV2.isBuy
+                            )
+                        )
                     case .unloopLong(let unloopLongIntent):
                         return .unloopLong(
                             UnloopLongIntent(
@@ -628,6 +642,8 @@ extension Charter {
                     try recurringSwapIntent.encode(to: encoder)
                 case .swap(let swapIntent):
                     try swapIntent.encode(to: encoder)
+                case .swapV2(let swapIntentV2):
+                    try swapIntentV2.encode(to: encoder)
                 case .swapAndSupply(let swapAndSupplyIntent):
                     try swapAndSupplyIntent.encode(to: encoder)
                 case .supply(let supplyIntent):
@@ -691,6 +707,8 @@ extension Charter {
                     self.type = try .swapAndSupply(SwapAndSupplyIntent(from: decoder))
                 case "swap":
                     self.type = try .swap(SwapIntent(from: decoder))
+                case "swap_v2":
+                    self.type = try .swapV2(SwapIntentV2(from: decoder))
                 case "transfer":
                     self.type = try .transfer(TransferIntent(from: decoder))
                 case "unloop_long":
@@ -752,6 +770,8 @@ extension Charter {
                     return "Swap and Supply Intent: \(intent)"
                 case .swap(let intent):
                     return "Swap Intent: \(intent)"
+                case .swapV2(let intent):
+                    return "Swap V2 Intent: \(intent)"
                 case .transfer(let intent):
                     return "Transfer Intent: \(intent)"
                 case .unloopLong(let intent):
@@ -1623,6 +1643,41 @@ extension Charter {
             self.feeAmount = feeAmount
             self.sender = sender
             self.isExactOut = isExactOut
+            self.isBuy = isBuy
+        }
+    }
+
+    /// Swap intent that uses Folio-based swap hints for multi-chain execution.
+    /// Swap routes and rates come from Folio swap hints rather than a single quote.
+    /// Supports exact-in (specific sellAmount) or max (sellAmount = maxUint256) modes.
+    public struct SwapIntentV2: Equatable, Codable, Hashable, Sendable {
+        public let sellAssetSymbol: String
+        public let buyAssetSymbol: String
+        /// Exact amount to sell, or maxUint256 for "sell all available balance".
+        public let sellAmount: Number
+        public let sender: EthAddress
+        /// Display preference: true if UI shows buy asset as primary.
+        public let isBuy: Bool
+
+        public enum CodingKeys: String, CodingKey {
+            case sellAssetSymbol = "sell_asset_symbol"
+            case buyAssetSymbol = "buy_asset_symbol"
+            case sellAmount = "sell_amount"
+            case sender
+            case isBuy = "is_buy"
+        }
+
+        public init(
+            sellAssetSymbol: String,
+            buyAssetSymbol: String,
+            sellAmount: Number,
+            sender: EthAddress,
+            isBuy: Bool
+        ) {
+            self.sellAssetSymbol = sellAssetSymbol
+            self.buyAssetSymbol = buyAssetSymbol
+            self.sellAmount = sellAmount
+            self.sender = sender
             self.isBuy = isBuy
         }
     }

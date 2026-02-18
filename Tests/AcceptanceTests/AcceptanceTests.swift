@@ -1573,6 +1573,13 @@ indirect enum When: Sendable {
         isShort: Bool,
         on: Network
     )
+    case swapV2(
+        from: TestHelpers.Account,
+        sellAssetSymbol: String,
+        buyAssetSymbol: String,
+        sellAmount: Number,
+        isBuy: Bool = true
+    )
     case payWith(currency: TestHelpers.Token, When)
 
     var sender: TestHelpers.Account {
@@ -1620,6 +1627,8 @@ indirect enum When: Sendable {
             case .addBackingToken(let from, _, _, _, _, _):
                 return from
             case .withdrawBackingToken(let from, _, _, _, _, _):
+                return from
+            case .swapV2(let from, _, _, _, _):
                 return from
             case .payWith(_, let action):
                 return action.sender
@@ -1974,6 +1983,21 @@ class Context {
                                 sender: from.address,
                                 isExactOut: false,
                                 isBuy: true,
+                            )
+                        ),
+                        blockTimestamp: Number(1_000_000)
+                    )
+                )
+            case .swapV2(let from, let sellAssetSymbol, let buyAssetSymbol, let sellAmount, let isBuy):
+                return try runMercatorIntent(
+                    .init(
+                        type: .swapV2(
+                            Charter.SwapIntentV2(
+                                sellAssetSymbol: sellAssetSymbol,
+                                buyAssetSymbol: buyAssetSymbol,
+                                sellAmount: sellAmount,
+                                sender: from.address,
+                                isBuy: isBuy
                             )
                         ),
                         blockTimestamp: Number(1_000_000)

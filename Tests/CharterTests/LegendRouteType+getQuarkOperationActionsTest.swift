@@ -15,6 +15,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     let alice: EthAddress = "0x00000000000000000000000000000000000a11ce"
     let bob: EthAddress = "0x0000000000000000000000000000000000000b0b"
 
+    let nonceSecret: Hex = "0x112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00"
+
     @Test("Simple token transfer action - direct call")
     func testDirectCallTokenTransfer() {
         let folio = Folio(
@@ -23,6 +25,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
+            ],
+            hexData: [
+                .nonceSecret(network: .base, wallet: alice): nonceSecret
             ]
         )
 
@@ -52,9 +57,10 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let actual = flow.getQuarkOperationActions(
             folio: folio,
-            nonceSecret: "0x112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00",
+            nonceSecret: nonceSecret,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil
         )
 
@@ -62,7 +68,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             [
                 .init(
                     operation: Charter.Chart.QuarkOperation(
-                        nonce: "0x112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00",
+                        nonce: nonceSecret,
                         isReplayable: false,
                         scriptAddress: Create2.getScriptAddress(TransferActions.creationCode),
                         scriptSources: [],
@@ -88,8 +94,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 token: BaseNetwork.Assets.USDC.assetAddress
                             )
                         ),
-                        nonceSecret:
-                            "0x112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00",
+                        nonceSecret: nonceSecret,
                         totalPlays: 1,
                         executionType: .immediate
                     )
@@ -138,6 +143,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil
         )
         let expected:
@@ -215,6 +221,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // transferOut uses the same implementation as tokenTransfer
@@ -291,6 +298,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil
         )
         let expected:
@@ -403,6 +411,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil
         )
         let expected:
@@ -498,6 +507,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -569,6 +579,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -641,6 +652,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -695,7 +707,6 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                 feeToken: BaseNetwork.Assets.USDC.assetAddress,  // Use USDC as fee token
                 feeAmount: Number(0),
                 isExactOut: false,
-                isBuy: false,
                 isCappedMax: false
             ),
             source: TradewindsLegendNode.tokenBalance(
@@ -724,6 +735,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let outputAmount = Number("0.163333333333333333e18")  // ~0.163 ETH (500 USDC * 0.98 / 3000)
@@ -822,6 +834,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -908,6 +921,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -987,6 +1001,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1084,6 +1099,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1174,6 +1190,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1261,6 +1278,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1350,6 +1368,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1436,6 +1455,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1513,6 +1533,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1597,6 +1618,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -1678,6 +1700,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // cometSupplyCollateralAndBorrow uses cometBorrow with collateral arrays
@@ -1769,6 +1792,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // cometRepayAndWithdrawCollateral uses cometRepay with collateral arrays
@@ -1853,6 +1877,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // cometWithdrawCollateral uses cometRepay with zero repay amount
@@ -1941,6 +1966,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // Note: morphoBorrowAsset uses standard morphoBorrow context
@@ -2033,6 +2059,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // Note: morphoRepayAsset uses standard morphoRepay context
@@ -2123,6 +2150,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         // morphoWithdrawCollateralAsset uses MORPHO_REPAY with 0 repay amount
@@ -2219,6 +2247,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2313,6 +2342,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2412,6 +2442,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2526,6 +2557,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2638,6 +2670,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2747,6 +2780,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2843,6 +2877,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
         let expected:
@@ -2940,6 +2975,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
 
@@ -3040,6 +3076,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
 
@@ -3136,6 +3173,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
 
@@ -3241,6 +3279,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             folio: folio,
             blockTimestamp: Number(100_000),
             isCappedMax: false,
+            displayInfo: nil,
             logger: nil as Charter.Logger?
         )
 

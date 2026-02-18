@@ -172,6 +172,16 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
             wrappedNetwork: Network,
             wrappedSymbol: String
         )
+        /// DEX/aggregator swap hint tier.
+        /// tierAmount is the cumulative sell amount at which this tier ends (used as unique key).
+        /// The SwapHint value contains: maxAmount=incremental capacity, exchangeRate=tier rate.
+        case swap(
+            network: Network,
+            sellSymbol: String,
+            buySymbol: String,
+            venue: String,
+            tierAmount: Number
+        )
     }
 
     public struct SwapHint: Codable, Equatable, Hashable, Sendable {

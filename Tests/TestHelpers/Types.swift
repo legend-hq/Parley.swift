@@ -908,4 +908,29 @@ public enum Given: Hashable, Equatable, Sendable {
     case acrossQuoteWithMax(TokenAmount, Double, TokenAmount)
     case cctpV2Quote(TokenAmount, Double)  // Fixed cost, rate
     case cctpV2QuoteWithMin(TokenAmount, Double, TokenAmount)  // Fixed cost, rate, min amount
+    case swapHint(Network, Token, Token, String, Number, TokenAmount, Double)  // network, sellToken, buyToken, venue, tierAmount, capacity, rate
+
+    /// Creates a swap hint. Rate is in human-readable terms (e.g., 0.0003 means 1 USDC = 0.0003 WETH).
+    public static func swapHint(
+        on network: Network,
+        sell sellToken: Token,
+        buy buyToken: Token,
+        venue: String = "0x",
+        capacity: TokenAmount,
+        rate: Double
+    ) -> Given {
+        // Convert human-readable rate to wei-based rate for Percentage.
+        // Rate represents buyWei/sellWei, so we adjust for decimal difference.
+        // Percentage(fromDouble:) will multiply by 10^18 to get the underlying value.
+        let decimalAdjustment = pow(10, Double(buyToken.decimals - sellToken.decimals))
+        return .swapHint(
+            network,
+            sellToken,
+            buyToken,
+            venue,
+            capacity.toAmount.underlying,
+            capacity,
+            rate * decimalAdjustment
+        )
+    }
 }

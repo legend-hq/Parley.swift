@@ -385,6 +385,17 @@ struct FolioCodableTests {
                     minAmount: Amount("100000000", decimals: 6),  // 100 USDC minimum
                     maxAmount: Amount("1000000000", decimals: 6),  // 1000 USDC maximum
                     exchangeRate: Percentage(fromBps: Number("10000"))  // 100%
+                ),
+                .swap(
+                    network: .base,
+                    sellSymbol: "USDC",
+                    buySymbol: "WETH",
+                    venue: "0x",
+                    tierAmount: Number("100000000")  // 100 USDC tier
+                ): Folio.SwapHint(
+                    minAmount: Amount("0", decimals: 6),
+                    maxAmount: Amount("100000000", decimals: 6),  // 100 USDC capacity
+                    exchangeRate: Percentage(fromBps: Number("4"))  // 0.04% (0.0004 ETH/USDC)
                 )
             ],
             bridgeHints: [
@@ -488,6 +499,11 @@ struct FolioCodableTests {
                 }
               },
               "swap_hints" : {
+                "swap/base/USDC/WETH/0x/100000000" : {
+                  "exchange_rate" : "0.0004",
+                  "max_amount" : "100e6",
+                  "min_amount" : "0e6"
+                },
                 "wrapper/base/USDC/base/USDC+" : {
                   "exchange_rate" : "1",
                   "max_amount" : "1000e6",

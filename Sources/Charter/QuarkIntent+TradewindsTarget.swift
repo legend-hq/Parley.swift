@@ -511,6 +511,68 @@ internal func generateRoute(
     return nil
 }
 
+/// Creates token balance nodes and routes for swap hint assets in a single pass.
+/// Nodes enable cross-chain routing to/from swap targets.
+/// Routes represent swap hint tiers (one per tier per hint).
+internal func createSwapHintNodesAndRoutes(
+    folio: Folio,
+    actorWallet: EthAddress,
+    isMaxIntent: Bool
+) -> (nodes: [TradewindsLegendNode], routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]) {
+    var nodes: Set<TradewindsLegendNode> = []
+    var routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] = []
+
+    for (swapHintType, swapHint) in folio.swapHints {
+        guard case .swap(let network, let sellSymbol, let buySymbol, let venue, _) = swapHintType else {
+            continue
+        }
+        let capacity = swapHint.maxAmount?.underlying ?? Number(0)
+        guard sellSymbol != buySymbol && capacity > 0 else { continue }
+
+        guard let atlasNetwork = Atlas.getNetwork(network: network),
+              let sellAsset = atlasNetwork.getAssetBySymbol(sellSymbol),
+              let buyAsset = atlasNetwork.getAssetBySymbol(buySymbol) else {
+            continue
+        }
+
+        let sellNode = TradewindsLegendNode.tokenBalance(
+            network: network, address: sellAsset.assetAddress,
+            symbol: sellSymbol, wallet: actorWallet
+        )
+        let buyNode = TradewindsLegendNode.tokenBalance(
+            network: network, address: buyAsset.assetAddress,
+            symbol: buySymbol, wallet: actorWallet
+        )
+        nodes.insert(sellNode)
+        nodes.insert(buyNode)
+
+        let tierBuyAmount = capacity * swapHint.exchangeRate.underlying.asNumber / Number.pow10(swapHint.exchangeRate.factorScale)
+        let adjustedRate = isMaxIntent ? swapHint.exchangeRate * Charter.SWAP_OUTPUT_BUFFER : swapHint.exchangeRate
+
+        routes.append(makeLegendRoute(
+            type: .swap(
+                buyToken: buyAsset.assetAddress,
+                buyAmount: tierBuyAmount,
+                swapQuoteSellAmount: capacity,
+                swapQuoteBuyAmount: tierBuyAmount,
+                feeToken: sellAsset.assetAddress,
+                feeAmount: Number(0),
+                isExactOut: false,
+                isCappedMax: isMaxIntent,
+                venue: venue
+            ),
+            source: sellNode,
+            sink: buyNode,
+            rate: adjustedRate,
+            minFlow: Number(0),
+            maxFlow: capacity,
+            folio: folio
+        ))
+    }
+
+    return (Array(nodes), routes)
+}
+
 /// Pre-creates CCTP bridge nodes for all valid cross-chain CCTP pairs
 /// These intermediate nodes enable the optimizer to route through CCTP bridges
 internal func createCCTPBridgeNodes(
@@ -563,6 +625,7 @@ internal func generateRoutes(
     actorWallet: EthAddress,
     cappedMaxNodes: Set<TradewindsLegendNode>,
     exactWithdrawalAmounts: [EthAddress: Number] = [:],  // Maps market address to exact withdrawal amount
+    includeSwapHints: Bool = false,  // When true, also generate swap hint routes
     logger: Charter.Logger?
 ) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
     var routes: Set<Tradewinds.Route<TradewindsLegendNode, LegendRouteType>> = []
@@ -573,11 +636,21 @@ internal func generateRoutes(
         folio: folio,
         actorWallet: actorWallet
     )
-    let allNodes = nodes + cctpBridgeNodes
 
-    // Generate routes between all pairs of nodes (including CCTP bridge nodes)
+    // Pre-create swap hint nodes and routes in one pass
+    let (swapHintNodes, swapHintRoutes) = includeSwapHints
+        ? createSwapHintNodesAndRoutes(folio: folio, actorWallet: actorWallet, isMaxIntent: !cappedMaxNodes.isEmpty)
+        : ([], [])
+
+    // Use Set to deduplicate nodes
+    let allNodes: Set<TradewindsLegendNode> = Set(nodes)
+        .union(cctpBridgeNodes)
+        .union(swapHintNodes)
+
+    // Generate routes between all pairs of nodes (including CCTP bridge nodes and swap nodes)
     for sourceNode in allNodes {
         for sinkNode in allNodes where sourceNode != sinkNode {
+            // Generate standard route (wrap, unwrap, bridge, transfer, etc.)
             if let route = generateRoute(
                 sourceNode: sourceNode,
                 sinkNode: sinkNode,
@@ -591,6 +664,11 @@ internal func generateRoutes(
                 routes.insert(route)
             }
         }
+    }
+
+    // Add swap hint routes
+    for route in swapHintRoutes {
+        routes.insert(route)
     }
 
     return Array(routes)
@@ -696,6 +774,49 @@ internal func buildRewardClaimGraph(
     }
 
     return .success((routes: routes, resources: resources, sinkNodes: sinkNodes))
+}
+
+/// Creates a virtual balance node with passthrough routes to actual token balances.
+///
+/// Virtual balances allow constraining total input across multiple chains.
+/// For example, "swap 500 USDC" should use exactly 500 USDC total, regardless of
+/// whether it comes from one chain or is split across several. The virtual node
+/// aggregates all chain balances and applies the constraint at the source.
+internal func createVirtualBalance(
+    symbol: String,
+    wallet: EthAddress,
+    amount: Tradewinds.FlowAmount,
+    tokenBalanceResources: [Tradewinds.Resource<TradewindsLegendNode>]
+) -> (
+    resource: Tradewinds.Resource<TradewindsLegendNode>,
+    routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]
+) {
+    let virtualNode = TradewindsLegendNode.virtualBalance(symbol: symbol, wallet: wallet)
+    let resource = Tradewinds.Resource<TradewindsLegendNode>(amount: amount, node: virtualNode)
+
+    let routes = tokenBalanceResources.compactMap { resourceInfo -> Tradewinds.Route<TradewindsLegendNode, LegendRouteType>? in
+        guard case .tokenBalance(_, _, let tokenSymbol, _) = resourceInfo.node,
+              tokenSymbol == symbol else {
+            return nil
+        }
+        let chainBalance: Number
+        switch resourceInfo.amount {
+        case .exact(let amount):
+            chainBalance = amount
+        case .max:
+            chainBalance = Number.MAX_UINT_256
+        }
+        return Tradewinds.Route(
+            type: .balancePassthrough,
+            source: virtualNode,
+            sink: resourceInfo.node,
+            rate: Percentage.one,
+            minFlow: Number(0),
+            maxFlow: chainBalance
+        )
+    }
+
+    return (resource, routes)
 }
 
 /// Creates the supply venue node for a supply intent
@@ -1355,6 +1476,7 @@ extension Charter.QuarkIntent.Type_ {
                         logger: logger
                     )
             case .swap(let swapIntent):
+                // Quote-based swap: single chain, single token pair
                 let network = Network.fromChainId(swapIntent.chainId)
 
                 // Look up sell asset by address to get its symbol
@@ -1371,6 +1493,10 @@ extension Charter.QuarkIntent.Type_ {
                     return .failure(
                         .unknownAsset(symbol: nil, network: network, address: swapIntent.buyToken)
                     )
+                }
+
+                guard swapIntent.swapQuoteSellAmount > 0 else {
+                    return .failure(.invalidSwapQuoteSellAmountIsZero)
                 }
 
                 // Create factory with the symbol - this ensures we get wrapped variants
@@ -1422,11 +1548,6 @@ extension Charter.QuarkIntent.Type_ {
                     logger: logger
                 )
 
-                // Calculate the exchange rate and flow constraints
-                guard swapIntent.swapQuoteSellAmount > 0 else {
-                    return .failure(.invalidSwapQuoteSellAmountIsZero)
-                }
-
                 let rate = calculateSwapRate(swapIntent: swapIntent, isMaxSell: self.isMaxIntent)
                 let (swapMinFlow, swapMaxFlow) = calculateSwapFlowConstraints(
                     swapIntent: swapIntent,
@@ -1442,7 +1563,6 @@ extension Charter.QuarkIntent.Type_ {
                         feeToken: swapIntent.feeToken,
                         feeAmount: swapIntent.feeAmount,
                         isExactOut: swapIntent.isExactOut,
-                        isBuy: swapIntent.isBuy,
                         isCappedMax: self.isMaxIntent
                     ),
                     source: sellTokenNode,
@@ -1452,7 +1572,6 @@ extension Charter.QuarkIntent.Type_ {
                     maxFlow: swapMaxFlow,
                     folio: folio
                 )
-
                 routes.append(swapRoute)
 
                 // Target differs based on exact-out vs other swap types
@@ -1472,6 +1591,93 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 return .success((routes, resources, target))
+
+            case .swapV2(let swapIntentV2):
+                // Uses Folio swap hints for routing through optimal swap paths.
+
+                let factory = TradewindsResourceFactory(
+                    folio: folio,
+                    primarySymbol: swapIntentV2.sellAssetSymbol,
+                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    actorWallet: swapIntentV2.sender,
+                    network: nil  // All networks
+                )
+                let allResources: [Tradewinds.Resource<TradewindsLegendNode>]
+                switch factory.createAllResources() {
+                case .success(let resources):
+                    allResources = resources
+                case .failure(let error):
+                    logger?.log("Failed to create resources for swap: \(error)")
+                    return .failure(error)
+                }
+
+                // Verify sufficient balance for exact-in intents
+                if !self.isMaxIntent {
+                    let totalAvailableBalance = allResources.reduce(Number(0)) { sum, resource in
+                        if case .tokenBalance(_, _, let symbol, _) = resource.node,
+                           symbol == swapIntentV2.sellAssetSymbol,
+                           case .exact(let amount) = resource.amount {
+                            return sum + amount
+                        }
+                        return sum
+                    }
+
+                    if totalAvailableBalance < swapIntentV2.sellAmount {
+                        return .failure(.insufficientBalance(
+                            symbol: swapIntentV2.sellAssetSymbol,
+                            required: swapIntentV2.sellAmount,
+                            available: totalAvailableBalance
+                        ))
+                    }
+                }
+
+                let virtualBalance = createVirtualBalance(
+                    symbol: swapIntentV2.sellAssetSymbol,
+                    wallet: swapIntentV2.sender,
+                    amount: self.isMaxIntent ? .max : .exact(swapIntentV2.sellAmount),
+                    tokenBalanceResources: allResources
+                )
+
+                let allNodes = Set(allResources.map { $0.node })
+
+                var routes = generateRoutes(
+                    nodes: Array(allNodes),
+                    folio: folio,
+                    userWallets: folio.getRelevantWallets(),
+                    actorWallet: swapIntentV2.sender,
+                    cappedMaxNodes: self.isMaxIntent ? allNodes : Set(),
+                    includeSwapHints: true,
+                    logger: logger
+                )
+                routes.append(contentsOf: virtualBalance.routes)
+
+                // Collect all swap output nodes for the buy asset
+                let targetBuyNodes = Set(routes.compactMap { route -> TradewindsLegendNode? in
+                    if case .swap = route.type, route.sink.symbol == swapIntentV2.buyAssetSymbol {
+                        return route.sink
+                    }
+                    return nil
+                })
+
+                // Route all buy outputs to a single settlement node
+                let settlementNode = TradewindsLegendNode.swapSettlement(wallet: swapIntentV2.sender)
+                for buyNode in targetBuyNodes {
+                    routes.append(Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
+                        type: .swapSettlement,
+                        source: buyNode,
+                        sink: settlementNode,
+                        rate: Percentage.one,
+                        minFlow: Number(0),
+                        maxFlow: Number.MAX_UINT_256
+                    ))
+                }
+
+                let target = Tradewinds.Target<TradewindsLegendNode>(
+                    amount: .max,
+                    node: settlementNode
+                )
+
+                return .success((routes, [virtualBalance.resource], target))
 
             case .cometRepay(let repayIntent):
                 let network = Network.fromChainId(repayIntent.chainId)
@@ -2801,7 +3007,6 @@ extension Charter.QuarkIntent.Type_ {
                         feeToken: swapIntent.feeToken,
                         feeAmount: swapIntent.feeAmount,
                         isExactOut: swapIntent.isExactOut,
-                        isBuy: swapIntent.isBuy,
                         isCappedMax: swapIntent.sellAmount.isMaxUint256
                     ),
                     source: sellTokenNode,
@@ -3083,7 +3288,6 @@ extension Charter.QuarkIntent.Type_ {
                                 feeToken: swapIntent.feeToken,
                                 feeAmount: swapIntent.feeAmount,
                                 isExactOut: swapIntent.isExactOut,
-                                isBuy: swapIntent.isBuy,
                                 isCappedMax: isMaxSell
                             ),
                             source: swapSellTokenNode,

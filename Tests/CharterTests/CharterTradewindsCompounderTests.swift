@@ -95,7 +95,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -231,7 +230,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.WETH.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -363,7 +361,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -498,7 +495,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -676,7 +672,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -865,7 +860,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(
@@ -1272,7 +1266,6 @@ struct CharterTradewindsCompounderTests {
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: "0",
                                     isExactOut: false,
-                                    isBuy: false,
                                     isCappedMax: true
                                 ),
                                 source: .tokenBalance(

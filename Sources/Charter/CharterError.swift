@@ -32,6 +32,7 @@ extension Charter {
         )
         case unknownAsset(symbol: String?, network: Network?, address: EthAddress?)
         case unpricedAsset(symbol: String)
+        case insufficientBalance(symbol: String, required: Number, available: Number)
         case insufficientEarnMarketBalance(
             network: Network,
             market: EthAddress,
@@ -88,6 +89,8 @@ extension Charter {
             case repayAmount = "repay_amount"
             case existingDebt = "existing_debt"
             case repayAsset = "repay_asset"
+            case required
+            case available
         }
 
         public init(from decoder: Decoder) throws {
@@ -223,12 +226,28 @@ extension Charter {
                     self = .noQuarkOperationActions
                 case "unknownError":
                     self = .unknownError
+                case "insufficientBalance":
+                    let symbol = try container.decode(String.self, forKey: .symbol)
+                    let required = try container.decode(Number.self, forKey: .required)
+                    let available = try container.decode(Number.self, forKey: .available)
+                    self = .insufficientBalance(symbol: symbol, required: required, available: available)
                 case "compounderSenderMismatch":
                     self = .compounderSenderMismatch
                 case "compounderTokenMismatch":
                     let expected = try container.decode(String.self, forKey: .expected)
                     let actual = try container.decode(String.self, forKey: .actual)
                     self = .compounderTokenMismatch(expected: expected, actual: actual)
+                case "assetQuoteNotFound":
+                    let symbol = try container.decode(String.self, forKey: .symbol)
+                    self = .assetQuoteNotFound(symbol: symbol)
+                case "invalidSwapQuoteSellAmountIsZero":
+                    self = .invalidSwapQuoteSellAmountIsZero
+                case "swapAndSupplyMustHaveSameSender":
+                    self = .swapAndSupplyMustHaveSameSender
+                case "swapBuyTokenMustMatchSupplyAsset":
+                    let swapBuyToken = try container.decode(String.self, forKey: .swapBuyToken)
+                    let supplyAsset = try container.decode(String.self, forKey: .supplyAsset)
+                    self = .swapBuyTokenMustMatchSupplyAsset(swapBuyToken: swapBuyToken, supplyAsset: supplyAsset)
                 default:
                     throw DecodingError.dataCorruptedError(
                         forKey: .type,
@@ -368,6 +387,11 @@ extension Charter {
                     try container.encode("compounderTokenMismatch", forKey: .type)
                     try container.encode(expected, forKey: .expected)
                     try container.encode(actual, forKey: .actual)
+                case .insufficientBalance(let symbol, let required, let available):
+                    try container.encode("insufficientBalance", forKey: .type)
+                    try container.encode(symbol, forKey: .symbol)
+                    try container.encode(required, forKey: .required)
+                    try container.encode(available, forKey: .available)
             }
         }
     }

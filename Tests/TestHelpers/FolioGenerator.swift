@@ -394,59 +394,6 @@ public func applyGiven(folio: inout Folio, given: Given) {
                     )
                 }
             }
-        case .cctpV2Quote(let fixedCost, let fee):
-            // CCTP v2 is only for USDC transfers
-            for srcNetwork in allNetworks {
-                for dstNetwork in allNetworks {
-                    if srcNetwork == dstNetwork {
-                        continue
-                    }
-                    // Only add CCTP v2 quotes for USDC
-                    if fixedCost.token.symbol == "USDC" {
-                        folio.bridgeHints.updateValue(
-                            .init(
-                                minAmount: Amount(0, decimals: fixedCost.token.decimals),
-                                maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
-                                maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
-                                estimatedFillTimeSec: 8,
-                                fixedCost: fixedCost.toAmount,
-                                rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
-                            ),
-                            forKey: .cctpV2(
-                                networkIn: srcNetwork,
-                                symbolIn: "USDC",
-                                networkOut: dstNetwork,
-                                symbolOut: "USDC"
-                            )
-                        )
-                    }
-                }
-            }
-        case .cctpV2QuoteWithMin(let fixedCost, let fee, let minAmount):
-            // CCTP v2 is only for USDC transfers
-            for srcNetwork in allNetworks {
-                for dstNetwork in allNetworks {
-                    if srcNetwork == dstNetwork {
-                        continue
-                    }
-                    folio.bridgeHints.updateValue(
-                        .init(
-                            minAmount: minAmount.toAmount,
-                            maxAmount: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
-                            maxAmountInstant: Amount(Number.MAX_UINT_256, decimals: fixedCost.token.decimals),
-                            estimatedFillTimeSec: 8,
-                            fixedCost: fixedCost.toAmount,
-                            rate: Percentage(fromDouble: 1.0 - fee)  // Convert fee to rate
-                        ),
-                        forKey: .cctpV2(
-                            networkIn: srcNetwork,
-                            symbolIn: "USDC",
-                            networkOut: dstNetwork,
-                            symbolOut: "USDC"
-                        )
-                    )
-                }
-            }
         case .cometCollateral(let account, let amount, let comet, let network):
             // Handle Comet collateral balances
             folio.balances.updateValue(
@@ -504,5 +451,20 @@ public func applyGiven(folio: inout Folio, given: Given) {
             )
         case .morphoBorrowCapacity:
             break
+        case .swapHint(let network, let sellToken, let buyToken, let venue, let tierAmount, let capacity, let rate):
+            folio.swapHints.updateValue(
+                .init(
+                    minAmount: Amount(0, decimals: sellToken.decimals),
+                    maxAmount: capacity.toAmount,
+                    exchangeRate: Percentage(fromDouble: rate)
+                ),
+                forKey: .swap(
+                    network: network,
+                    sellSymbol: sellToken.symbol,
+                    buySymbol: buyToken.symbol,
+                    venue: venue,
+                    tierAmount: tierAmount
+                )
+            )
     }
 }

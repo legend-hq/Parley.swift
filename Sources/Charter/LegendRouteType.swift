@@ -128,8 +128,11 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
         feeToken: EthAddress,
         feeAmount: Number,
         isExactOut: Bool,
-        isBuy: Bool,
-        isCappedMax: Bool
+        isCappedMax: Bool,
+        /// Optional venue identifier for aggregating parallel swap hint routes.
+        /// Routes with the same (network, sellSymbol, buySymbol, venue) are aggregated into a single operation.
+        /// Nil for V1 swaps (which don't need aggregation).
+        venue: String? = nil
     )
     case loopLong(
         marketId: Hex,
@@ -204,6 +207,15 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
     // Represents the no-op flow from TokenBalance nodes to the RewardSettlement aggregation point.
     // This enables multi-token reward claiming within Tradewinds' single-commodity constraints.
     case rewardSettlement
+    // Virtual route type for cross-chain swap target aggregation in Tradewinds flow optimization.
+    // Represents the no-op flow from TokenBalance nodes to the SwapSettlement aggregation point.
+    // This enables maximizing total buyAsset across all chains rather than targeting a single chain.
+    case swapSettlement
+    // Virtual route type for distributing flow from the virtual balance node to token balances.
+    // Routes from virtualBalance → tokenBalance nodes.
+    // maxFlow = that chain's actual balance, constraining per-chain allocation.
+    // The virtual node's resource constrains total flow globally.
+    case balancePassthrough
 
     public var description: String {
         switch self {
@@ -241,6 +253,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .morphoClaimRewards: return "Morpho Claim Rewards"
             case .cometClaimRewards: return "Comet Claim Rewards"
             case .rewardSettlement: return "Reward Settlement"
+            case .swapSettlement: return "Swap Settlement"
+            case .balancePassthrough: return "Balance Passthrough"
         }
     }
 
@@ -281,6 +295,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .morphoClaimRewards: return "morphoClaimRewards"
             case .cometClaimRewards: return "cometClaimRewards"
             case .rewardSettlement: return "rewardSettlement"
+            case .swapSettlement: return "swapSettlement"
+            case .balancePassthrough: return "balancePassthrough"
         }
     }
 
@@ -331,6 +347,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .morphoClaimRewards: return "Morpho Claim Rewards \(source.label) -> \(sink.label)"
             case .cometClaimRewards: return "Comet Claim Rewards \(source.label) -> \(sink.label)"
             case .rewardSettlement: return "Reward Settlement \(source.label) -> \(sink.label)"
+            case .swapSettlement: return "Swap Settlement \(source.label) -> \(sink.label)"
+            case .balancePassthrough: return "Balance Passthrough \(source.label) -> \(sink.label)"
         }
     }
 
@@ -370,6 +388,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .morphoClaimRewards: 31
             case .cometClaimRewards: 32
             case .rewardSettlement: 33
+            case .swapSettlement: 34
+            case .balancePassthrough: 35
         }
     }
 
@@ -414,6 +434,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .morphoClaimRewards: return "baseline"
             case .cometClaimRewards: return "baseline"
             case .rewardSettlement: return nil
+            case .swapSettlement: return nil
+            case .balancePassthrough: return nil
         }
     }
 }
