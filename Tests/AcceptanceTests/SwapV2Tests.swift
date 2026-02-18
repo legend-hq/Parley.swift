@@ -226,19 +226,24 @@ struct SwapV2Tests {
         )
     }
 
-    // TODO: BUG - This test should expect bridging 100 USDC from Base to Arbitrum for optimal output.
-    // Currently Tradewinds swaps 100 USDC on Base at 0.00025 rate = 0.025 WETH.
-    // Optimal: Bridge 100 USDC to Arb (pays 2 USDC fee), swap 98 USDC at 0.0003 rate = 0.0294 WETH.
-    // The bridge+swap path gives ~17% more output but Tradewinds doesn't explore it.
-    // This may be a graph construction issue (bridge routes not connecting to swap hints)
-    // or a Dijkstra path exploration issue.
-    @Test("SwapV2 exact-in with multi-chain swap hints", .disabled("BUG: Should bridge to better rate chain for optimal routing"))
+    @Test("SwapV2 exact-in with multi-chain swap hints")
     func testSwapV2MultiChain() async throws {
         // Alice has USDC on both Base and Arbitrum
-        // Tradewinds should optimize routing across chains
-        // With 500 USDC limit: uses better rate on Arbitrum (0.0003) first, then Base
-        // Base: 100 * 0.00025 = 0.025 WETH, fee = 0.0000375 WETH
-        // Arbitrum: 400 * 0.0003 = 0.12 WETH, fee = 0.00018 WETH
+        // Tradewinds should optimize routing across chains by bridging to the better rate chain
+        //
+        // Setup:
+        // - Base: 600 USDC, rate 0.00025 WETH/USDC (worse)
+        // - Arbitrum: 400 USDC, rate 0.0003 WETH/USDC (20% better)
+        // - Bridge: 1% fee + 1 USDC fixed cost
+        // - Want to swap 500 USDC total
+        //
+        // Optimal path (chosen by Tradewinds):
+        // 1. Bridge 100 USDC from Base to Arbitrum: pays 1% fee + 1 USDC = receives 98 USDC
+        // 2. Swap 498 USDC (400 existing + 98 bridged) on Arbitrum at better rate
+        //    498 * 0.0003 = 0.1494 WETH (- 2 wei precision)
+        //    Fee: 0.15% of 0.1494 WETH = 0.0002241 WETH
+        //
+        // This gives 0.1494 WETH vs 0.145 WETH if we swapped on both chains separately (~3% more)
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -256,29 +261,29 @@ struct SwapV2Tests {
                     sellAmount: Number("500e6"),
                     isBuy: true
                 ),
-                // Expect swaps on both chains
+                // Optimal: Bridge to Arbitrum then swap all there at better rate
                 expect: .success(
                     .multi([
-                        .swap(
-                            filler: .filler,
-                            sellAmount: .amt(100, .usdc),
-                            buyAmount: .amt(0.025, .weth),
-                            feeAmount: .amt(0.0000375, .weth),
-                            feeRecipient: .stax,
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(100, .usdc),
+                            // Bridge output: 100 * 0.99 - 1 = 98 USDC
+                            outputTokenAmount: .amt(98, .usdc),
                             cappedMax: false,
-                            network: .base,
                             executionType: .immediate
                         ),
                         .swap(
                             filler: .filler,
-                            sellAmount: .amt(400, .usdc),
-                            // 400 * 0.0003 = 0.12 WETH (- 2 wei precision)
-                            buyAmount: .init(fromWei: 119_999_999_999_999_998, ofToken: .weth),
-                            feeAmount: .init(fromWei: 179_999_999_999_999, ofToken: .weth),
+                            sellAmount: .amt(498, .usdc),  // 400 + 98 = 498 USDC
+                            // 498 * 0.0003 = 0.1494 WETH (- 2 wei precision)
+                            buyAmount: .init(fromWei: 149_399_999_999_999_998, ofToken: .weth),
+                            feeAmount: .init(fromWei: 224_099_999_999_999, ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: false,
                             network: .arbitrum,
-                            executionType: .immediate
+                            executionType: .contingent  // Contingent on bridge completing
                         ),
                     ])
                 )

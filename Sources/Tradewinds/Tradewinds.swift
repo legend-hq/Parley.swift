@@ -518,13 +518,15 @@ public enum Tradewinds {
     }
 
     /// Find shortest path from available start nodes to target using Dijkstra's algorithm
+    /// - Parameter allowEarlyTermination: When true, exits immediately upon reaching target (valid only for non-negative cost graphs)
     private static func findShortestPath<Node: TradewindsNode, ID: Hashable & Comparable>(
         graph: [Node: [(route: Route<Node, ID>, cost: Double)]],
         available: [Node: Number],
         target: Node,
         usedCapacity: [String: Number],
         failedRoutes: Set<String>,
-        nodesWithFailedPaths: Set<Node>
+        nodesWithFailedPaths: Set<Node>,
+        allowEarlyTermination: Bool
     ) -> (prev: [SearchNode<Node>: SearchNode<Node>], routes: [SearchNode<Node>: Route<Node, ID>])?
     {
         // State-based Dijkstra: we track distance to each SearchNode.
@@ -574,7 +576,10 @@ public enum Tradewinds {
             if visited.contains(current) { continue }
             visited.insert(current)
 
-            if !current.isRoot && current.node == target {
+            // Early termination is only safe when all edge costs are non-negative.
+            // With negative costs (e.g., -log(rate) when rate > 1), a path through a
+            // "further" node can end up with lower total cost, so we must explore fully.
+            if allowEarlyTermination && current.node == target {
                 break
             }
 
@@ -584,9 +589,7 @@ public enum Tradewinds {
                 if pathNodes.contains(route.sink) { continue }
 
                 // Skip failed routes only when exploring from a root state.
-                if current.isRoot && failedRoutes.contains(route.id) {
-                    continue
-                }
+                if current.isRoot && failedRoutes.contains(route.id) { continue }
 
                 let usedOnRoute = usedCapacity[route.id] ?? Number(0)
                 let remainingCapacity = route.maxFlow - usedOnRoute
@@ -897,10 +900,13 @@ public enum Tradewinds {
            start nodes can contribute further (insufficient resources/capacity).
         */
         // Create adjacency list with deterministic ordering
+        // Track if any edge has negative cost (e.g., swap rates > 1 produce -log(rate) < 0)
         var graph: [Node: [(route: Route<Node, ID>, cost: Double)]] = [:]
+        var hasNegativeCosts = false
         for route in routes {
             // Skip routes with nil cost (infinite cost)
             guard let cost = costFunction(route) else { continue }
+            if cost < 0 { hasNegativeCosts = true }
             graph[route.source, default: []].append((route, cost))
         }
         // Sort adjacency lists for determinism: by cost, then by route ID
@@ -957,6 +963,7 @@ public enum Tradewinds {
         while remainingTarget > Number(0) && iterations < maxIterations {
             iterations += 1
             let previousRemaining = remainingTarget
+
             // Find best path to target using Dijkstra
             guard
                 let shortestPathResult = findShortestPath(
@@ -965,7 +972,8 @@ public enum Tradewinds {
                     target: target,
                     usedCapacity: usedCapacity,
                     failedRoutes: failedRoutes,
-                    nodesWithFailedPaths: nodesWithFailedPaths
+                    nodesWithFailedPaths: nodesWithFailedPaths,
+                    allowEarlyTermination: !hasNegativeCosts
                 )
             else {
                 break  // No path found or no resources available
