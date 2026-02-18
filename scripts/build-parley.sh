@@ -68,11 +68,11 @@ fi
 echo "Building Parley in $CONFIG mode..."
 
 # Check for required swift sdk and provide instructions if missing
-sdk_base_url="https://download.swift.org/swift-6.2-branch/wasm-sdk"
-target_base_sdk="swift-6.2-DEVELOPMENT-SNAPSHOT-2025-09-27-a"
+sdk_base_url="https://download.swift.org/swift-6.2.3-release/wasm-sdk"
+target_base_sdk="swift-6.2.3-RELEASE"
 target_wasm_sdk="${target_base_sdk}_wasm"
 wasm_sdk_url="${sdk_base_url}/${target_base_sdk}/${target_wasm_sdk}.artifactbundle.tar.gz"
-wasm_sdk_checksum="2535f53de0ada00a74bd097d36d94f6b41670b34a877c236850ee28194cb36d2"
+wasm_sdk_checksum="394040ecd5260e68bb02f6c20aeede733b9b90702c2204e178f3e42413edad2a"
 
 if ! grep -q "${target_wasm_sdk}" <(${swiftly} run swift sdk list); then
     echo "Error: Swift SDK ${target_wasm_sdk} not found"
@@ -89,7 +89,9 @@ if [ "$CONFIG" = "release" ]; then
     BUILD_CMD="$BUILD_CMD \
         -Xswiftc -O \
         -Xswiftc -whole-module-optimization \
-        -Xswiftc -cross-module-optimization \
+        # NOTE: -cross-module-optimization removed due to Swift 6.2.3 compiler
+        # crash in SimplifyCFG (trackIfDead assertion in InstructionDeleter.cpp)
+        # when targeting wasm32-unknown-wasip1 with -Osize. Re-enable when fixed.
         -Xswiftc -Osize \
         -Xswiftc -enable-bare-slash-regex \
         -Xswiftc -remove-runtime-asserts \
