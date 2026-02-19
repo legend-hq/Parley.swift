@@ -254,4 +254,23 @@ struct ActionContextEncodingTests {
         // Test equality if ActionContext conforms to Equatable
         #expect(decodedMultiAction == originalMultiAction)
     }
+
+    @Test("Single action round-trip encoding/decoding")
+    func singleActionRoundTrip() throws {
+        let transferAction = Charter.ActionContext.transfer(
+            Charter.ActionContext.TransferActionContext(
+                amount: Number("1e6"),
+                assetSymbol: "USDC",
+                chainId: Number("8453"),
+                price: Number("1e8"),
+                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
+                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913")
+            )
+        )
+
+        let data = try encoder.encode(transferAction)
+        let decoded = try decoder.decode(Charter.ActionContext.self, from: data)
+
+        #expect(decoded == transferAction)
+    }
 }

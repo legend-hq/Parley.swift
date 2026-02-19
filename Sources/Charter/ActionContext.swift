@@ -285,7 +285,13 @@ extension Charter {
 
                     return .multiAction(multiActions)
                 default:
-                    let actionDecoder = try container.superDecoder(forKey: .actionContext)
+                    // Try nested action_context first (API format), fall back to root (cache format)
+                    let actionDecoder: Decoder
+                    if container.contains(.actionContext) {
+                        actionDecoder = try container.superDecoder(forKey: .actionContext)
+                    } else {
+                        actionDecoder = decoder
+                    }
                     return try decodeSingleActionContext(
                         from: actionDecoder,
                         actionType: actionType
