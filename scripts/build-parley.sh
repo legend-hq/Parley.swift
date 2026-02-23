@@ -86,12 +86,13 @@ BUILD_CMD="${swiftly} run swift build --swift-sdk ${target_wasm_sdk} --product P
 # Add aggressive optimizations for release builds
 if [ "$CONFIG" = "release" ]; then
     echo "Applying aggressive optimizations for smaller/faster WASM output..."
+
+    # NOTE: -cross-module-optimization removed due to Swift 6.2.3 compiler
+    # crash in SimplifyCFG (trackIfDead assertion in InstructionDeleter.cpp)
+    # when targeting wasm32-unknown-wasip1 with -Osize. Re-enable when fixed.
     BUILD_CMD="$BUILD_CMD \
         -Xswiftc -O \
         -Xswiftc -whole-module-optimization \
-        # NOTE: -cross-module-optimization removed due to Swift 6.2.3 compiler
-        # crash in SimplifyCFG (trackIfDead assertion in InstructionDeleter.cpp)
-        # when targeting wasm32-unknown-wasip1 with -Osize. Re-enable when fixed.
         -Xswiftc -Osize \
         -Xswiftc -enable-bare-slash-regex \
         -Xswiftc -remove-runtime-asserts \
