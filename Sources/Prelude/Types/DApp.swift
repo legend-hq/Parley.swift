@@ -8,6 +8,7 @@ public enum DApp: String, CaseIterable, Identifiable, Sendable {
     case Aave
     case Across
     case BaseBridge
+    case BridgeXyz
     case CircleBridge
     case Coinbase = "CoinbaseIcon"
     case Compound
@@ -22,6 +23,8 @@ public enum DApp: String, CaseIterable, Identifiable, Sendable {
         switch self {
             case .BaseBridge:
                 "Base Bridge"
+            case .BridgeXyz:
+                "Bridge"
             case .CircleBridge:
                 "Circle CCTP"
             case .Coinbase:
@@ -46,6 +49,8 @@ public enum DApp: String, CaseIterable, Identifiable, Sendable {
                 self = .ZeroEx
             case "BASE_BRIDGE", "BASE BRIDGE", "BASEBRIDGE":
                 self = .BaseBridge
+            case "BRIDGE_XYZ", "BRIDGE", "BRIDGEXYZ":
+                self = .BridgeXyz
             case "CIRCLE_BRIDGE", "CIRCLE BRIDGE", "CIRCLEBRIDGE", "CCTP", "CIRCLE_CCTP", "CCTP_V2":
                 self = .CircleBridge
             case "COINBASEICON":
