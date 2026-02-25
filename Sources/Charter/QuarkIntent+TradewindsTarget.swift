@@ -521,6 +521,7 @@ internal func createSwapHintNodesAndRoutes(
 ) -> (nodes: [TradewindsLegendNode], routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]) {
     var nodes: Set<TradewindsLegendNode> = []
     var routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] = []
+    let slippageFactor = Percentage.one - Charter.SWAP_MAX_SLIPPAGE
 
     for (swapHintType, swapHint) in folio.swapHints {
         guard case .swap(let network, let sellSymbol, let buySymbol, let venue, _) = swapHintType else {
@@ -547,14 +548,17 @@ internal func createSwapHintNodesAndRoutes(
         nodes.insert(buyNode)
 
         let tierBuyAmount = capacity * swapHint.exchangeRate.underlying.asNumber / Number.pow10(swapHint.exchangeRate.factorScale)
-        let adjustedRate = isMaxIntent ? swapHint.exchangeRate * Charter.SWAP_OUTPUT_BUFFER : swapHint.exchangeRate
+        let minTierBuyAmount = Number(tierBuyAmount * slippageFactor)
+        let adjustedRate = isMaxIntent
+            ? swapHint.exchangeRate * Charter.SWAP_OUTPUT_BUFFER * slippageFactor
+            : swapHint.exchangeRate * slippageFactor
 
         routes.append(makeLegendRoute(
             type: .swap(
                 buyToken: buyAsset.assetAddress,
-                buyAmount: tierBuyAmount,
+                buyAmount: minTierBuyAmount,
                 swapQuoteSellAmount: capacity,
-                swapQuoteBuyAmount: tierBuyAmount,
+                swapQuoteBuyAmount: minTierBuyAmount,
                 feeToken: sellAsset.assetAddress,
                 feeAmount: Number(0),
                 isExactOut: false,

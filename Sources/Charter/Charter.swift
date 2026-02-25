@@ -79,6 +79,12 @@ public enum Charter {
     /// TODO: Consider reducing to 1.01 since this could be a bit too high.
     static let SWAP_OUTPUT_BUFFER: Percentage = Percentage(fromNumber: Number("1.015e18"))
 
+    // MARK: - Slippage Constants
+
+    /// Default max slippage tolerance for swap v2 operations, expressed as a percentage in 1e18 scale.
+    /// Applied internally as a factor: rate * (1 - tolerance), e.g. rate * 0.99 for 1% tolerance.
+    public static let SWAP_MAX_SLIPPAGE: Percentage = Percentage(fromNumber: Number("0.01e18"))
+
     /// @notice The unique ID given to Legend by the Across team to track the origination source of deposits
     static let ACROSS_UNIQUE_IDENTIFIER: Hex = Hex("0x0067")
 

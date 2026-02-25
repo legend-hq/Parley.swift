@@ -31,9 +31,9 @@ struct SwapV2Tests {
                         .swap(
                             filler: .filler,
                             sellAmount: .amt(500, .usdc),
-                            // 500 * 0.00025 = 0.125 WETH (+ 1 wei precision)
-                            buyAmount: .init(fromWei: 125_000_000_000_000_001, ofToken: .weth),
-                            feeAmount: .amt(0.0001875, .weth),
+                            // 500 * 0.00025 * 0.99 slippage = 0.12375 WETH (+ 1 wei precision)
+                            buyAmount: .init(fromWei: Number("0.123750000000000001e18"), ofToken: .weth),
+                            feeAmount: .init(fromWei: Number("0.000185625e18"), ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: false,
                             network: .base,
@@ -44,7 +44,7 @@ struct SwapV2Tests {
                         Charter.ActionContext.swap(
                             Charter.ActionContext.SwapActionContext(
                                 chainId: Number("8453"),
-                                feeAmounts: [Number("0.0001875e18")],
+                                feeAmounts: [Number("0.000185625e18")],
                                 feeAssetSymbols: ["WETH"],
                                 feeTokens: [EthAddress("0x4200000000000000000000000000000000000006")],
                                 feeTokenPrices: [Number("4000e8")],
@@ -53,7 +53,7 @@ struct SwapV2Tests {
                                 inputAssetSymbol: "USDC",
                                 inputToken: EthAddress("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
                                 inputTokenPrice: Number("1e8"),
-                                outputAmount: Number("0.125000000000000001e18"),
+                                outputAmount: Number("0.123750000000000001e18"),
                                 outputAssetSymbol: "WETH",
                                 outputToken: EthAddress("0x4200000000000000000000000000000000000006"),
                                 outputTokenPrice: Number("4000e8"),
@@ -93,9 +93,9 @@ struct SwapV2Tests {
                         .swap(
                             filler: .filler,
                             sellAmount: .amt(500, .usdc),
-                            // 500 * 0.00025 = 0.125 WETH (+ 1 wei precision)
-                            buyAmount: .init(fromWei: 125_000_000_000_000_001, ofToken: .weth),
-                            feeAmount: .amt(0.0001875, .weth),
+                            // 500 * 0.00025 * 0.99 slippage = 0.12375 WETH (+ 1 wei precision)
+                            buyAmount: .init(fromWei: Number("0.123750000000000001e18"), ofToken: .weth),
+                            feeAmount: .init(fromWei: Number("0.000185625e18"), ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: true,
                             network: .base,
@@ -143,9 +143,9 @@ struct SwapV2Tests {
                         .swap(
                             filler: .filler,
                             sellAmount: .amt(494, .usdc),
-                            // 494 * 0.00025 = 0.1235 WETH (+ 1 wei precision)
-                            buyAmount: .init(fromWei: 123_500_000_000_000_001, ofToken: .weth),
-                            feeAmount: .amt(0.00018525, .weth),
+                            // 494 * 0.00025 * 0.99 slippage = 0.122265 WETH (+ 1 wei precision)
+                            buyAmount: .init(fromWei: Number("0.122265000000000001e18"), ofToken: .weth),
+                            feeAmount: .init(fromWei: Number("0.0001833975e18"), ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: false,
                             network: .base,
@@ -212,9 +212,9 @@ struct SwapV2Tests {
                         .swap(
                             filler: .filler,
                             sellAmount: .amt(300, .usdc),
-                            // 100 * 0.0003 + 200 * 0.00025 = 0.03 + 0.05 = 0.08 WETH (- 1 wei)
-                            buyAmount: .init(fromWei: 79_999_999_999_999_999, ofToken: .weth),
-                            feeAmount: .init(fromWei: 119_999_999_999_999, ofToken: .weth),
+                            // (100 * 0.0003 + 200 * 0.00025) * 0.99 slippage = 0.0792 WETH (- 1 wei)
+                            buyAmount: .init(fromWei: Number("0.079199999999999999e18"), ofToken: .weth),
+                            feeAmount: .init(fromWei: Number("0.000118799999999999e18"), ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: false,
                             network: .base,
@@ -277,9 +277,9 @@ struct SwapV2Tests {
                         .swap(
                             filler: .filler,
                             sellAmount: .amt(498, .usdc),  // 400 + 98 = 498 USDC
-                            // 498 * 0.0003 = 0.1494 WETH (- 2 wei precision)
-                            buyAmount: .init(fromWei: 149_399_999_999_999_998, ofToken: .weth),
-                            feeAmount: .init(fromWei: 224_099_999_999_999, ofToken: .weth),
+                            // 498 * 0.0003 * 0.99 slippage = 0.147906 WETH (- 2 wei precision)
+                            buyAmount: .init(fromWei: Number("0.147905999999999998e18"), ofToken: .weth),
+                            feeAmount: .init(fromWei: Number("0.000221858999999999e18"), ofToken: .weth),
                             feeRecipient: .stax,
                             cappedMax: false,
                             network: .arbitrum,
@@ -319,9 +319,9 @@ struct SwapV2Tests {
                                 .swap(
                                     filler: .filler,
                                     sellAmount: .amt(0.5, .weth),
-                                    // 0.5 * 4000 = 2000 USDC
-                                    buyAmount: .amt(2000, .usdc),
-                                    feeAmount: .amt(3, .usdc),
+                                    // 0.5 * 4000 * 0.99 slippage = 1980 USDC
+                                    buyAmount: .amt(1980, .usdc),
+                                    feeAmount: .amt(2.97, .usdc),
                                     feeRecipient: .stax,
                                     cappedMax: false,
                                     network: .base

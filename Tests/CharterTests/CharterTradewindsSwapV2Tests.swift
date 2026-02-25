@@ -59,9 +59,9 @@ struct CharterTradewindsSwapV2Tests {
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .swap(
                                     buyToken: BaseNetwork.Assets.WETH.assetAddress,
-                                    buyAmount: Number("3000e18"),  // 10000 * 0.0003 = 3 WETH (full tier)
+                                    buyAmount: Number("2.97e18"),  // 10000 * 0.0003 * 0.99 slippage = 2.97 WETH
                                     swapQuoteSellAmount: Number("10000e6"),
-                                    swapQuoteBuyAmount: Number("3000e18"),  // Full tier buy amount
+                                    swapQuoteBuyAmount: Number("2.97e18"),  // Slippage-adjusted tier buy amount
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: Number(0),
                                     isExactOut: false,
@@ -80,8 +80,8 @@ struct CharterTradewindsSwapV2Tests {
                                     symbol: "WETH",
                                     wallet: Account.alice.address
                                 ),
-                                // Rate matches swap hint: Percentage(fromDouble: 0.0003e12)
-                                rate: Percentage(fromDouble: 0.0003e12),
+                                // Rate = swap hint rate * slippage factor (0.99)
+                                rate: Percentage(fromDouble: 0.0003e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
                                 minFlow: Number(0),
                                 maxFlow: Number("10000e6")
                             ),
@@ -103,10 +103,10 @@ struct CharterTradewindsSwapV2Tests {
                                 minFlow: Number(0),
                                 maxFlow: Number.MAX_UINT_256
                             ),
-                            amount: Number("149999999999999998")
+                            amount: Number("0.148499999999999998e18")
                         ),
                     ],
-                    maxFlow: Number("149999999999999998")  // Max flow is the WETH output
+                    maxFlow: Number("0.148499999999999998e18")  // Max flow is the WETH output
                 )
             )
         )
@@ -158,9 +158,9 @@ struct CharterTradewindsSwapV2Tests {
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .swap(
                                     buyToken: BaseNetwork.Assets.WETH.assetAddress,
-                                    buyAmount: Number("3000e18"),  // Full tier
+                                    buyAmount: Number("2.97e18"),  // Full tier * 0.99 slippage
                                     swapQuoteSellAmount: Number("10000e6"),
-                                    swapQuoteBuyAmount: Number("3000e18"),
+                                    swapQuoteBuyAmount: Number("2.97e18"),
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: Number(0),
                                     isExactOut: false,
@@ -179,8 +179,8 @@ struct CharterTradewindsSwapV2Tests {
                                     symbol: "WETH",
                                     wallet: Account.alice.address
                                 ),
-                                // Rate = base rate * SWAP_OUTPUT_BUFFER (1.015)
-                                rate: Percentage(fromDouble: 0.0003e12) * Charter.SWAP_OUTPUT_BUFFER,
+                                // Rate = base rate * SWAP_OUTPUT_BUFFER (1.015) * slippage (0.99)
+                                rate: Percentage(fromDouble: 0.0003e12) * Charter.SWAP_OUTPUT_BUFFER * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
                                 minFlow: Number(0),
                                 maxFlow: Number("10000e6")
                             ),
@@ -201,10 +201,10 @@ struct CharterTradewindsSwapV2Tests {
                                 maxFlow: Number.MAX_UINT_256
                             ),
                             // Actual computed value with precision
-                            amount: Number("152249999999999998")
+                            amount: Number("0.150727499999999998e18")
                         ),
                     ],
-                    maxFlow: Number("152249999999999998")
+                    maxFlow: Number("0.150727499999999998e18")
                 )
             )
         )
@@ -279,14 +279,14 @@ struct CharterTradewindsSwapV2Tests {
                             ),
                             amount: "500e6"  // 500 in, ~494 out
                         ),
-                        // Flow 3: Swap on Base (~494 USDC → ~0.1482 WETH)
+                        // Flow 3: Swap on Base (~494 USDC → ~0.1467 WETH after slippage)
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .swap(
                                     buyToken: BaseNetwork.Assets.WETH.assetAddress,
-                                    buyAmount: Number("3000e18"),  // Full tier
+                                    buyAmount: Number("2.97e18"),  // Full tier * 0.99 slippage
                                     swapQuoteSellAmount: Number("10000e6"),
-                                    swapQuoteBuyAmount: Number("3000e18"),
+                                    swapQuoteBuyAmount: Number("2.97e18"),
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: Number(0),
                                     isExactOut: false,
@@ -305,8 +305,8 @@ struct CharterTradewindsSwapV2Tests {
                                     symbol: "WETH",
                                     wallet: Account.alice.address
                                 ),
-                                // Rate matches swap hint
-                                rate: Percentage(fromDouble: 0.0003e12),
+                                // Rate = swap hint rate * slippage factor (0.99)
+                                rate: Percentage(fromDouble: 0.0003e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
                                 minFlow: Number(0),
                                 maxFlow: Number("10000e6")
                             ),
@@ -328,10 +328,10 @@ struct CharterTradewindsSwapV2Tests {
                                 maxFlow: Number.MAX_UINT_256
                             ),
                             // Actual computed value with precision
-                            amount: Number("148199999999999998")
+                            amount: Number("0.146717999999999998e18")
                         ),
                     ],
-                    maxFlow: Number("148199999999999998")
+                    maxFlow: Number("0.146717999999999998e18")
                 )
             )
         )
@@ -383,14 +383,14 @@ struct CharterTradewindsSwapV2Tests {
                             ),
                             amount: "300e6"
                         ),
-                        // Tier 1: Fill 100 USDC at rate 0.0004 → 0.04 WETH
+                        // Tier 1: Fill 100 USDC at rate 0.0004 * 0.99 slippage
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .swap(
                                     buyToken: BaseNetwork.Assets.WETH.assetAddress,
-                                    buyAmount: Number("40e18"),  // 100 * 0.0004 = 0.04 * 1000 = 40
+                                    buyAmount: Number("0.0396e18"),  // 100 * 0.0004 * 0.99 = 0.0396 WETH
                                     swapQuoteSellAmount: Number("100e6"),
-                                    swapQuoteBuyAmount: Number("40e18"),
+                                    swapQuoteBuyAmount: Number("0.0396e18"),
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: Number(0),
                                     isExactOut: false,
@@ -409,21 +409,21 @@ struct CharterTradewindsSwapV2Tests {
                                     symbol: "WETH",
                                     wallet: Account.alice.address
                                 ),
-                                // Rate matches swap hint
-                                rate: Percentage(fromDouble: 0.0004e12),
+                                // Rate = swap hint rate * slippage factor (0.99)
+                                rate: Percentage(fromDouble: 0.0004e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
                                 minFlow: Number(0),
                                 maxFlow: Number("100e6")
                             ),
                             amount: "100e6"
                         ),
-                        // Tier 2: Fill remaining 200 USDC at rate 0.00035 → 0.07 WETH
+                        // Tier 2: Fill remaining 200 USDC at rate 0.00035 * 0.99 slippage
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .swap(
                                     buyToken: BaseNetwork.Assets.WETH.assetAddress,
-                                    buyAmount: Number("315e18"),  // 900 * 0.00035 = 0.315 * 1000 = 315
+                                    buyAmount: Number("0.31185e18"),  // 900 * 0.00035 * 0.99 = 0.31185 WETH
                                     swapQuoteSellAmount: Number("900e6"),
-                                    swapQuoteBuyAmount: Number("315e18"),
+                                    swapQuoteBuyAmount: Number("0.31185e18"),
                                     feeToken: BaseNetwork.Assets.USDC.assetAddress,
                                     feeAmount: Number(0),
                                     isExactOut: false,
@@ -442,8 +442,8 @@ struct CharterTradewindsSwapV2Tests {
                                     symbol: "WETH",
                                     wallet: Account.alice.address
                                 ),
-                                // Rate matches swap hint
-                                rate: Percentage(fromDouble: 0.00035e12),
+                                // Rate = swap hint rate * slippage factor (0.99)
+                                rate: Percentage(fromDouble: 0.00035e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
                                 minFlow: Number(0),
                                 maxFlow: Number("900e6")
                             ),
@@ -465,10 +465,10 @@ struct CharterTradewindsSwapV2Tests {
                                 maxFlow: Number.MAX_UINT_256
                             ),
                             // Actual computed value with precision
-                            amount: Number("109999999999999999")
+                            amount: Number("0.108899999999999999e18")
                         ),
                     ],
-                    maxFlow: Number("109999999999999999")
+                    maxFlow: Number("0.108899999999999999e18")
                 )
             )
         )
