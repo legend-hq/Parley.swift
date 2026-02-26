@@ -831,19 +831,14 @@ struct SwapAndSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Bridge 1000 USDC: 1000 / 0.99 ≈ 1010.101 + 1 = 1011.111... USDC
-                                    inputTokenAmount: .amt(1011.111112, .usdc),
-                                    outputTokenAmount: .amt(1000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Bridge 1000 USDC: 1000 / 0.99 ≈ 1010.101 + 1 = 1011.111... USDC
+                            inputTokenAmount: .amt(1011.111112, .usdc),
+                            outputTokenAmount: .amt(1000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -874,44 +869,23 @@ struct SwapAndSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1011.111112e6"),
+                                outputAmount: Number("1000e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1011.111112e6"),
-                                        outputAmount: Number("1000e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1031,23 +1005,18 @@ struct SwapAndSupplyTests {
                                     cappedMax: true,
                                     network: .ethereum
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000025, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .base,
-                                    // Bridge input: 1.015 WETH (1 WETH + 1.5% buffer) - 0.000025 WETH (QuotePay) = 1.014975 WETH
+                                    // Bridge input: 1.015 WETH (1 WETH + 1.5% buffer)
                                     inputTokenAmount: TokenAmount(
-                                        fromWei: Number("1.014975e18"),
+                                        fromWei: Number("1.015e18"),
                                         ofToken: .weth
                                     ),
-                                    // Bridge output: (1.014975 * 0.99) - 0.01 = 0.99482525 WETH
+                                    // Bridge output: (1.015 * 0.99) - 0.01 = 0.99485 WETH
                                     outputTokenAmount: TokenAmount(
-                                        fromWei: Number("0.99482525e18"),
+                                        fromWei: Number("0.99485e18"),
                                         ofToken: .weth
                                     ),
                                     cappedMax: true
@@ -1063,9 +1032,9 @@ struct SwapAndSupplyTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 0.99482525 (bridged) - 0.000005 (quote pay) = 0.99482025
+                                // 0.99485 (bridged) - 0.000005 (quote pay) = 0.994845
                                 .supplyToComet(
-                                    tokenAmount: .amt(0.99482025, .weth),
+                                    tokenAmount: .amt(0.994845, .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -1115,23 +1084,6 @@ struct SwapAndSupplyTests {
                                         useFiller: true
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000025e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("1"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "WETH",
@@ -1139,10 +1091,10 @@ struct SwapAndSupplyTests {
                                         chainId: Number("1"),
                                         destinationChainId: Number("8453"),
                                         destinationAssetSymbol: "ETH",
-                                        // Bridge input: 1.015 WETH (buffered swap output) - 0.000025 WETH = 1.014975 WETH
-                                        inputAmount: Number("1.014975e18"),
-                                        // Bridge output: (1.014975 * 0.99) - 0.01 = 0.99482525 WETH
-                                        outputAmount: Number("0.99482525e18"),
+                                        // Bridge input: 1.015 WETH (buffered swap output)
+                                        inputAmount: Number("1.015e18"),
+                                        // Bridge output: (1.015 * 0.99) - 0.01 = 0.99485 WETH
+                                        outputAmount: Number("0.99485e18"),
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1159,8 +1111,8 @@ struct SwapAndSupplyTests {
                                 Charter.ActionContext.wrap(
                                     Charter.ActionContext.WrapActionContext(
                                         chainId: Number("8453"),
-                                        // Wrap all ETH received from bridge: 0.99482525 WETH
-                                        amount: Number("0.99482525e18"),
+                                        // Wrap all ETH received from bridge: 0.99485 WETH
+                                        amount: Number("0.99485e18"),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                         ),
@@ -1187,8 +1139,8 @@ struct SwapAndSupplyTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        // Supply: 0.99482525 WETH (wrapped) - 0.000005 WETH (QuotePay) = 0.994820250 WETH
-                                        amount: Number("0.99482025e18"),
+                                        // Supply: 0.99485 WETH (wrapped) - 0.000005 WETH (QuotePay) = 0.994845 WETH
+                                        amount: Number("0.994845e18"),
                                         assetSymbol: "WETH",
                                         chainId: Number("8453"),
                                         comet: EthAddress(
@@ -1245,21 +1197,16 @@ struct SwapAndSupplyTests {
                                     cappedMax: false,
                                     network: .ethereum
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000025, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .base,
                                     inputTokenAmount: TokenAmount(
-                                        fromWei: Number("1.099975000000000128e18"),
+                                        fromWei: Number("1.100000000000000128e18"),
                                         ofToken: .weth
                                     ),
                                     outputTokenAmount: TokenAmount(
-                                        fromWei: Number("1.078975250000000126e18"),
+                                        fromWei: Number("1.079000000000000126e18"),
                                         ofToken: .weth
                                     ),
                                     cappedMax: true
@@ -1275,10 +1222,10 @@ struct SwapAndSupplyTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 1.078975250000000126 (bridged) - 0.000005 (quote pay) = 1.078970250000000126
+                                // 1.079000000000000126 (bridged) - 0.000005 (quote pay) = 1.078995000000000126
                                 .supplyToComet(
                                     tokenAmount: TokenAmount(
-                                        fromWei: Number("1.078970250000000126e18"),
+                                        fromWei: Number("1.078995000000000126e18"),
                                         ofToken: .weth
                                     ),
                                     market: .cwethv3,
@@ -1330,23 +1277,6 @@ struct SwapAndSupplyTests {
                                         useFiller: true
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000025e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("1"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "WETH",
@@ -1354,8 +1284,8 @@ struct SwapAndSupplyTests {
                                         chainId: Number("1"),
                                         destinationChainId: Number("8453"),
                                         destinationAssetSymbol: "ETH",
-                                        inputAmount: Number("1.099975000000000128e18"),
-                                        outputAmount: Number("1.078975250000000126e18"),
+                                        inputAmount: Number("1.100000000000000128e18"),
+                                        outputAmount: Number("1.079000000000000126e18"),
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1372,7 +1302,7 @@ struct SwapAndSupplyTests {
                                 Charter.ActionContext.wrap(
                                     Charter.ActionContext.WrapActionContext(
                                         chainId: Number("8453"),
-                                        amount: Number("1.078975250000000126e18"),
+                                        amount: Number("1.079000000000000126e18"),
                                         token: EthAddress(
                                             "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
                                         ),
@@ -1399,8 +1329,8 @@ struct SwapAndSupplyTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        // 1.078975250000000126 WETH - 0.000005 WETH (QuotePay) = 1.078970250000000126 WETH
-                                        amount: Number("1.078970250000000126e18"),
+                                        // 1.079000000000000126 WETH - 0.000005 WETH (QuotePay) = 1.078995000000000126 WETH
+                                        amount: Number("1.078995000000000126e18"),
                                         assetSymbol: "WETH",
                                         chainId: Number("8453"),
                                         comet: EthAddress(
@@ -1445,27 +1375,25 @@ struct SwapAndSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(1999.9, .usdc),
-                                    outputTokenAmount: .amt(1978.901, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(2000, .usdc),
+                            outputTokenAmount: .amt(1979, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(3978.901, .usdc),
-                                    buyAmount: .amt(1.9894505, .weth),
-                                    feeAmount: .amt(0.002984175750, .weth),
+                                    sellAmount: .amt(3979, .usdc),
+                                    buyAmount: .amt(1.9895, .weth),
+                                    feeAmount: TokenAmount(
+                                        fromWei: 2_984_250_000_000_000,
+                                        ofToken: .weth
+                                    ),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -1475,10 +1403,10 @@ struct SwapAndSupplyTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 1.9894505 (scaled swap output) * 1.015 (1.5% swap output buffer) - 0.000005 (quote pay) = 2.0192872575
+                                // 1.9895 * 1.015 - 0.000005 = 2.01933750 - 0.000005 = 2.0193375 - 0.000005 = 2.019332500
                                 .supplyToComet(
                                     tokenAmount: TokenAmount(
-                                        fromWei: Number("2.0192872575e18"),
+                                        fromWei: Number("2019337500000000000"),
                                         ofToken: .weth
                                     ),
                                     market: .cwethv3,
@@ -1490,44 +1418,23 @@ struct SwapAndSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("2000e6"),
+                                outputAmount: Number("1979e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1999.9e6"),
-                                        outputAmount: Number("1978.901e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1535,8 +1442,8 @@ struct SwapAndSupplyTests {
                                     Charter.ActionContext.SwapActionContext(
                                         chainId: Number("8453"),
                                         feeAmounts: [
-                                            Number("0.00298417575e18"),
-                                            Number("0.019894505e18"),
+                                            Number("2984250000000000"),
+                                            Number("19895000000000000"),
                                         ],
                                         feeAssetSymbols: ["WETH", "WETH"],
                                         feeTokens: [
@@ -1551,13 +1458,13 @@ struct SwapAndSupplyTests {
                                             Number("4000e8"), Number("4000e8"),
                                         ],
                                         feeDescriptions: ["LEGEND", "ZERO_EX"],
-                                        inputAmount: Number("3978.901e6"),
+                                        inputAmount: Number("3979e6"),
                                         inputAssetSymbol: "USDC",
                                         inputToken: EthAddress(
                                             "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                         ),
                                         inputTokenPrice: Number("1e8"),
-                                        outputAmount: Number("1.9894505e18"),
+                                        outputAmount: Number("1989500000000000000"),
                                         outputAssetSymbol: "WETH",
                                         outputToken: EthAddress(
                                             "0x4200000000000000000000000000000000000006"
@@ -1588,7 +1495,7 @@ struct SwapAndSupplyTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("2.0192872575e18"),
+                                        amount: Number("2019337500000000000"),
                                         assetSymbol: "WETH",
                                         chainId: Number("8453"),
                                         comet: EthAddress(
@@ -1633,27 +1540,25 @@ struct SwapAndSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(1999.9, .usdc),
-                                    outputTokenAmount: .amt(1978.901, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(2000, .usdc),
+                            outputTokenAmount: .amt(1979, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(3978.901, .usdc),
-                                    buyAmount: .amt(1.9894505, .weth),
-                                    feeAmount: .amt(0.002984175750, .weth),
+                                    sellAmount: .amt(3979, .usdc),
+                                    buyAmount: .amt(1.9895, .weth),
+                                    feeAmount: TokenAmount(
+                                        fromWei: 2_984_250_000_000_000,
+                                        ofToken: .weth
+                                    ),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -1663,10 +1568,10 @@ struct SwapAndSupplyTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 2.486813125 (scaled swap quote: 2.5 * 3978.901/4000) * 1.015 (1.5% swap output buffer) - 0.000005 (quote pay) = 2.524110321875
+                                // 2.48687500 (scaled swap quote: 2.5 * 3979/4000) * 1.015 (1.5% swap output buffer) - 0.000005 (quote pay) = 2.524173125
                                 .supplyToComet(
                                     tokenAmount: TokenAmount(
-                                        fromWei: Number("2.524110321875e18"),
+                                        fromWei: Number("2524173125000000000"),
                                         ofToken: .weth
                                     ),
                                     market: .cwethv3,
@@ -1678,44 +1583,23 @@ struct SwapAndSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("2000e6"),
+                                outputAmount: Number("1979e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1999.9e6"),
-                                        outputAmount: Number("1978.901e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1723,8 +1607,8 @@ struct SwapAndSupplyTests {
                                     Charter.ActionContext.SwapActionContext(
                                         chainId: Number("8453"),
                                         feeAmounts: [
-                                            Number("0.00298417575e18"),
-                                            Number("0.019894505e18"),
+                                            Number("2984250000000000"),
+                                            Number("19895000000000000"),
                                         ],
                                         feeAssetSymbols: ["WETH", "WETH"],
                                         feeTokens: [
@@ -1739,13 +1623,13 @@ struct SwapAndSupplyTests {
                                             Number("4000e8"), Number("4000e8"),
                                         ],
                                         feeDescriptions: ["LEGEND", "ZERO_EX"],
-                                        inputAmount: Number("3978.901e6"),
+                                        inputAmount: Number("3979e6"),
                                         inputAssetSymbol: "USDC",
                                         inputToken: EthAddress(
                                             "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                         ),
                                         inputTokenPrice: Number("1e8"),
-                                        outputAmount: Number("1.9894505e18"),
+                                        outputAmount: Number("1989500000000000000"),
                                         outputAssetSymbol: "WETH",
                                         outputToken: EthAddress(
                                             "0x4200000000000000000000000000000000000006"
@@ -1776,7 +1660,7 @@ struct SwapAndSupplyTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("2.524110321875e18"),
+                                        amount: Number("2524173125000000000"),
                                         assetSymbol: "WETH",
                                         chainId: Number("8453"),
                                         comet: EthAddress(
@@ -1823,20 +1707,15 @@ struct SwapAndSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Bridge adjusted to min input constraint (1000 USDC)
-                                    // Output: (1000 * 0.99 rate) - 1 fixed cost = 989.00 USDC
-                                    inputTokenAmount: .amt(1000, .usdc),
-                                    outputTokenAmount: .amt(989, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Bridge adjusted to min input constraint (1000 USDC)
+                            // Output: (1000 * 0.99 rate) - 1 fixed cost = 989.00 USDC
+                            inputTokenAmount: .amt(1000, .usdc),
+                            outputTokenAmount: .amt(989, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -1867,44 +1746,23 @@ struct SwapAndSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1000e6"),
+                                outputAmount: Number("989e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1000e6"),
-                                        outputAmount: Number("989e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [

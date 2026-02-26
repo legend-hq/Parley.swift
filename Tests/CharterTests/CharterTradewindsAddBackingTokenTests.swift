@@ -158,8 +158,7 @@ struct CharterTradewindsAddBackingTokenTests {
                 name: "Cross-Chain Add Backing",
                 givens: [
                     // Alice has USDC on Arbitrum but position is on Base.
-                    // Increase slightly to cover Base QuotePay in-fee on the add-backing leg.
-                    .tokenBalance(.alice, .amt(5_000.060203, .usdc), .arbitrum),
+                    .tokenBalance(.alice, .amt(5_000.020203, .usdc), .arbitrum),
                     .quote(.basic),
                     .acrossQuote(.amt(1, .usdc), 0.01),  // 1% bridge fee
                 ],
@@ -178,7 +177,7 @@ struct CharterTradewindsAddBackingTokenTests {
                 ),
                 expect: .exactFlows(
                     [
-                        // Bridge from Arbitrum to Base (includes 1% rate, 1 USDC fixed, and 0.04 USDC QuotePay on Arbitrum)
+                        // Bridge from Arbitrum to Base (includes 1% rate and 1 USDC fixed fee)
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
@@ -201,8 +200,8 @@ struct CharterTradewindsAddBackingTokenTests {
                                 minFlow: "0",
                                 maxFlow: "5000e6"
                             ),
-                            // (4949.02e6 + 1e6)/0.99 + 0.04e6 ≈ 5000.060203e6 (ceil to micro-units)
-                            amount: "5000.060203e6"
+                            // (4949.02e6 + 1e6)/0.99 ≈ 5000.020203e6 (ceil to micro-units)
+                            amount: "5000.020203e6"
                         ),
                         // Add backing on Base
                         Tradewinds.Flow(

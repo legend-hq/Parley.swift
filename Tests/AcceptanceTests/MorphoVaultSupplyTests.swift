@@ -25,27 +25,22 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // 3 - 0.1 (quote pay) = 2.9
-                                    inputTokenAmount: .amt(2.9, .usdc),
-                                    outputTokenAmount: .amt(1.871, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // 3 (no quote pay on source chain)
+                            inputTokenAmount: .amt(3, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                // 3 (base balance) + 1.871 (bridged) - 0.02 (quote pay) = 4.851
+                                // 3 (base balance) + 1.97 (bridged) - 0.02 (quote pay) = 4.95
                                 .supplyToMorphoVault(
-                                    tokenAmount: .amt(4.851, .usdc),
+                                    tokenAmount: .amt(4.95, .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .base
@@ -55,44 +50,23 @@ struct MorphoVaultSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3e6"),
+                                outputAmount: Number("1.97e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("2.9e6"),
-                                        outputAmount: Number("1.871e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -115,7 +89,7 @@ struct MorphoVaultSupplyTests {
                                 ),
                                 Charter.ActionContext.morphoVaultSupply(
                                     Charter.ActionContext.MorphoVaultSupplyActionContext(
-                                        amount: Number("4.851e6"),
+                                        amount: Number("4.95e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("8453"),
                                         morphoVault: EthAddress(
@@ -313,9 +287,8 @@ struct MorphoVaultSupplyTests {
          +1.5 on Base
          -1 for Across gasFee
          -(1.5 * .01) for Across pctFee
-         -0.1 (Eth operation fee)
-         -0.02 (Base operation fee)
-         = 1.865 USDC supplied
+         -0.1 (Eth operation fee, destination)
+         = 1.885 USDC supplied
          */
 
         try await testAcceptanceTests(
@@ -334,27 +307,22 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),  // Base fee
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .ethereum,
-                                    // 1.5 - 0.02 (quote pay) = 1.48
-                                    inputTokenAmount: .amt(1.48, .usdc),
-                                    outputTokenAmount: .amt(0.4652, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .ethereum,
+                            // 1.5 (no quote pay on source chain)
+                            inputTokenAmount: .amt(1.5, .usdc),
+                            outputTokenAmount: .amt(0.485, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),  // Ethereum fee
-                                // 1.5 (ethereum balance) + 0.4652 (bridged) - 0.1 (quote pay) = 1.8652
+                                // 1.5 (ethereum balance) + 0.485 (bridged) - 0.1 (quote pay) = 1.885
                                 .supplyToMorphoVault(
-                                    tokenAmount: .amt(1.8652, .usdc),
+                                    tokenAmount: .amt(1.885, .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .ethereum
@@ -364,44 +332,23 @@ struct MorphoVaultSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("1"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1.5e6"),
+                                outputAmount: Number("485000"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("1"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1.48e6"),
-                                        outputAmount: Number("0.4652e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -424,7 +371,7 @@ struct MorphoVaultSupplyTests {
                                 ),
                                 Charter.ActionContext.morphoVaultSupply(
                                     Charter.ActionContext.MorphoVaultSupplyActionContext(
-                                        amount: Number("1.8652e6"),
+                                        amount: Number("1885000"),
                                         assetSymbol: "USDC",
                                         chainId: Number("1"),
                                         morphoVault: EthAddress(
@@ -497,18 +444,13 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),  // Ethereum fee
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.050506, .usdc),
-                                    outputTokenAmount: .amt(2.02, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.050506, .usdc),
+                            outputTokenAmount: .amt(2.02, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -536,9 +478,8 @@ struct MorphoVaultSupplyTests {
          +3 on Ethereum
          -1 for Across gas fee
          -(3 * 0.01) for Across pct fee
-         -0.1 for Ethereum operation fee
-         -0.02 for Base operation fee
-         = 4.85 USDC supplied to MorphoVault
+         -0.02 for Base operation fee (destination)
+         = 4.95 USDC supplied to MorphoVault
          */
 
         try await testAcceptanceTests(
@@ -557,27 +498,22 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),  // Ethereum fee
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // 3 - 0.1 (quote pay) = 2.9
-                                    inputTokenAmount: .amt(2.9, .usdc),
-                                    outputTokenAmount: .amt(1.871, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // 3 (no quote pay on source chain)
+                            inputTokenAmount: .amt(3, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),  // Base fee
-                                // 3 (base balance) + 1.871 (bridged) - 0.02 (quote pay) = 4.851
+                                // 3 (base balance) + 1.97 (bridged) - 0.02 (quote pay) = 4.95
                                 .supplyToMorphoVault(
-                                    tokenAmount: .amt(4.851, .usdc),
+                                    tokenAmount: .amt(4.95, .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .base
@@ -598,9 +534,8 @@ struct MorphoVaultSupplyTests {
          +3 on Base
          -1 for Across gas fee
          -(3 * .01) for Across pct fee
-         -0.5 for Ethereum operation fee
-         -0.1 for Base operation fee
-         = 4.37 USDC supplied
+         -0.1 for Base operation fee (destination)
+         = 4.87 USDC supplied
          */
 
         try await testAcceptanceTests(
@@ -634,26 +569,22 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.5, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(2.50, .usdc),
-                                    outputTokenAmount: .amt(1.475, .usdc),
-                                    cappedMax: true,
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // 3 (no quote pay on source chain)
+                            inputTokenAmount: .amt(3, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                // 3 (base balance) + 1.475 (bridged) - 0.1 (quote pay) = 4.375
+                                // 3 (base balance) + 1.97 (bridged) - 0.1 (quote pay) = 4.87
                                 .supplyToMorphoVault(
-                                    tokenAmount: .amt(4.375, .usdc),
+                                    tokenAmount: .amt(4.87, .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .base
@@ -700,18 +631,13 @@ struct MorphoVaultSupplyTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.5, .usdc), payee: .stax, quote: .basic),  // Ethereum fee
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.131314, .usdc),
-                                    outputTokenAmount: .amt(2.1, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.131314, .usdc),
+                            outputTokenAmount: .amt(2.1, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(

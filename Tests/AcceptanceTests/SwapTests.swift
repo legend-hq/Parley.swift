@@ -589,19 +589,14 @@ struct SwapTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Adjusted for Across fees
-                                    inputTokenAmount: .amt(1011.111112, .usdc),
-                                    outputTokenAmount: .amt(1000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Adjusted for Across fees
+                            inputTokenAmount: .amt(1011.111112, .usdc),
+                            outputTokenAmount: .amt(1000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .swap(
@@ -616,44 +611,23 @@ struct SwapTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1011.111112e6"),
+                                outputAmount: Number("1000e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1011.111112e6"),
-                                        outputAmount: Number("1000e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .swap(
                             Charter.ActionContext.SwapActionContext(
@@ -727,18 +701,13 @@ struct SwapTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(5, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(1011.111112, .usdc),
-                                    outputTokenAmount: .amt(1000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(1011.111112, .usdc),
+                            outputTokenAmount: .amt(1000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .swap(
@@ -753,44 +722,23 @@ struct SwapTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("5e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1011.111112e6"),
+                                outputAmount: Number("1000e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1011.111112e6"),
-                                        outputAmount: Number("1000e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .swap(
                             Charter.ActionContext.SwapActionContext(
@@ -916,20 +864,15 @@ struct SwapTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Bridge adjusted to min input constraint (1000 USDC)
-                                    // Output: (1000 * 0.99 rate) - 1 fixed cost = 989.00 USDC
-                                    inputTokenAmount: .amt(1000, .usdc),
-                                    outputTokenAmount: .amt(989, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Bridge adjusted to min input constraint (1000 USDC)
+                            // Output: (1000 * 0.99 rate) - 1 fixed cost = 989.00 USDC
+                            inputTokenAmount: .amt(1000, .usdc),
+                            outputTokenAmount: .amt(989, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .swap(
@@ -944,44 +887,23 @@ struct SwapTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1000e6"),
+                                outputAmount: Number("989e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1000e6"),
-                                        outputAmount: Number("989e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .swap(
                             Charter.ActionContext.SwapActionContext(

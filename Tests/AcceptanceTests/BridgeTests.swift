@@ -24,7 +24,7 @@ struct BridgeTests {
                 ),
                 // Note: Previously expected .unableToConstructBridgeForAsset(symbol: "USDC", network: arbitrum, bridgeFees: 1.5 USDC)
                 // but Tradewinds now returns .error("insufficientResources") when bridge construction fails due to insufficient funds
-                expect: .failure(.error("insufficientResources(target: .exact(100000000), max: 98440200)"))
+                expect: .failure(.error("insufficientResources(target: .exact(100000000), max: 98460000)"))
             )
         )
     }
@@ -47,25 +47,20 @@ struct BridgeTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(49.980000, .usdc),
-                                    outputTokenAmount: .amt(48.480200, .usdc),
-                                    cappedMax: true,
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(50, .usdc),
+                            outputTokenAmount: .amt(48.5, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
                                 .transferErc20(
-                                    tokenAmount: .amt(98.440200, .usdc),
+                                    tokenAmount: .amt(98.46, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -75,44 +70,23 @@ struct BridgeTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("20000"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("100000000"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("50000000"),
+                                outputAmount: Number("48500000"),
+                                price: Number("100000000"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("42161"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("49980000"),
-                                        outputAmount: Number("48480200"),
-                                        price: Number("100000000"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -135,7 +109,7 @@ struct BridgeTests {
                                 ),
                                 Charter.ActionContext.transfer(
                                     Charter.ActionContext.TransferActionContext(
-                                        amount: Number("98440200"),
+                                        amount: Number("98460000"),
                                         assetSymbol: "USDC",
                                         chainId: Number("42161"),
                                         price: Number("100000000"),
@@ -173,18 +147,13 @@ struct BridgeTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(49.535354, .usdc),
-                                    outputTokenAmount: .amt(48.040000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(49.535354, .usdc),
+                            outputTokenAmount: .amt(48.040000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -201,44 +170,23 @@ struct BridgeTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("20000"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("100000000"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("49535354"),
+                                outputAmount: Number("48040000"),
+                                price: Number("100000000"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("42161"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("49535354"),
-                                        outputAmount: Number("48040000"),
-                                        price: Number("100000000"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -293,25 +241,20 @@ struct BridgeTests {
                 when: .transfer(from: .alice, to: .bob, amount: .max(.usdc), on: .arbitrum),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(99.980000, .usdc),
-                                    outputTokenAmount: .amt(97.980200, .usdc),
-                                    cappedMax: true,
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(100, .usdc),
+                            outputTokenAmount: .amt(98, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
                                 .transferErc20(
-                                    tokenAmount: .amt(97.940200, .usdc),
+                                    tokenAmount: .amt(97.96, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -337,20 +280,14 @@ struct BridgeTests {
                 when: .transfer(from: .alice, to: .bob, amount: .max(.usdc), on: .arbitrum),
                 expect: .successWithActions(
                     .multi([
-                        // Quote pay and CCTPv2 Burn bundled on source chain (Base)
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "CCTPv2",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(99.98, .usdc),
-                                    outputTokenAmount: .amt(97.9802, .usdc),
-                                    cappedMax: true,
-                                    executionType: nil
-                                ),
-                            ],
+                        // CCTPv2 Burn standalone on source chain (Base) - no quotePay
+                        .bridge(
+                            bridge: "CCTPv2",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(100, .usdc),
+                            outputTokenAmount: .amt(98, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         // CCTPv2 Mint and subsequent operations happen on destination chain (Arbitrum)
@@ -362,9 +299,9 @@ struct BridgeTests {
                                     executionType: nil
                                 ),
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                // Bridge 99.98 -> 97.9802 arrives on arbitrum - 0.04 quote pay -> 97.9402 USDC transfer
+                                // Bridge 100 -> 98 arrives on arbitrum - 0.04 quote pay -> 97.96 USDC transfer
                                 .transferErc20(
-                                    tokenAmount: .amt(97.9402, .usdc),
+                                    tokenAmount: .amt(97.96, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -374,44 +311,25 @@ struct BridgeTests {
                         ),
                     ]),
                     [
-                        // Quote pay and burn bundled on source chain
-                        .multiAction([
-                            Charter.ActionContext.quotePay(
-                                Charter.ActionContext.QuotePayActionContext(
-                                    amount: Number("20000"),  // 0.02 USDC
-                                    assetSymbol: "USDC",
-                                    chainId: Number("8453"),
-                                    price: Number("1.0e8"),
-                                    payee: EthAddress(
-                                        "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                    ),
-                                    quoteId: Hex(
-                                        "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                    )
+                        // Bridge standalone on source chain
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .cctpV2,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("100000000"),
+                                outputAmount: Number("98000000"),
+                                price: Number("1.0e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
+                                ),
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                 )
-                            ),
-                            Charter.ActionContext.bridge(
-                                Charter.ActionContext.BridgeActionContext(
-                                    assetSymbol: "USDC",
-                                    bridgeType: .cctpV2,
-                                    chainId: Number("8453"),
-                                    destinationChainId: Number("42161"),
-                                    destinationAssetSymbol: "USDC",
-                                    inputAmount: Number("99980000"),
-                                    outputAmount: Number("97980200"),
-                                    price: Number("1.0e8"),
-                                    recipient: EthAddress(
-                                        "0x00000000000000000000000000000000000a11ce"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                    )
-                                )
-                            ),
-                        ]),
+                            )
+                        ),
                         // Mint, quote pay, and transfer happen together on destination chain
                         .multiAction([
                             Charter.ActionContext.bridgeMint(
@@ -420,9 +338,9 @@ struct BridgeTests {
                                     bridgeType: .cctpV2,
                                     chainId: Number("42161"),
                                     sourceChainId: Number("8453"),
-                                    inputAmount: Number("99980000"),
-                                    outputAmount: Number("97980200"),
-                                    maxFee: Number("1999800"),
+                                    inputAmount: Number("100000000"),
+                                    outputAmount: Number("98000000"),
+                                    maxFee: Number("2000000"),
                                     recipient: EthAddress(
                                         "0x00000000000000000000000000000000000a11ce"
                                     ),
@@ -450,7 +368,7 @@ struct BridgeTests {
                             ),
                             Charter.ActionContext.transfer(
                                 Charter.ActionContext.TransferActionContext(
-                                    amount: Number("97940200"),  // 97.9402 USDC
+                                    amount: Number("97960000"),  // 97.96 USDC
                                     assetSymbol: "USDC",
                                     chainId: Number("42161"),
                                     price: Number("1.0e8"),
@@ -495,24 +413,18 @@ struct BridgeTests {
                 when: .transfer(from: .alice, to: .bob, amount: .amt(5, .usdc), on: .arbitrum),
                 expect: .successWithActions(
                     .multi([
-                        // Quote pay and CCTPv2 Burn bundled on source chain (Base)
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "CCTPv2",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    // Burn side calculates:
-                                    // - Need to deliver 5 USDC + 0.04 quote pay = 5.04 USDC to destination
-                                    // - With 2% fee: ceil((5.04 + 0.01) / 0.98) = ceil(5153061.22...) = 5153062
-                                    // - Output: floor(5153062 * 0.98 - 10000) = floor(5040000.76) = 5040000
-                                    inputTokenAmount: .amt(5.153062, .usdc),
-                                    outputTokenAmount: .amt(5.04, .usdc),
-                                    cappedMax: false,
-                                    executionType: nil
-                                ),
-                            ],
+                        // CCTPv2 Burn standalone on source chain (Base) - no quotePay
+                        .bridge(
+                            bridge: "CCTPv2",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            // Burn side calculates:
+                            // - Need to deliver 5 USDC + 0.04 quote pay = 5.04 USDC to destination
+                            // - With 2% fee: ceil((5.04 + 0.01) / 0.98) = ceil(5153061.22...) = 5153062
+                            // - Output: floor(5153062 * 0.98 - 10000) = floor(5040000.76) = 5040000
+                            inputTokenAmount: .amt(5.153062, .usdc),
+                            outputTokenAmount: .amt(5.04, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         // CCTPv2 Mint happens on destination chain (Arbitrum)
@@ -535,44 +447,25 @@ struct BridgeTests {
                         ),
                     ]),
                     [
-                        // Quote pay and burn bundled on source chain
-                        .multiAction([
-                            Charter.ActionContext.quotePay(
-                                Charter.ActionContext.QuotePayActionContext(
-                                    amount: Number("20000"),  // 0.02 USDC
-                                    assetSymbol: "USDC",
-                                    chainId: Number("8453"),  // Base
-                                    price: Number("1.0e8"),
-                                    payee: EthAddress(
-                                        "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                    ),
-                                    quoteId: Hex(
-                                        "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
-                                    )
+                        // Bridge standalone on source chain
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .cctpV2,
+                                chainId: Number("8453"),  // Base
+                                destinationChainId: Number("42161"),  // Arbitrum
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("5153062"),  // 5.153062 USDC (burn input)
+                                outputAmount: Number("5040000"),  // 5.04 USDC (burn output = mint input)
+                                price: Number("1.0e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
+                                ),
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
                                 )
-                            ),
-                            Charter.ActionContext.bridge(
-                                Charter.ActionContext.BridgeActionContext(
-                                    assetSymbol: "USDC",
-                                    bridgeType: .cctpV2,
-                                    chainId: Number("8453"),  // Base
-                                    destinationChainId: Number("42161"),  // Arbitrum
-                                    destinationAssetSymbol: "USDC",
-                                    inputAmount: Number("5153062"),  // 5.153062 USDC (burn input)
-                                    outputAmount: Number("5040000"),  // 5.04 USDC (burn output = mint input)
-                                    price: Number("1.0e8"),
-                                    recipient: EthAddress(
-                                        "0x00000000000000000000000000000000000a11ce"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
-                                    )
-                                )
-                            ),
-                        ]),
+                            )
+                        ),
                         // Mint, quote pay, and transfer happen together on destination chain
                         .multiAction([
                             Charter.ActionContext.bridgeMint(
@@ -650,18 +543,13 @@ struct BridgeTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .hyperEVM,
-                                    inputTokenAmount: .amt(51.555556, .usdc),
-                                    outputTokenAmount: .amt(50.04, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .hyperEVM,
+                            inputTokenAmount: .amt(51.555556, .usdc),
+                            outputTokenAmount: .amt(50.04, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -699,20 +587,14 @@ struct BridgeTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        // Quote pay and CCTPv2 Burn bundled on source chain (Base)
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "CCTPv2",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .hyperEVM,
-                                    inputTokenAmount: .amt(51.555556, .usdc),
-                                    outputTokenAmount: .amt(50.04, .usdc),
-                                    cappedMax: false,
-                                    executionType: nil
-                                ),
-                            ],
+                        // CCTPv2 Burn standalone on source chain (Base) - no quotePay
+                        .bridge(
+                            bridge: "CCTPv2",
+                            srcNetwork: .base,
+                            destinationNetwork: .hyperEVM,
+                            inputTokenAmount: .amt(51.555556, .usdc),
+                            outputTokenAmount: .amt(50.04, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         // CCTPv2 Mint and subsequent operations on destination chain (HyperEVM)
@@ -735,44 +617,25 @@ struct BridgeTests {
                         ),
                     ]),
                     [
-                        // Quote pay and burn bundled on source chain
-                        .multiAction([
-                            Charter.ActionContext.quotePay(
-                                Charter.ActionContext.QuotePayActionContext(
-                                    amount: Number("20000"),  // 0.02 USDC
-                                    assetSymbol: "USDC",
-                                    chainId: Number("8453"),  // Base
-                                    price: Number("1.0e8"),
-                                    payee: EthAddress(
-                                        "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                    ),
-                                    quoteId: Hex(
-                                        "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
-                                    )
+                        // Bridge standalone on source chain
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .cctpV2,
+                                chainId: Number("8453"),  // Base
+                                destinationChainId: Number("999"),  // HyperEVM
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("51555556"),
+                                outputAmount: Number("50040000"),
+                                price: Number("1.0e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
+                                ),
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
                                 )
-                            ),
-                            Charter.ActionContext.bridge(
-                                Charter.ActionContext.BridgeActionContext(
-                                    assetSymbol: "USDC",
-                                    bridgeType: .cctpV2,
-                                    chainId: Number("8453"),  // Base
-                                    destinationChainId: Number("999"),  // HyperEVM
-                                    destinationAssetSymbol: "USDC",
-                                    inputAmount: Number("51555556"),
-                                    outputAmount: Number("50040000"),
-                                    price: Number("1.0e8"),
-                                    recipient: EthAddress(
-                                        "0x00000000000000000000000000000000000a11ce"
-                                    ),
-                                    token: EthAddress(
-                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"  // USDC on Base
-                                    )
-                                )
-                            ),
-                        ]),
+                            )
+                        ),
                         // Mint, quote pay, and transfer happen together on destination chain
                         .multiAction([
                             Charter.ActionContext.bridgeMint(

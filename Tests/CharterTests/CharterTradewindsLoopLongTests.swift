@@ -164,7 +164,7 @@ struct CharterTradewindsLoopLongTests {
                 name: "Cross-Chain Loop Long",
                 givens: [
                     // Alice has USDC on Arbitrum but needs it on Base
-                    .tokenBalance(.alice, .amt(10_000.04, .usdc), .arbitrum),
+                    .tokenBalance(.alice, .amt(10_000, .usdc), .arbitrum),
                     .quote(.basic),
                     .acrossQuote(.amt(1, .usdc), 0.01),  // 1% bridge fee
                 ],
@@ -209,7 +209,7 @@ struct CharterTradewindsLoopLongTests {
                                 minFlow: "0",
                                 maxFlow: "10000e6"
                             ),
-                            amount: "10000.04e6"  // Bridge 10000 USDC with fees
+                            amount: "10000e6"  // Bridge 10000 USDC
                         ),
                         // Loop long on Base
                         Tradewinds.Flow(

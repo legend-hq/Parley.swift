@@ -257,25 +257,16 @@ struct LoopShortTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: TokenAmount(fromWei: "10000000000000", ofToken: .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: TokenAmount(
-                                        fromWei: "515151515151515152",
-                                        ofToken: .weth
-                                    ),
-                                    outputTokenAmount: .amt(0.5, .weth),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: TokenAmount(
+                                fromWei: "515151515151515152",
+                                ofToken: .weth
+                            ),
+                            outputTokenAmount: .amt(0.5, .weth),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(

@@ -20,18 +20,13 @@ struct MultiAccountTests {
                 when: .transfer(from: .alice, to: .bob, amount: .amt(10, .usdc), on: .ethereum),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .ethereum,
-                                    inputTokenAmount: .amt(11.212122, .usdc),
-                                    outputTokenAmount: .amt(10.10, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .ethereum,
+                            inputTokenAmount: .amt(11.212122, .usdc),
+                            outputTokenAmount: .amt(10.10, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -48,44 +43,23 @@ struct MultiAccountTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("1"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("11.212122e6"),
+                                outputAmount: Number("10.1e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("1"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("11.212122e6"),
-                                        outputAmount: Number("10.1e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [

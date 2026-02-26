@@ -602,18 +602,13 @@ struct CometRepayTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.232324, .usdc),
-                                    outputTokenAmount: .amt(2.2, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.232324, .usdc),
+                            outputTokenAmount: .amt(2.2, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -630,44 +625,23 @@ struct CometRepayTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3.232324e6"),
+                                outputAmount: Number("2.2e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("3.232324e6"),
-                                        outputAmount: Number("2.2e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -749,22 +723,17 @@ struct CometRepayTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Amount to bridge = 10 USDC debt + 1% max repay buffer (10.0001)
-                                    // + 0.1 USDC quote fee on Base + 1.0 USDC Across fixed fee
-                                    // + ~0.0121 USDC Across percentage fee = 11.212223 USDC input
-                                    inputTokenAmount: .amt(11.212223, .usdc),
-                                    // 10 USDC debt + 1% max repay buffer + 0.1 USDC quote fee = 10.1001 USDC output
-                                    outputTokenAmount: .amt(10.1001, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Amount to bridge = 10 USDC debt + 1% max repay buffer (10.0001)
+                            // + 0.1 USDC quote fee on Base + 1.0 USDC Across fixed fee
+                            // + ~0.0121 USDC Across percentage fee = 11.212223 USDC input
+                            inputTokenAmount: .amt(11.212223, .usdc),
+                            // 10 USDC debt + 1% max repay buffer + 0.1 USDC quote fee = 10.1001 USDC output
+                            outputTokenAmount: .amt(10.1001, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -782,44 +751,23 @@ struct CometRepayTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("11.212223e6"),
+                                outputAmount: Number("10.1001e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("11.212223e6"),
-                                        outputAmount: Number("10.1001e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -897,28 +845,23 @@ struct CometRepayTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // 10 USDC available - 0.1 USDC quote fee = 9.9 USDC to bridge
-                                    inputTokenAmount: .amt(9.9, .usdc),
-                                    // 9.9 USDC - 1% Across fee - 0.099 USDC Across fixed fee = 8.801 USDC arrives on Base
-                                    outputTokenAmount: .amt(8.801, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // 10 USDC available, all bridged (no source chain fee)
+                            inputTokenAmount: .amt(10, .usdc),
+                            // 10 USDC - 1% Across fee - 0.1 USDC Across fixed fee = 8.9 USDC arrives on Base
+                            outputTokenAmount: .amt(8.9, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
                                 .repayAndWithdrawMultipleAssetsFromComet(
-                                    // 8.801 USDC arrived - 0.1 USDC quote fee = 8.701 USDC repay
-                                    repayAmount: .amt(8.701, .usdc),
+                                    // 8.9 USDC arrived - 0.1 USDC quote fee = 8.8 USDC repay
+                                    repayAmount: .amt(8.8, .usdc),
                                     collateralAmounts: [],
                                     market: .cusdcv3,
                                     network: .base
@@ -928,44 +871,23 @@ struct CometRepayTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("10e6"),
+                                outputAmount: Number("8.9e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("9.9e6"),
-                                        outputAmount: Number("8.801e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -988,7 +910,7 @@ struct CometRepayTests {
                                 ),
                                 Charter.ActionContext.cometRepay(
                                     Charter.ActionContext.CometRepayActionContext(
-                                        amount: Number("8.701e6"),
+                                        amount: Number("8.8e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("8453"),
                                         collateralAmounts: [],
@@ -1044,21 +966,16 @@ struct CometRepayTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.1, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    // Need 10.1001 total on Base - 3 already on Base = 7.1001 to bridge
-                                    // 7.1001 + 1.0 Across fixed fee + ~0.0819 Across pct fee = 8.18192 input
-                                    inputTokenAmount: .amt(8.18192, .usdc),
-                                    // 7.1001 USDC arrives on Base (10 USDC debt + 1% buffer + quote fee - 3 USDC local)
-                                    outputTokenAmount: .amt(7.1001, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            // Need 10.1001 total on Base - 3 already on Base = 7.1001 to bridge
+                            // 7.1001 + 1.0 Across fixed fee + ~0.0819 Across pct fee = 8.18192 input
+                            inputTokenAmount: .amt(8.18192, .usdc),
+                            // 7.1001 USDC arrives on Base (10 USDC debt + 1% buffer + quote fee - 3 USDC local)
+                            outputTokenAmount: .amt(7.1001, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(

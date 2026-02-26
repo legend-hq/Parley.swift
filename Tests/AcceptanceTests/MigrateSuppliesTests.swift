@@ -1022,17 +1022,12 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.1, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(9.8, .usdc),
-                                    outputTokenAmount: .amt(8.702, .usdc),
+                                    inputTokenAmount: .amt(9.9, .usdc),
+                                    outputTokenAmount: .amt(8.801, .usdc),
                                     cappedMax: false
                                 ),
                             ],
@@ -1050,17 +1045,12 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
                                     destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(9.96, .usdc),
-                                    outputTokenAmount: .amt(8.8604, .usdc),
+                                    inputTokenAmount: .amt(9.98, .usdc),
+                                    outputTokenAmount: .amt(8.8802, .usdc),
                                     cappedMax: false
                                 ),
                             ],
@@ -1073,9 +1063,9 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 8.702 bridged + 8.8604 bridged - 0.04 fee = 17.5224
+                                // 8.801 bridged + 8.8802 bridged - 0.04 fee = 17.6412
                                 .supplyToComet(
-                                    tokenAmount: .amt(17.5224, .usdc),
+                                    tokenAmount: .amt(17.6412, .usdc),
                                     market: .cusdcv3,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -1118,23 +1108,6 @@ struct MigrateSuppliesTests {
                                         )
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "USDC",
@@ -1142,8 +1115,8 @@ struct MigrateSuppliesTests {
                                         chainId: Number("1"),
                                         destinationChainId: Number("42161"),
                                         destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("9.8e6"),
-                                        outputAmount: Number("8.702e6"),
+                                        inputAmount: Number("9.9e6"),
+                                        outputAmount: Number("8.801e6"),
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1188,23 +1161,6 @@ struct MigrateSuppliesTests {
                                         )
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "USDC",
@@ -1212,8 +1168,8 @@ struct MigrateSuppliesTests {
                                         chainId: Number("8453"),
                                         destinationChainId: Number("42161"),
                                         destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("9.96e6"),
-                                        outputAmount: Number("8.8604e6"),
+                                        inputAmount: Number("9.98e6"),
+                                        outputAmount: Number("8.8802e6"),
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1246,7 +1202,7 @@ struct MigrateSuppliesTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("17.5224e6"),
+                                        amount: Number("17.6412e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("42161"),
                                         comet: EthAddress(
@@ -1305,17 +1261,12 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.1, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(9.800100, .usdc),
-                                    outputTokenAmount: .amt(8.702099, .usdc),
+                                    inputTokenAmount: .amt(9.900100, .usdc),
+                                    outputTokenAmount: .amt(8.801099, .usdc),
                                     cappedMax: true
                                 ),
                             ],
@@ -1333,17 +1284,12 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
                                     destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(9.960100, .usdc),
-                                    outputTokenAmount: .amt(8.860499, .usdc),
+                                    inputTokenAmount: .amt(9.980100, .usdc),
+                                    outputTokenAmount: .amt(8.880299, .usdc),
                                     cappedMax: true
                                 ),
                             ],
@@ -1356,9 +1302,9 @@ struct MigrateSuppliesTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 8.702099 bridged + 8.860499 bridged - 0.04 fee = 17.522598
+                                // 8.801099 bridged + 8.880299 bridged - 0.04 fee = 17.641398
                                 .supplyToComet(
-                                    tokenAmount: .amt(17.522598, .usdc),
+                                    tokenAmount: .amt(17.641398, .usdc),
                                     market: .cusdcv3,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -1403,23 +1349,6 @@ struct MigrateSuppliesTests {
                                         )
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "USDC",
@@ -1427,8 +1356,8 @@ struct MigrateSuppliesTests {
                                         chainId: Number("1"),
                                         destinationChainId: Number("42161"),
                                         destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("9.8001e6"),
-                                        outputAmount: Number("8.702099e6"),
+                                        inputAmount: Number("9.90010e6"),
+                                        outputAmount: Number("8.801099e6"),
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1475,23 +1404,6 @@ struct MigrateSuppliesTests {
                                         )
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.bridge(
                                     Charter.ActionContext.BridgeActionContext(
                                         assetSymbol: "USDC",
@@ -1499,8 +1411,8 @@ struct MigrateSuppliesTests {
                                         chainId: Number("8453"),
                                         destinationChainId: Number("42161"),
                                         destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("9.9601e6"),
-                                        outputAmount: Number("8.860499e6"),
+                                        inputAmount: Number("9.98010e6"),
+                                        outputAmount: Number("8.880299e6"),
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000a11ce"
@@ -1533,7 +1445,7 @@ struct MigrateSuppliesTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("17.522598e6"),
+                                        amount: Number("17.641398e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("42161"),
                                         comet: EthAddress(
@@ -1721,18 +1633,13 @@ struct MigrateSuppliesTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.96, .usdc),
-                                    outputTokenAmount: .amt(2.9204, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(4, .usdc),
+                            outputTokenAmount: .amt(2.96, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -1744,9 +1651,9 @@ struct MigrateSuppliesTests {
                                 ),
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                // 10 * 1.00001 (max buffer) + 2.9204 (bridged) - 0.02 - 0.02 = 12.8805
+                                // 10 * 1.00001 (max buffer) + 2.96 (bridged) - 0.02 - 0.02 = 12.9201
                                 .supplyToAave(
-                                    tokenAmount: .amt(12.8805, .usdc),
+                                    tokenAmount: .amt(12.9201, .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -1756,44 +1663,23 @@ struct MigrateSuppliesTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.04e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("42161"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("42161"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("4e6"),
+                                outputAmount: Number("2.96e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("42161"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("3.96e6"),
-                                        outputAmount: Number("2.9204e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1849,7 +1735,7 @@ struct MigrateSuppliesTests {
                                 ),
                                 Charter.ActionContext.aaveSupply(
                                     Charter.ActionContext.AaveSupplyActionContext(
-                                        amount: Number("12.8805e6"),
+                                        amount: Number("12.9201e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("8453"),
                                         aavePool: EthAddress(
@@ -1902,13 +1788,12 @@ struct MigrateSuppliesTests {
                                     network: .optimism
                                 ),
                                 .quotePay(payment: .amt(0.06, .usdc), payee: .stax, quote: .basic),
-                                .quotePay(payment: .amt(0.06, .usdc), payee: .stax, quote: .basic),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .optimism,
                                     destinationNetwork: .worldChain,
-                                    inputTokenAmount: .amt(9.8801, .usdc),
-                                    outputTokenAmount: .amt(8.781299, .usdc),
+                                    inputTokenAmount: .amt(9.9401, .usdc),
+                                    outputTokenAmount: .amt(8.840699, .usdc),
                                     cappedMax: true
                                 ),
                             ],
@@ -1922,13 +1807,12 @@ struct MigrateSuppliesTests {
                                     network: .unichain
                                 ),
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .unichain,
                                     destinationNetwork: .worldChain,
-                                    inputTokenAmount: .amt(9.9601, .usdc),
-                                    outputTokenAmount: .amt(8.860499, .usdc),
+                                    inputTokenAmount: .amt(9.9801, .usdc),
+                                    outputTokenAmount: .amt(8.880299, .usdc),
                                     cappedMax: true
                                 ),
                             ],
@@ -1942,13 +1826,12 @@ struct MigrateSuppliesTests {
                                     network: .base
                                 ),
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
                                     destinationNetwork: .worldChain,
-                                    inputTokenAmount: .amt(9.9601, .usdc),
-                                    outputTokenAmount: .amt(8.860499, .usdc),
+                                    inputTokenAmount: .amt(9.9801, .usdc),
+                                    outputTokenAmount: .amt(8.880299, .usdc),
                                     cappedMax: true
                                 ),
                             ],
@@ -1957,9 +1840,9 @@ struct MigrateSuppliesTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                // 8.781299 bridged + 8.860499 bridged + 8.860499 bridged - 0.1 fee = 26.402297
+                                // 8.840699 bridged + 8.880299 bridged + 8.880299 bridged - 0.1 fee = 26.501297
                                 .supplyToMorphoVault(
-                                    tokenAmount: .amt(26.402297, .usdc),
+                                    tokenAmount: .amt(26.501297, .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .worldChain

@@ -164,7 +164,7 @@ struct CharterTradewindsLoopShortTests {
                 name: "Cross-Chain Loop Short",
                 givens: [
                     // Alice has WETH on Arbitrum but needs it on Base
-                    .tokenBalance(.alice, .amt(5.00001, .weth), .arbitrum),
+                    .tokenBalance(.alice, .amt(5, .weth), .arbitrum),
                     .quote(.basic),
                     .acrossQuote(.amt(1, .weth), 0.01),  // 1% bridge fee with 1 WETH fixed cost
                 ],
@@ -209,7 +209,7 @@ struct CharterTradewindsLoopShortTests {
                                 minFlow: "0",
                                 maxFlow: "5e18"
                             ),
-                            amount: "5.00001e18"  // Bridge 5 WETH with fees
+                            amount: "5e18"  // Bridge 5 WETH
                         ),
                         // Wrap ETH to WETH on Base
                         Tradewinds.Flow(

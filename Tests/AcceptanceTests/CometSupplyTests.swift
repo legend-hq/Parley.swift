@@ -345,27 +345,22 @@ struct CometSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),  // Base fee
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    // Max calculation results in slightly less
-                                    inputTokenAmount: .amt(49.98, .usdc),
-                                    outputTokenAmount: .amt(48.4802, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            // Max calculation: full 50 USDC (no quotePay deducted)
+                            inputTokenAmount: .amt(50, .usdc),
+                            outputTokenAmount: .amt(48.5, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                // 50 (arbitrum balance) + 48.4802 (bridged from base) - 0.04 (quote pay) = 98.4402
+                                // 50 (arbitrum balance) + 48.5 (bridged from base) - 0.04 (quote pay) = 98.46
                                 .supplyToComet(
-                                    tokenAmount: .amt(98.4402, .usdc),
+                                    tokenAmount: .amt(98.46, .usdc),
                                     market: .cusdcv3,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -375,44 +370,23 @@ struct CometSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("50e6"),
+                                outputAmount: Number("48.5e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                .bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("42161"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("49.98e6"),
-                                        outputAmount: Number("48.4802e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -435,7 +409,7 @@ struct CometSupplyTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("98.4402e6"),
+                                        amount: Number("98.46e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("42161"),
                                         comet: EthAddress(
@@ -548,11 +522,6 @@ struct CometSupplyTests {
                         .multicall(
                             [
                                 .wrapAsset(.eth),
-                                .quotePay(
-                                    payment: .amt(0.000015, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .optimism,
@@ -594,29 +563,12 @@ struct CometSupplyTests {
                                 Charter.ActionContext.wrap(
                                     Charter.ActionContext.WrapActionContext(
                                         chainId: Number("10"),
-                                        amount: Number("1.020222070707070708e18"),
+                                        amount: Number("1.020207070707070708e18"),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                         ),
                                         fromAssetSymbol: "ETH",
                                         toAssetSymbol: "WETH"
-                                    )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000015e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("10"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x4200000000000000000000000000000000000006"
-                                        )
                                     )
                                 ),
                                 Charter.ActionContext.bridge(

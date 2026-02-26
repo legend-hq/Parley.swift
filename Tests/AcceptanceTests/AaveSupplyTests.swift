@@ -191,26 +191,21 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(2.900000, .usdc),
-                                    outputTokenAmount: .amt(1.871, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.000000, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                // 3 (base balance) + 1.871 (bridged) - 0.02 (quote pay) = 4.851
+                                // 3 (base balance) + 1.97 (bridged) - 0.02 (quote pay) = 4.95
                                 .supplyToAave(
-                                    tokenAmount: .amt(4.851, .usdc),
+                                    tokenAmount: .amt(4.95, .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -221,44 +216,23 @@ struct AaveSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3e6"),
+                                outputAmount: Number("1.97e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                .bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("2.9e6"),
-                                        outputAmount: Number("1.871e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction([
                             Charter.ActionContext.quotePay(
@@ -280,7 +254,7 @@ struct AaveSupplyTests {
                             ),
                             Charter.ActionContext.aaveSupply(
                                 Charter.ActionContext.AaveSupplyActionContext(
-                                    amount: Number("4.851e6"),
+                                    amount: Number("4.95e6"),
                                     assetSymbol: "USDC",
                                     chainId: Number("8453"),
                                     aavePool: EthAddress(
@@ -484,27 +458,22 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(1.400000, .usdc),
-                                    outputTokenAmount: .amt(0.386, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(1.500000, .usdc),
+                            outputTokenAmount: .amt(0.485, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
 
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                // 1.5 (base balance) + 0.386 (bridged) - 0.02 (quote pay) = 1.866
+                                // 1.5 (base balance) + 0.485 (bridged) - 0.02 (quote pay) = 1.965
                                 .supplyToAave(
-                                    tokenAmount: .amt(1.866, .usdc),
+                                    tokenAmount: .amt(1.965, .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -514,44 +483,23 @@ struct AaveSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                .quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("1.5e6"),
+                                outputAmount: Number("0.485e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                .bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("1.4e6"),
-                                        outputAmount: Number("0.386e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -574,7 +522,7 @@ struct AaveSupplyTests {
                                 ),
                                 Charter.ActionContext.aaveSupply(
                                     Charter.ActionContext.AaveSupplyActionContext(
-                                        amount: Number("1.866e6"),
+                                        amount: Number("1.965e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("8453"),
                                         aavePool: EthAddress(
@@ -688,18 +636,13 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.050506, .usdc),
-                                    outputTokenAmount: .amt(2.02, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.050506, .usdc),
+                            outputTokenAmount: .amt(2.02, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -717,44 +660,23 @@ struct AaveSupplyTests {
 
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3.050506e6"),
+                                outputAmount: Number("2.02e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("3.050506e6"),
-                                        outputAmount: Number("2.02e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
 
                         .multiAction(
@@ -827,26 +749,21 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(2.90, .usdc),
-                                    outputTokenAmount: .amt(1.871, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.00, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                // 3 (base balance) + 1.871 (bridged) - 0.02 (quote pay) = 4.851
+                                // 3 (base balance) + 1.97 (bridged) - 0.02 (quote pay) = 4.95
                                 .supplyToAave(
-                                    tokenAmount: .amt(4.851, .usdc),
+                                    tokenAmount: .amt(4.95, .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -856,44 +773,23 @@ struct AaveSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                .quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3e6"),
+                                outputAmount: Number("1.97e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                .bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("2.9e6"),
-                                        outputAmount: Number("1.871e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction([
                             Charter.ActionContext.quotePay(
@@ -915,7 +811,7 @@ struct AaveSupplyTests {
                             ),
                             Charter.ActionContext.aaveSupply(
                                 Charter.ActionContext.AaveSupplyActionContext(
-                                    amount: Number("4.851e6"),
+                                    amount: Number("4.95e6"),
                                     assetSymbol: "USDC",
                                     chainId: Number("8453"),
                                     aavePool: EthAddress(
@@ -978,26 +874,21 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.50, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(2.50, .usdc),
-                                    outputTokenAmount: .amt(1.475, .usdc),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.00, .usdc),
+                            outputTokenAmount: .amt(1.97, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                // 3 (base balance) + 1.475 (bridged) - 0.1 (quote pay) = 4.375
+                                // 3 (base balance) + 1.97 (bridged) - 0.1 (quote pay) = 4.87
                                 .supplyToAave(
-                                    tokenAmount: .amt(4.375, .usdc),
+                                    tokenAmount: .amt(4.87, .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -1007,44 +898,23 @@ struct AaveSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                .quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.5e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3e6"),
+                                outputAmount: Number("1.97e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                .bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("2.5e6"),
-                                        outputAmount: Number("1.475e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1067,7 +937,7 @@ struct AaveSupplyTests {
                                 ),
                                 Charter.ActionContext.aaveSupply(
                                     Charter.ActionContext.AaveSupplyActionContext(
-                                        amount: Number("4.375e6"),
+                                        amount: Number("4.87e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("8453"),
                                         aavePool: EthAddress(
@@ -1120,18 +990,13 @@ struct AaveSupplyTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.5, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .ethereum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(3.131314, .usdc),
-                                    outputTokenAmount: .amt(2.10, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .ethereum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3.131314, .usdc),
+                            outputTokenAmount: .amt(2.10, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -1148,44 +1013,23 @@ struct AaveSupplyTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.5e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("1"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("3.131314e6"),
+                                outputAmount: Number("2.1e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("1"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("3.131314e6"),
-                                        outputAmount: Number("2.1e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                )
+                            )
                         ),
                         .multiAction(
                             [

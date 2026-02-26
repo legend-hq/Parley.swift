@@ -12,8 +12,8 @@ struct ClaimRewardsTests {
 
     // MARK: - Comet Protocol Tests
 
-    @Test("Alice claims USDC rewards from Comet only, paying with QuotePay")
-    func testCometClaimRewardsUSDCWithQuotePay() async throws {
+    @Test("Alice claims USDC rewards from Comet only")
+    func testCometClaimRewardsUSDC() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -28,58 +28,28 @@ struct ClaimRewardsTests {
                 ),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimCometRewards(
-                                    cometRewards: [.usdcReward],
-                                    comets: [.cusdcv3],
-                                    accounts: [.alice],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimCometRewards(
+                            cometRewards: [.usdcReward],
+                            comets: [.cusdcv3],
+                            accounts: [.alice],
+                            network: .base,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.cometClaimRewards(
-                                    Charter.ActionContext.CometClaimRewardsActionContext(
-                                        amounts: [Number("10e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("8453"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                            )
-                                        ]
+                        Charter.ActionContext.cometClaimRewards(
+                            Charter.ActionContext.CometClaimRewardsActionContext(
+                                amounts: [Number("10e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("8453"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
@@ -100,66 +70,36 @@ struct ClaimRewardsTests {
                 when: .claimRewards(from: .alice, assetSymbol: "WETH"),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimCometRewards(
-                                    cometRewards: [.wethReward],
-                                    comets: [.cwethv3],
-                                    accounts: [.alice],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimCometRewards(
+                            cometRewards: [.wethReward],
+                            comets: [.cwethv3],
+                            accounts: [.alice],
+                            network: .base,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.cometClaimRewards(
-                                    Charter.ActionContext.CometClaimRewardsActionContext(
-                                        amounts: [Number("3e18")],
-                                        assetSymbols: ["WETH"],
-                                        chainId: Number("8453"),
-                                        prices: [Number("4000e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0x4200000000000000000000000000000000000006"
-                                            )
-                                        ]
+                        Charter.ActionContext.cometClaimRewards(
+                            Charter.ActionContext.CometClaimRewardsActionContext(
+                                amounts: [Number("3e18")],
+                                assetSymbols: ["WETH"],
+                                chainId: Number("8453"),
+                                prices: [Number("4000e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x4200000000000000000000000000000000000006"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000005e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("8453"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x4200000000000000000000000000000000000006"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
         )
     }
 
-    @Test("Alice claims USDC rewards from Comet, paying with claimed rewards")
-    func testCometClaimRewardsPayFromWithdraw() async throws {
+    @Test("Alice claims USDC rewards from Comet (no fee even with high quote cost)")
+    func testCometClaimRewardsHighQuoteCost() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -182,66 +122,36 @@ struct ClaimRewardsTests {
                 ),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimCometRewards(
-                                    cometRewards: [.usdcReward],
-                                    comets: [.cusdcv3],
-                                    accounts: [.alice],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(1, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimCometRewards(
+                            cometRewards: [.usdcReward],
+                            comets: [.cusdcv3],
+                            accounts: [.alice],
+                            network: .base,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.cometClaimRewards(
-                                    Charter.ActionContext.CometClaimRewardsActionContext(
-                                        amounts: [Number("10e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("8453"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                            )
-                                        ]
+                        Charter.ActionContext.cometClaimRewards(
+                            Charter.ActionContext.CometClaimRewardsActionContext(
+                                amounts: [Number("10e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("8453"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
         )
     }
 
-    @Test("Alice fails to claim Comet rewards when cost is too high")
-    func testCometClaimRewardsCostTooHigh() async throws {
+    @Test("Alice claims small Comet rewards even with high quote cost (no fee for claims)")
+    func testCometClaimRewardsSmallAmountHighCost() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -262,17 +172,41 @@ struct ClaimRewardsTests {
                     from: .alice,
                     assetSymbol: "USDC"
                 ),
-                // Note: Previously expected .revert(.unableToConstructQuotePay("IMPOSSIBLE_TO_CONSTRUCT", "USDC", 1000000))
-                // but Tradewinds now returns .error("insufficientResources") when no path is found
-                expect: .failure(.error("insufficientResources(target: .max, max: 0)"))
+                // No fee for claims, so even small rewards succeed
+                expect: .successWithActions(
+                    .single(
+                        .claimCometRewards(
+                            cometRewards: [.usdcReward],
+                            comets: [.cusdcv3],
+                            accounts: [.alice],
+                            network: .base,
+                            executionType: .immediate
+                        )
+                    ),
+                    [
+                        Charter.ActionContext.cometClaimRewards(
+                            Charter.ActionContext.CometClaimRewardsActionContext(
+                                amounts: [Number("0.01e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("8453"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                    )
+                                ]
+                            )
+                        ),
+                    ]
+                )
             )
         )
     }
 
     // MARK: - Morpho Protocol Tests
 
-    @Test("Alice claims USDC rewards from Morpho only, paying with QuotePay")
-    func testMorphoClaimRewardsUSDCWithQuotePay() async throws {
+    @Test("Alice claims USDC rewards from Morpho only")
+    func testMorphoClaimRewardsUSDC() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -288,59 +222,29 @@ struct ClaimRewardsTests {
                 ),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimMorphoRewards(
-                                    distributors: [.distributor],
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(10, .usdc)],
-                                    proofs: [.validProof3],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(10, .usdc)],
+                            proofs: [.validProof3],
+                            network: .base,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.morphoClaimRewards(
-                                    Charter.ActionContext.MorphoClaimRewardsActionContext(
-                                        amounts: [Number("10e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("8453"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                            )
-                                        ]
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("10e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("8453"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
@@ -360,59 +264,29 @@ struct ClaimRewardsTests {
                 when: .claimRewards(from: .alice, assetSymbol: "WETH"),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimMorphoRewards(
-                                    distributors: [.distributor],
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(1, .weth)],
-                                    proofs: [.validProof1],
-                                    network: .ethereum
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.000025, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(1, .weth)],
+                            proofs: [.validProof1],
+                            network: .ethereum,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.morphoClaimRewards(
-                                    Charter.ActionContext.MorphoClaimRewardsActionContext(
-                                        amounts: [Number("1e18")],
-                                        assetSymbols: ["WETH"],
-                                        chainId: Number("1"),
-                                        prices: [Number("4000e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                                            )
-                                        ]
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("1e18")],
+                                assetSymbols: ["WETH"],
+                                chainId: Number("1"),
+                                prices: [Number("4000e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000025e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("1"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
@@ -444,113 +318,53 @@ struct ClaimRewardsTests {
                     .multi([
                         // Ethereum, Base order determined by Tradewinds topological sort
                         // Both are independent reward claims (no dependency between them)
-                        // Ethereum USDC claim from regular Morpho distributor with QuotePay
-                        .multicall(
-                            [
-                                .claimMorphoRewards(
-                                    distributors: [.distributor],
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(5, .usdc)],
-                                    proofs: [.validProof1],
-                                    network: .ethereum
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.10, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        // Ethereum USDC claim from regular Morpho distributor (no QuotePay)
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(5, .usdc)],
+                            proofs: [.validProof1],
+                            network: .ethereum,
                             executionType: .immediate
                         ),
-                        // Base USDC claim from Merkl with QuotePay
-                        .multicall(
-                            [
-                                .claimMerklRewards(
-                                    distributor: .merklDistributor,
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(10, .usdc)],
-                                    proofs: [.validProof3],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        // Base USDC claim from Merkl (no QuotePay)
+                        .claimMerklRewards(
+                            distributor: .merklDistributor,
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(10, .usdc)],
+                            proofs: [.validProof3],
+                            network: .base,
                             executionType: .immediate
                         ),
                     ]),
                     [
                         // Ethereum action first (matches the order above)
-                        .multiAction(
-                            [
-                                Charter.ActionContext.morphoClaimRewards(
-                                    Charter.ActionContext.MorphoClaimRewardsActionContext(
-                                        amounts: [Number("5e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("1"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                            )
-                                        ]
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("5e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("1"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.1e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
+                                ]
+                            )
                         ),
                         // Base action second
-                        .multiAction(
-                            [
-                                Charter.ActionContext.morphoClaimRewards(
-                                    Charter.ActionContext.MorphoClaimRewardsActionContext(
-                                        amounts: [Number("10e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("8453"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                            )
-                                        ]
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("10e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("8453"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                ]
+                            )
                         ),
                     ]
                 )
@@ -558,8 +372,8 @@ struct ClaimRewardsTests {
         )
     }
 
-    @Test("Alice claims Morpho rewards paying with claimed rewards")
-    func testMorphoClaimRewardsPayFromWithdraw() async throws {
+    @Test("Alice claims Morpho rewards (no fee even with high quote cost)")
+    func testMorphoClaimRewardsHighQuoteCost() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -582,67 +396,37 @@ struct ClaimRewardsTests {
                 ),
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimMorphoRewards(
-                                    distributors: [.distributor],
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(10, .usdc)],
-                                    proofs: [.validProof1],
-                                    network: .ethereum
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.5, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(10, .usdc)],
+                            proofs: [.validProof1],
+                            network: .ethereum,
                             executionType: .immediate
                         )
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.morphoClaimRewards(
-                                    Charter.ActionContext.MorphoClaimRewardsActionContext(
-                                        amounts: [Number("10e6")],
-                                        assetSymbols: ["USDC"],
-                                        chainId: Number("1"),
-                                        prices: [Number("1e8")],
-                                        tokens: [
-                                            EthAddress(
-                                                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                            )
-                                        ]
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("10e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("1"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                                     )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.5e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("1"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
-                                    )
-                                ),
-                            ]
-                        )
+                                ]
+                            )
+                        ),
                     ]
                 )
             )
         )
     }
 
-    @Test("Alice fails to claim Morpho rewards when cost is too high")
-    func testMorphoClaimRewardsCostTooHigh() async throws {
+    @Test("Alice claims small Morpho rewards even with high quote cost (no fee for claims)")
+    func testMorphoClaimRewardsSmallAmountHighCost() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -663,9 +447,34 @@ struct ClaimRewardsTests {
                     from: .alice,
                     assetSymbol: "USDC"
                 ),
-                // Note: Previously expected .revert(.unableToConstructQuotePay("IMPOSSIBLE_TO_CONSTRUCT", "USDC", 500000))
-                // but Tradewinds now returns .error("insufficientResources") when no path is found
-                expect: .failure(.error("insufficientResources(target: .max, max: 0)"))
+                // No fee for claims, so even small rewards succeed
+                expect: .successWithActions(
+                    .single(
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(0.4, .usdc)],
+                            proofs: [.validProof1],
+                            network: .ethereum,
+                            executionType: .immediate
+                        )
+                    ),
+                    [
+                        Charter.ActionContext.morphoClaimRewards(
+                            Charter.ActionContext.MorphoClaimRewardsActionContext(
+                                amounts: [Number("0.4e6")],
+                                assetSymbols: ["USDC"],
+                                chainId: Number("1"),
+                                prices: [Number("1e8")],
+                                tokens: [
+                                    EthAddress(
+                                        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                    )
+                                ]
+                            )
+                        ),
+                    ]
+                )
             )
         )
     }
@@ -695,21 +504,11 @@ struct ClaimRewardsTests {
                                     proofs: [.validProof1],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .claimCometRewards(
                                     cometRewards: [.usdcReward],
                                     comets: [.cusdcv3],
                                     accounts: [.alice],
                                     network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
                                 ),
                             ],
                             executionType: .immediate
@@ -736,37 +535,19 @@ struct ClaimRewardsTests {
                 when: .claimRewards(from: .alice, assetSymbol: "WETH"),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .claimMorphoRewards(
-                                    distributors: [.distributor],
-                                    accounts: [.alice],
-                                    rewardsClaimable: [.amt(3, .weth)],
-                                    proofs: [.validProof1],
-                                    network: .ethereum
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.000025, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimMorphoRewards(
+                            distributors: [.distributor],
+                            accounts: [.alice],
+                            rewardsClaimable: [.amt(3, .weth)],
+                            proofs: [.validProof1],
+                            network: .ethereum,
                             executionType: .immediate
                         ),
-                        .multicall(
-                            [
-                                .claimCometRewards(
-                                    cometRewards: [.wethReward],
-                                    comets: [.cwethv3],
-                                    accounts: [.alice],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimCometRewards(
+                            cometRewards: [.wethReward],
+                            comets: [.cwethv3],
+                            accounts: [.alice],
+                            network: .base,
                             executionType: .immediate
                         ),
                     ]),
@@ -807,20 +588,11 @@ struct ClaimRewardsTests {
                 when: .claimRewards(from: .alice, assetSymbol: "usdc"),  // lowercase
                 expect: .successWithActions(
                     .single(
-                        .multicall(
-                            [
-                                .claimCometRewards(
-                                    cometRewards: [.usdcReward],
-                                    comets: [.cusdcv3],
-                                    accounts: [.alice],
-                                    network: .base
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                            ],
+                        .claimCometRewards(
+                            cometRewards: [.usdcReward],
+                            comets: [.cusdcv3],
+                            accounts: [.alice],
+                            network: .base,
                             executionType: .immediate
                         )
                     ),

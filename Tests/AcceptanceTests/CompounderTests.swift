@@ -44,16 +44,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(99.98, .usdc),
-                                    buyAmount: .amt(0.024995, .weth),
-                                    feeAmount: .amt(0.0000374925, .weth),
+                                    sellAmount: .amt(100, .usdc),
+                                    buyAmount: .amt(0.025, .weth),
+                                    feeAmount: .amt(0.0000375, .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -63,9 +58,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 99.98 * (0.025/100) * 1.015 - 0.000005 = 0.025364925 (rate scaled to actual flow)
+                                // 100 * (0.025/100) * 1.015 - 0.000005 = 0.02537
                                 .supplyToComet(
-                                    tokenAmount: .amt(0.025364925, .weth),
+                                    tokenAmount: TokenAmount(fromWei: Number("25370000000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -90,29 +85,12 @@ struct CompounderTests {
                                         ]
                                     )
                                 ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("20000"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
                                 Charter.ActionContext.swap(
                                     Charter.ActionContext.SwapActionContext(
                                         chainId: Number("8453"),
                                         feeAmounts: [
-                                            Number("37492500000000"),
-                                            Number("249950000000000"),
+                                            Number("37500000000000"),
+                                            Number("250000000000000"),
                                         ],
                                         feeAssetSymbols: ["WETH", "WETH"],
                                         feeTokens: [
@@ -127,13 +105,13 @@ struct CompounderTests {
                                             Number("4000e8"), Number("4000e8"),
                                         ],
                                         feeDescriptions: ["LEGEND", "ZERO_EX"],
-                                        inputAmount: Number("99980000"),
+                                        inputAmount: Number("100000000"),
                                         inputAssetSymbol: "USDC",
                                         inputToken: EthAddress(
                                             "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
                                         ),
                                         inputTokenPrice: Number("1e8"),
-                                        outputAmount: Number("24995000000000000"),
+                                        outputAmount: Number("25000000000000000"),
                                         outputAssetSymbol: "WETH",
                                         outputToken: EthAddress(
                                             "0x4200000000000000000000000000000000000006"
@@ -164,7 +142,7 @@ struct CompounderTests {
                                 ),
                                 Charter.ActionContext.cometSupply(
                                     Charter.ActionContext.CometSupplyActionContext(
-                                        amount: Number("25364925000000000"),
+                                        amount: Number("25370000000000000"),
                                         assetSymbol: "WETH",
                                         chainId: Number("8453"),
                                         comet: EthAddress(
@@ -218,16 +196,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(0.999995, .weth),
-                                    buyAmount: TokenAmount(fromWei: Number("3839980800"), ofToken: .usdc),
-                                    feeAmount: TokenAmount(fromWei: Number("5759971"), ofToken: .usdc),
+                                    sellAmount: .amt(1, .weth),
+                                    buyAmount: .amt(3840, .usdc),
+                                    feeAmount: TokenAmount(fromWei: Number("5760000"), ofToken: .usdc),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -237,9 +210,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 0.999995 * 3840 * 1.015 - 0.02 (rate scaled to actual flow)
+                                // 1 * 3840 * 1.015 - 0.02 = 3897580000
                                 .supplyToMorphoVault(
-                                    tokenAmount: TokenAmount(fromWei: Number("3897560512"), ofToken: .usdc),
+                                    tokenAmount: TokenAmount(fromWei: Number("3897580000"), ofToken: .usdc),
                                     vault: .usdc,
                                     cappedMax: true,
                                     network: .base
@@ -287,16 +260,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(0.999995, .weth),
-                                    buyAmount: TokenAmount(fromWei: Number("3839980800"), ofToken: .usdc),
-                                    feeAmount: TokenAmount(fromWei: Number("5759971"), ofToken: .usdc),
+                                    sellAmount: .amt(1, .weth),
+                                    buyAmount: .amt(3840, .usdc),
+                                    feeAmount: TokenAmount(fromWei: Number("5760000"), ofToken: .usdc),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -306,9 +274,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 0.999995 * 3840 * 1.015 - 0.02 (rate scaled to actual flow)
+                                // 1 * 3840 * 1.015 - 0.02 = 3897580000
                                 .supplyToAave(
-                                    tokenAmount: TokenAmount(fromWei: Number("3897560512"), ofToken: .usdc),
+                                    tokenAmount: TokenAmount(fromWei: Number("3897580000"), ofToken: .usdc),
                                     pool: .baseV3,
                                     cappedMax: true,
                                     network: .base
@@ -356,16 +324,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(0.499995, .weth),
-                                    buyAmount: TokenAmount(fromWei: Number("1919980800"), ofToken: .usdc),
-                                    feeAmount: TokenAmount(fromWei: Number("2879971"), ofToken: .usdc),
+                                    sellAmount: .amt(0.5, .weth),
+                                    buyAmount: .amt(1920, .usdc),
+                                    feeAmount: TokenAmount(fromWei: Number("2880000"), ofToken: .usdc),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -375,9 +338,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 0.499995 * 3840 * 1.015 - 0.02 (rate scaled to actual flow)
+                                // 0.5 * 3840 * 1.015 - 0.02 = 1948780000
                                 .supplyToComet(
-                                    tokenAmount: TokenAmount(fromWei: Number("1948760512"), ofToken: .usdc),
+                                    tokenAmount: TokenAmount(fromWei: Number("1948780000"), ofToken: .usdc),
                                     market: .cusdcv3,
                                     cappedMax: true,
                                     network: .base
@@ -427,27 +390,17 @@ struct CompounderTests {
                                     proofs: [.validProof2],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .claimCometRewards(
                                     cometRewards: [.usdcReward],
                                     comets: [.cusdcv3],
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(99.96, .usdc),
-                                    buyAmount: .amt(0.02499, .weth),
-                                    feeAmount: .amt(0.000037485, .weth),
+                                    sellAmount: .amt(100, .usdc),
+                                    buyAmount: .amt(0.025, .weth),
+                                    feeAmount: .amt(0.0000375, .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -457,9 +410,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 99.96 * (0.025/100) * 1.015 - 0.000005 = 0.02535985 (rate scaled to actual flow)
+                                // 100 * (0.025/100) * 1.015 - 0.000005 = 0.02537
                                 .supplyToComet(
-                                    tokenAmount: .amt(0.02535985, .weth),
+                                    tokenAmount: TokenAmount(fromWei: Number("25370000000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -521,32 +474,22 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .ethereum
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.1, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(39.9, .usdc),
-                                    buyAmount: TokenAmount(fromWei: Number("8511667500000000"), ofToken: .weth),
-                                    feeAmount: TokenAmount(fromWei: Number("12767501250000"), ofToken: .weth),
+                                    sellAmount: .amt(40, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("8533000000000001"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("12799500000000"), ofToken: .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .ethereum
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000025, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                // 39.9 * (0.008533/40) * 1.015 - 0.000025 = ~0.008614 WETH (rate scaled to actual flow)
+                                // 40 * (0.008533/40) * 1.015 = ~0.008661 WETH
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .base,
-                                    inputTokenAmount: TokenAmount(fromWei: Number("8614342512500001"), ofToken: .weth),
-                                    outputTokenAmount: TokenAmount(fromWei: Number("7528199087375000"), ofToken: .weth),
+                                    inputTokenAmount: TokenAmount(fromWei: Number("8660995000000001"), ofToken: .weth),
+                                    outputTokenAmount: TokenAmount(fromWei: Number("7574385050000000"), ofToken: .weth),
                                     cappedMax: true
                                 ),
                             ],
@@ -561,16 +504,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(79.98, .usdc),
-                                    buyAmount: TokenAmount(fromWei: Number("17061733500000001"), ofToken: .weth),
-                                    feeAmount: TokenAmount(fromWei: Number("25592600250000"), ofToken: .weth),
+                                    sellAmount: .amt(80, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("17066000000000002"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("25599000000000"), ofToken: .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -581,10 +519,10 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 79.98 * (0.017066/80) * 1.015 - 0.000005 (quote pay) + 0.007528 (bridged) = ~0.02484 WETH
+                                // 80 * (0.017066/80) * 1.015 - 0.000005 (quote pay) + 0.007574 (bridged) = ~0.024891 WETH
                                 .supplyToComet(
                                     tokenAmount: TokenAmount(
-                                        fromWei: Number("24840858589875002"),
+                                        fromWei: Number("24891375050000002"),
                                         ofToken: .weth
                                     ),
                                     market: .cwethv3,
@@ -648,27 +586,17 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.000005, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .claimCometRewards(
                                     cometRewards: [.usdcReward],
                                     comets: [.cusdcv3],
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(49.98, .usdc),
-                                    buyAmount: .amt(0.012495, .weth),
-                                    feeAmount: .amt(0.0000187425, .weth),
+                                    sellAmount: .amt(50, .usdc),
+                                    buyAmount: .amt(0.0125, .weth),
+                                    feeAmount: .amt(0.00001875, .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -679,7 +607,7 @@ struct CompounderTests {
                                     quote: .basic
                                 ),
                                 .supplyToComet(
-                                    tokenAmount: TokenAmount(fromWei: Number("512672425000000000"), ofToken: .weth),
+                                    tokenAmount: TokenAmount(fromWei: Number("512682500000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -738,30 +666,20 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .ethereum
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.1, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(39.9, .usdc),
-                                    buyAmount: TokenAmount(fromWei: Number("9975000000000000"), ofToken: .weth),
-                                    feeAmount: TokenAmount(fromWei: Number("14962500000000"), ofToken: .weth),
+                                    sellAmount: .amt(40, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("10000000000000000"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("15000000000000"), ofToken: .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .ethereum
-                                ),
-                                .quotePay(
-                                    payment: TokenAmount(fromWei: Number("25000000000000"), ofToken: .weth),
-                                    payee: .stax,
-                                    quote: .basic
                                 ),
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .ethereum,
                                     destinationNetwork: .base,
-                                    inputTokenAmount: TokenAmount(fromWei: Number("10099625000000000"), ofToken: .weth),
+                                    inputTokenAmount: TokenAmount(fromWei: Number("10150000000000000"), ofToken: .weth),
                                     outputTokenAmount: TokenAmount(fromWei: Number("0"), ofToken: .weth),
                                     cappedMax: true
                                 ),
@@ -776,16 +694,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(79.98, .usdc),
-                                    buyAmount: TokenAmount(fromWei: Number("19995000000000000"), ofToken: .weth),
-                                    feeAmount: TokenAmount(fromWei: Number("29992500000000"), ofToken: .weth),
+                                    sellAmount: .amt(80, .usdc),
+                                    buyAmount: TokenAmount(fromWei: Number("20000000000000000"), ofToken: .weth),
+                                    feeAmount: TokenAmount(fromWei: Number("30000000000000"), ofToken: .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -797,7 +710,7 @@ struct CompounderTests {
                                     quote: .basic
                                 ),
                                 .supplyToComet(
-                                    tokenAmount: TokenAmount(fromWei: Number("20289925000000000"), ofToken: .weth),
+                                    tokenAmount: TokenAmount(fromWei: Number("20295000000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base
@@ -845,16 +758,11 @@ struct CompounderTests {
                                     accounts: [.alice],
                                     network: .base
                                 ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
                                 .swap(
                                     filler: .filler,
-                                    sellAmount: .amt(99.98, .usdc),
-                                    buyAmount: .amt(0.024995, .weth),
-                                    feeAmount: .amt(0.0000374925, .weth),
+                                    sellAmount: .amt(100, .usdc),
+                                    buyAmount: .amt(0.025, .weth),
+                                    feeAmount: .amt(0.0000375, .weth),
                                     feeRecipient: .stax,
                                     cappedMax: true,
                                     network: .base
@@ -864,9 +772,9 @@ struct CompounderTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // 99.98 * (0.025/100) * 1.015 - 0.000005 = 0.025364925 (rate scaled to actual flow)
+                                // 100 * (0.025/100) * 1.015 - 0.000005 = 0.02537
                                 .supplyToComet(
-                                    tokenAmount: .amt(0.025364925, .weth),
+                                    tokenAmount: TokenAmount(fromWei: Number("25370000000000000"), ofToken: .weth),
                                     market: .cwethv3,
                                     cappedMax: true,
                                     network: .base

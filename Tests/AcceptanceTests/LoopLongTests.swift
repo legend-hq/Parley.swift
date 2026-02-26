@@ -253,18 +253,13 @@ struct LoopLongTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(20203.030304, .usdc),
-                                    outputTokenAmount: .amt(20000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(20203.030304, .usdc),
+                            outputTokenAmount: .amt(20000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .loopLong(
@@ -280,44 +275,23 @@ struct LoopLongTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.04e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("42161"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
-                                    )
+                        .bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("42161"),
+                                destinationChainId: Number("8453"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("20203.030304e6"),
+                                outputAmount: Number("20000e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("42161"),
-                                        destinationChainId: Number("8453"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("20203.030304e6"),
-                                        outputAmount: Number("20000e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
+                                )
+                            )
                         ),
                         .loopLong(
                             Charter.ActionContext.LoopLongActionContext(

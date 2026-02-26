@@ -402,7 +402,7 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
         switch self {
             case .tokenTransfer: return "baseline"
             case .transferOut: return "baseline"
-            case .bridge: return "baseline"
+            case .bridge: return nil
             case .mint: return "baseline"
             case .wrap: return nil
             case .unwrap: return nil
@@ -431,8 +431,8 @@ public enum LegendRouteType: Hashable, Comparable, CustomStringConvertible, Rout
             case .unloopShort: return nil
             case .addBackingToken: return "baseline"
             case .withdrawBackingToken: return "baseline"
-            case .morphoClaimRewards: return "baseline"
-            case .cometClaimRewards: return "baseline"
+            case .morphoClaimRewards: return nil
+            case .cometClaimRewards: return nil
             case .rewardSettlement: return nil
             case .swapSettlement: return nil
             case .balancePassthrough: return nil

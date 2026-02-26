@@ -921,7 +921,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                             ),
                             amount: "5000e6"  // Matches solver-selected source for exact delivery
                         ),
-                        // Flow 5: Supply 7982 USDC to Morpho on Base
+                        // Flow 5: Supply USDC to Morpho on Base
                         Tradewinds.Flow(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .morphoVaultSupply(isCappedMax: false),
@@ -941,10 +941,10 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256
                             ),
-                            amount: "7981.900100e6"  // Matches solver supply source
+                            amount: "7982e6"  // Matches solver supply source
                         ),
                     ],
-                    maxFlow: "7981.880100e6"  // Matches solver total sink after fees
+                    maxFlow: "7981.98e6"  // Matches solver total sink after fees
                 )
             )
         )
@@ -1137,7 +1137,7 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256
                             ),
-                            amount: "4.98495005e18"  // Matches solver wrap amount
+                            amount: Number("4.984975025e18")  // Matches solver wrap amount
                         ),
                         // Flow 6: Supply all WETH to Aave on Base
                         Tradewinds.Flow(
@@ -1159,10 +1159,10 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 minFlow: "0",
                                 maxFlow: Number.MAX_UINT_256
                             ),
-                            amount: "4.98495005e18"
+                            amount: Number("4.984975025e18")
                         ),
                     ],
-                    maxFlow: "4.98494505e18"  // Matches solver total sink after fees
+                    maxFlow: Number("4.984970025e18")  // Matches solver total sink after fees
                 )  // Cross-chain WETH aggregation
             )
         )

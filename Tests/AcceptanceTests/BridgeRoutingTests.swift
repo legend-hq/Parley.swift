@@ -7,8 +7,8 @@ import Testing
 
 @Suite("Bridge Routing Tests")
 struct BridgeRoutingTests {
-    @Test("Supply intent chooses direct route Base→Optimism over 2-hop Base→Arbitrum→Optimism")
-    func testSupplyChoosesDirectRoute() async throws {
+    @Test("Supply intent chooses 2-hop Base→Arbitrum→Optimism over direct Base→Optimism")
+    func testSupplyChooses2HopRoute() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -40,23 +40,23 @@ struct BridgeRoutingTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.10, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .optimism,
-                                    inputTokenAmount: .amt(10.02, .usdc),
-                                    outputTokenAmount: .amt(10.02, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(10.02, .usdc),
+                            outputTokenAmount: .amt(10.02, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
+                        ),
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .optimism,
+                            inputTokenAmount: .amt(10.02, .usdc),
+                            outputTokenAmount: .amt(10.02, .usdc),
+                            cappedMax: false,
+                            executionType: .contingent
                         ),
                         .multicall(
                             [
@@ -82,13 +82,14 @@ struct BridgeRoutingTests {
 
     // Tests that maxAmountInstant constraint forces Tradewinds to use multiple bridge hops.
     // With max 10 USDC per bridge and target 19 USDC, the router uses:
-    //   - Base→Optimism: ~9.98 (direct, limited by max 10)
-    //   - Base→Polygon→Optimism: ~9.11→9.10→9.09 (multi-hop via intermediate chain)
+    //   - Base→Arbitrum: ~9.09 (via intermediate chain)
+    //   - Base→Optimism: ~10.0 (direct, limited by max 10)
+    //   - Arbitrum→Optimism: ~9.07 (forwarding from Base→Arbitrum)
     // Total arriving on Optimism: ~19 USDC
     //
     // Execution order:
     //   1. Base operations (IMMEDIATE): initiate both bridges from Base
-    //   2. Polygon→Optimism (CONTINGENT): waits for tokens to arrive from Base→Polygon
+    //   2. Arbitrum→Optimism (CONTINGENT): waits for tokens to arrive from Base→Arbitrum
     //   3. Final transfer (CONTINGENT): waits for all bridges to complete
     @Test("Bridge max amount forces Tradewinds to use multiple bridge hops")
     func testBridgeMaxForcesMultipleHops() async throws {
@@ -111,67 +112,45 @@ struct BridgeRoutingTests {
                         // Step 1: Base operations - initiate both bridges from Base
                         .multicall(
                             [
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                // Base→Polygon: stages tokens for the Polygon→Optimism bridge
-                                // Includes extra 0.0008 USDC for Polygon operation fee
+                                // Base→Arbitrum: stages tokens for the Arbitrum→Optimism bridge
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
-                                    destinationNetwork: .polygon,
-                                    inputTokenAmount: .amt(9.1108, .usdc),  // 9.1108 in
-                                    outputTokenAmount: .amt(9.1008, .usdc),  // 9.1008 out (minus 0.01 fee)
+                                    destinationNetwork: .arbitrum,
+                                    inputTokenAmount: .amt(9.09, .usdc),
+                                    outputTokenAmount: .amt(9.08, .usdc),
                                     cappedMax: false
-                                ),
-                                .quotePay(
-                                    payment: .amt(0.02, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
                                 ),
                                 // Base→Optimism: direct bridge (limited by max 10)
                                 .bridge(
                                     bridge: "Across",
                                     srcNetwork: .base,
                                     destinationNetwork: .optimism,
-                                    inputTokenAmount: .amt(9.98, .usdc),  // 9.98 in
-                                    outputTokenAmount: .amt(9.97, .usdc),  // 9.97 out (minus 0.01 fee)
+                                    inputTokenAmount: .amt(10, .usdc),
+                                    outputTokenAmount: .amt(9.99, .usdc),
                                     cappedMax: false
                                 ),
                             ],
                             executionType: .immediate
                         ),
-                        // Step 2: Polygon→Optimism - waits for tokens to arrive from Base→Polygon
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.0008, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .polygon,
-                                    destinationNetwork: .optimism,
-                                    inputTokenAmount: .amt(9.10, .usdc),  // 9.10 in
-                                    outputTokenAmount: .amt(9.09, .usdc),  // 9.09 out (minus 0.01 fee)
-                                    cappedMax: false
-                                ),
-                            ],
+                        // Step 2: Arbitrum→Optimism - waits for tokens to arrive from Base→Arbitrum
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .optimism,
+                            inputTokenAmount: .amt(9.08, .usdc),
+                            outputTokenAmount: .amt(9.07, .usdc),
+                            cappedMax: false,
                             executionType: .contingent
                         ),
                         // Step 3: Final transfer - waits for all bridges to complete
                         .multicall(
                             [
-                                // Total quotePay: 0.02 + 0.02 + 0.06 = 0.06 USDC
                                 .quotePay(
                                     payment: .amt(0.06, .usdc),
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                // Final transfer: 9.09 + 9.97 ≈ 19.06 USDC available, send 19 USDC
                                 .transferErc20(
                                     tokenAmount: .amt(19, .usdc),
                                     recipient: .bob,
@@ -187,8 +166,8 @@ struct BridgeRoutingTests {
         )
     }
 
-    @Test("Transfer intent chooses direct route Base→Optimism over 2-hop Base→Arbitrum→Optimism")
-    func testTransferChoosesDirectBridge() async throws {
+    @Test("Transfer intent chooses 2-hop Base→Arbitrum→Optimism over direct Base→Optimism")
+    func testTransferChooses2HopRoute() async throws {
         try await testAcceptanceTests(
             test: .init(
                 given: [
@@ -220,23 +199,23 @@ struct BridgeRoutingTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.10, .usdc),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .optimism,
-                                    inputTokenAmount: .amt(10.02, .usdc),
-                                    outputTokenAmount: .amt(10.02, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(10.02, .usdc),
+                            outputTokenAmount: .amt(10.02, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
+                        ),
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .optimism,
+                            inputTokenAmount: .amt(10.02, .usdc),
+                            outputTokenAmount: .amt(10.02, .usdc),
+                            cappedMax: false,
+                            executionType: .contingent
                         ),
                         .multicall(
                             [

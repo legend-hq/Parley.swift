@@ -152,7 +152,7 @@ struct TransferTests {
                 // Note: Previously expected .unableToConstructBridgeForAsset(symbol: "USDC", network: arbitrum, bridgeFees: 1.5 USDC)
                 // but Tradewinds now returns .error("insufficientResources") when bridge construction fails due to insufficient funds
                 expect: .failure(
-                    .error("insufficientResources(target: .exact(100000000), max: 98440200)")
+                    .error("insufficientResources(target: .exact(100000000), max: 98460000)")
                 )
             )
         )
@@ -176,25 +176,20 @@ struct TransferTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(49.980000, .usdc),
-                                    outputTokenAmount: .amt(48.480200, .usdc),
-                                    cappedMax: true,
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(50, .usdc),
+                            outputTokenAmount: .amt(48.500000, .usdc),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
                                 .transferErc20(
-                                    tokenAmount: .amt(98.440200, .usdc),
+                                    tokenAmount: .amt(98.460000, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
                                     network: .arbitrum
@@ -204,44 +199,23 @@ struct TransferTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("50e6"),
+                                outputAmount: Number("48.5e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("42161"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("49.98e6"),
-                                        outputAmount: Number("48.4802e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -264,7 +238,7 @@ struct TransferTests {
                                 ),
                                 Charter.ActionContext.transfer(
                                     Charter.ActionContext.TransferActionContext(
-                                        amount: Number("98.4402e6"),
+                                        amount: Number("98.46e6"),
                                         assetSymbol: "USDC",
                                         chainId: Number("42161"),
                                         price: Number("1e8"),
@@ -303,7 +277,7 @@ struct TransferTests {
                 // Note: Previously expected .unableToConstructBridgeForAsset(symbol: "USDC", network: arbitrum, bridgeFees: 1.5 USDC)
                 // but Tradewinds now returns .error("insufficientResources") when bridge construction fails
                 expect: .failure(
-                    .error("insufficientResources(target: .exact(99000000), max: 98440200)")
+                    .error("insufficientResources(target: .exact(99000000), max: 98460000)")
                 )
             )
         )
@@ -364,18 +338,13 @@ struct TransferTests {
                 ),
                 expect: .successWithActions(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(payment: .amt(0.02, .usdc), payee: .stax, quote: .basic),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .base,
-                                    destinationNetwork: .arbitrum,
-                                    inputTokenAmount: .amt(49.535354, .usdc),
-                                    outputTokenAmount: .amt(48.040000, .usdc),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .base,
+                            destinationNetwork: .arbitrum,
+                            inputTokenAmount: .amt(49.535354, .usdc),
+                            outputTokenAmount: .amt(48.040000, .usdc),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -392,44 +361,23 @@ struct TransferTests {
                         ),
                     ]),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.02e6"),
-                                        assetSymbol: "USDC",
-                                        chainId: Number("8453"),
-                                        price: Number("1e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "USDC",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("42161"),
+                                destinationAssetSymbol: "USDC",
+                                inputAmount: Number("49.535354e6"),
+                                outputAmount: Number("48.04e6"),
+                                price: Number("1e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "USDC",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("42161"),
-                                        destinationAssetSymbol: "USDC",
-                                        inputAmount: Number("49.535354e6"),
-                                        outputAmount: Number("48.04e6"),
-                                        price: Number("1e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1052,22 +1000,13 @@ struct TransferTests {
                 when: .transfer(from: .alice, to: .bob, amount: .max(.eth), on: .base),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.00001, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: .amt(2.99999, .weth),
-                                    outputTokenAmount: .amt(2.9599901, .weth),
-                                    cappedMax: true
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: .amt(3, .weth),
+                            outputTokenAmount: .amt(2.96, .weth),
+                            cappedMax: true,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -1080,13 +1019,16 @@ struct TransferTests {
                                 ),
                                 .unwrapWETHUpTo(
                                     tokenAmount: TokenAmount(
-                                        // 2.9599851e18 (transfer amount)
-                                        fromWei: "2959985100000000000",
+                                        // 2.959995e18 (transfer amount)
+                                        fromWei: "2959995000000000000",
                                         ofToken: .weth
                                     )
                                 ),
                                 .transferNativeToken(
-                                    tokenAmount: .amt(2.9599851, .eth),
+                                    tokenAmount: TokenAmount(
+                                        fromWei: "2959995000000000000",
+                                        ofToken: .eth
+                                    ),
                                     recipient: .bob,
                                     cappedMax: true,
                                     network: .base
@@ -1119,28 +1061,19 @@ struct TransferTests {
                 ),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.00001, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: TokenAmount(
-                                        fromWei: "262631313131313132",
-                                        ofToken: TestHelpers.Token.weth
-                                    ),
-                                    outputTokenAmount: TokenAmount(
-                                        fromWei: "250005000000000000",
-                                        ofToken: TestHelpers.Token.weth
-                                    ),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: TokenAmount(
+                                fromWei: "262631313131313132",
+                                ofToken: TestHelpers.Token.weth
+                            ),
+                            outputTokenAmount: TokenAmount(
+                                fromWei: "250005000000000000",
+                                ofToken: TestHelpers.Token.weth
+                            ),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
@@ -1277,11 +1210,6 @@ struct TransferTests {
                             .multicall(
                                 [
                                     .wrapAsset(.eth),
-                                    .quotePay(
-                                        payment: .amt(0.000005, .weth),
-                                        payee: .stax,
-                                        quote: .basic
-                                    ),
                                     // Bridge includes extra for Polygon fee (0.0000002 WETH)
                                     .bridge(
                                         bridge: "Across",
@@ -1327,29 +1255,12 @@ struct TransferTests {
                                 Charter.ActionContext.wrap(
                                     Charter.ActionContext.WrapActionContext(
                                         chainId: Number("8453"),
-                                        amount: Number("717176919191919192"),
+                                        amount: Number("717171919191919192"),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                         ),
                                         fromAssetSymbol: "ETH",
                                         toAssetSymbol: "WETH"
-                                    )
-                                ),
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000005e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("8453"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x4200000000000000000000000000000000000006"
-                                        )
                                     )
                                 ),
                                 Charter.ActionContext.bridge(
@@ -1426,29 +1337,20 @@ struct TransferTests {
                 expect: .successWithActions(
                     .multi(
                         [
-                            .multicall(
-                                [
-                                    .quotePay(
-                                        payment: .amt(0.000005, .weth),
-                                        payee: .stax,
-                                        quote: .basic
-                                    ),
-                                    // Bridge includes extra for Polygon fee (0.0000002 WETH)
-                                    .bridge(
-                                        bridge: "Across",
-                                        srcNetwork: .base,
-                                        destinationNetwork: .polygon,
-                                        inputTokenAmount: TokenAmount(
-                                            fromWei: "717171919191919192",
-                                            ofToken: TestHelpers.Token.weth
-                                        ),
-                                        outputTokenAmount: TokenAmount(
-                                            fromWei: "700000200000000000",
-                                            ofToken: TestHelpers.Token.weth
-                                        ),
-                                        cappedMax: false
-                                    ),
-                                ],
+                            // Bridge includes extra for Polygon fee (0.0000002 WETH)
+                            .bridge(
+                                bridge: "Across",
+                                srcNetwork: .base,
+                                destinationNetwork: .polygon,
+                                inputTokenAmount: TokenAmount(
+                                    fromWei: "717171919191919192",
+                                    ofToken: TestHelpers.Token.weth
+                                ),
+                                outputTokenAmount: TokenAmount(
+                                    fromWei: "700000200000000000",
+                                    ofToken: TestHelpers.Token.weth
+                                ),
+                                cappedMax: false,
                                 executionType: .immediate
                             ),
                             .multicall(
@@ -1473,44 +1375,23 @@ struct TransferTests {
                         ]
                     ),
                     [
-                        .multiAction(
-                            [
-                                Charter.ActionContext.quotePay(
-                                    Charter.ActionContext.QuotePayActionContext(
-                                        amount: Number("0.000005e18"),
-                                        assetSymbol: "WETH",
-                                        chainId: Number("8453"),
-                                        price: Number("4000e8"),
-                                        payee: EthAddress(
-                                            "0x7ea8d6119596016935543d90ee8f5126285060a1"
-                                        ),
-                                        quoteId: Hex(
-                                            "0x00000000000000000000000000000000000000000000000000000000000000cc"
-                                        ),
-                                        token: EthAddress(
-                                            "0x4200000000000000000000000000000000000006"
-                                        )
-                                    )
+                        Charter.ActionContext.bridge(
+                            Charter.ActionContext.BridgeActionContext(
+                                assetSymbol: "WETH",
+                                bridgeType: .across,
+                                chainId: Number("8453"),
+                                destinationChainId: Number("137"),
+                                destinationAssetSymbol: "WETH",
+                                inputAmount: Number("717171919191919192"),
+                                outputAmount: Number("700000200000000000"),
+                                price: Number("4000e8"),
+                                recipient: EthAddress(
+                                    "0x00000000000000000000000000000000000a11ce"
                                 ),
-                                Charter.ActionContext.bridge(
-                                    Charter.ActionContext.BridgeActionContext(
-                                        assetSymbol: "WETH",
-                                        bridgeType: .across,
-                                        chainId: Number("8453"),
-                                        destinationChainId: Number("137"),
-                                        destinationAssetSymbol: "WETH",
-                                        inputAmount: Number("717171919191919192"),
-                                        outputAmount: Number("700000200000000000"),
-                                        price: Number("4000e8"),
-                                        recipient: EthAddress(
-                                            "0x00000000000000000000000000000000000a11ce"
-                                        ),
-                                        token: EthAddress(
-                                            "0x4200000000000000000000000000000000000006"
-                                        )
-                                    )
-                                ),
-                            ]
+                                token: EthAddress(
+                                    "0x4200000000000000000000000000000000000006"
+                                )
+                            )
                         ),
                         .multiAction(
                             [
@@ -1566,28 +1447,19 @@ struct TransferTests {
                 when: .transfer(from: .alice, to: .bob, amount: .amt(1.5, .eth), on: .base),
                 expect: .success(
                     .multi([
-                        .multicall(
-                            [
-                                .quotePay(
-                                    payment: .amt(0.00001, .weth),
-                                    payee: .stax,
-                                    quote: .basic
-                                ),
-                                .bridge(
-                                    bridge: "Across",
-                                    srcNetwork: .arbitrum,
-                                    destinationNetwork: .base,
-                                    inputTokenAmount: TokenAmount(
-                                        fromWei: "515156565656565657",
-                                        ofToken: TestHelpers.Token.weth
-                                    ),
-                                    outputTokenAmount: TokenAmount(
-                                        fromWei: "500005000000000000",
-                                        ofToken: TestHelpers.Token.weth
-                                    ),
-                                    cappedMax: false
-                                ),
-                            ],
+                        .bridge(
+                            bridge: "Across",
+                            srcNetwork: .arbitrum,
+                            destinationNetwork: .base,
+                            inputTokenAmount: TokenAmount(
+                                fromWei: "515156565656565657",
+                                ofToken: TestHelpers.Token.weth
+                            ),
+                            outputTokenAmount: TokenAmount(
+                                fromWei: "500005000000000000",
+                                ofToken: TestHelpers.Token.weth
+                            ),
+                            cappedMax: false,
                             executionType: .immediate
                         ),
                         .multicall(
