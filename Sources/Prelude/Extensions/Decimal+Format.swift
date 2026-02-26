@@ -156,6 +156,11 @@ extension Decimal {
         return value
     }
 
+    public func formatDecimal(maxDecimals: Int = 2) -> String {
+        let formatter = DecimalFormatters.decimal(fractionDigits: maxDecimals)
+        return formatter.string(from: self as NSDecimalNumber) ?? "0"
+    }
+
     public func formatTokenAmount() -> String {
         let decimals = numDecimalsToShow(maxDecimals: 4)
         let formatter = DecimalFormatters.decimal(fractionDigits: decimals)
@@ -213,6 +218,10 @@ extension Decimal {
 extension Double {
     public func formatCurrency(sieved: Bool = true, maxDecimals: Int = 2) -> String {
         Decimal(self).formatCurrency(sieved: sieved, maxDecimals: maxDecimals)
+    }
+
+    public func formatDecimal(maxDecimals: Int = 2) -> String {
+        Decimal(self).formatDecimal(maxDecimals: maxDecimals)
     }
 
     public func formatPercentage(showDecimals: Bool = true) -> String {
