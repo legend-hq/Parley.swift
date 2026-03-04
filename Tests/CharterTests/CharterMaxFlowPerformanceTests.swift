@@ -287,6 +287,48 @@ struct CharterMaxFlowPerformanceTests {
         }
     }
 
+    @Test("Production folio: HyperEVM max USDC transfer equals Base max USDC transfer")
+    func testProductionFolioHyperEvmMatchesBase() throws {
+        let folio = try Self.loadProductionFolio()
+
+        let baseIntent: Charter.QuarkIntent.Type_ = .transfer(
+            Charter.TransferIntent(
+                chainId: Number(BaseNetwork.chainId),
+                assetSymbol: "USDC",
+                amount: .MAX_UINT_256,
+                sender: Self.productionSender,
+                recipient: Self.productionRecipient
+            )
+        )
+        let hyperEvmIntent: Charter.QuarkIntent.Type_ = .transfer(
+            Charter.TransferIntent(
+                chainId: Number(HyperEVMNetwork.chainId),
+                assetSymbol: "USDC",
+                amount: .MAX_UINT_256,
+                sender: Self.productionSender,
+                recipient: Self.productionRecipient
+            )
+        )
+
+        let baseExtended = Charter.maxFlowExtended(intent: baseIntent, folio: folio, logger: nil)
+        let hyperEvmExtended = Charter.maxFlowExtended(intent: hyperEvmIntent, folio: folio, logger: nil)
+
+        guard case .success(let baseResult) = baseExtended else {
+            Issue.record("Base maxFlow failed: \(baseExtended)")
+            return
+        }
+        guard case .success(let hyperEvmResult) = hyperEvmExtended else {
+            Issue.record("HyperEVM maxFlow failed: \(hyperEvmExtended)")
+            return
+        }
+
+        // Before the staging loop fix, HyperEVM would return ~0 due to an infinite loop.
+        // Both destinations draw from the same source balances; small difference from bridge fees.
+        #expect(baseResult.maxFlow == Number(244807053))
+        #expect(hyperEvmResult.maxFlow == Number(244792267))
+        #expect(baseResult.maxFlow - hyperEvmResult.maxFlow == Number(14786))
+    }
+
     // MARK: - Unichain baseline (known to work fast)
 
     @Test("Max transfer USDC to Unichain completes quickly (baseline)")

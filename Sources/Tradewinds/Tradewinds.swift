@@ -1120,7 +1120,15 @@ public enum Tradewinds {
                     let shortfall =
                         failingRoute.minFlow > currentAtFailure
                         ? (failingRoute.minFlow - currentAtFailure) : Number(0)
-                    if shortfall == Number(0) { continue }
+                    if shortfall == Number(0) {
+                        // minFlow is met but calculateFlowsForPath still reported failure —
+                        // the flow through this path is too small to produce useful output
+                        // after fees. Mark the route as failed so we try alternatives.
+                        if let firstRoute = path.first {
+                            markRouteFailed(route: firstRoute)
+                        }
+                        continue
+                    }
                     let r = path[0]
                     // Capacity bound at first hop
                     let startAvail = available[r.source, default: Number(0)]
@@ -1205,6 +1213,13 @@ public enum Tradewinds {
                     prefixCount: failureIndex,
                     source: prefixFlows.first ?? Number(0)
                 )
+                if deliveredStage == Number(0) {
+                    // Staging delivered nothing — this path can't make progress.
+                    if let firstRoute = path.first {
+                        markRouteFailed(route: firstRoute)
+                    }
+                    continue
+                }
                 available[failureSourceNode, default: Number(0)] += deliveredStage
                 // Note: With failedRoutes tracking, the node itself was never excluded,
                 // only specific routes were. So no need to re-enable the node.
