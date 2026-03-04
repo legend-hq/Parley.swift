@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import SwiftNumber
@@ -14,80 +15,11 @@ public protocol ChainAgnosticAssetProtocol: Equatable, Hashable, Identifiable, S
 
 extension ChainAgnosticAssetProtocol {
     public var displaySymbol: String {
-        switch symbol {
-            case "WETH":
-                "ETH"
-            case "wstETH":
-                "stETH"
-            case "WPOL":
-                "POL"
-            case "WHYPE":
-                "HYPE"
-            default:
-                symbol
-        }
+        Atlas.CrossChainAssets.getCrossChainAsset(symbol: symbol)?.displaySymbol ?? symbol
     }
 
     public var displayName: String {
-        switch symbol {
-            case "USDC":
-                "USD Coin"
-            case "WETH":
-                "Ether"
-            case "wstETH":
-                "Lido Staked ETH"
-            case "LINK":
-                "Chainlink"
-            case "cbETH":
-                "Coinbase Staked ETH"
-            case "CRV":
-                "Curve"
-            case "DAI":
-                "Dai"
-            case "ENA":
-                "Ethena"
-            case "EURC":
-                "Euro Coin"
-            case "LDO":
-                "Lido"
-            case "ezETH":
-                "Renzo Staked ETH"
-            case "rETH":
-                "Rocket Pool Staked ETH"
-            case "RPL":
-                "Rocket Pool"
-            case "SHIB":
-                "Shiba Inu"
-            case "osETH":
-                "StakeWise Staked ETH"
-            case "USDT":
-                "Tether"
-            case "USDe":
-                "Ethena USD"
-            case "WBTC":
-                "Wrapped Bitcoin"
-            case "weETH":
-                "Etherfi Staked ETH"
-            case "rsETH":
-                "Kelp DAO Staked ETH"
-            case "MORPHO":
-                "Morpho"
-            case "WELL":
-                "Moonwell"
-            case "HIGHER":
-                "Higher"
-            case "LUM":
-                "Luminous"
-            case "CLANKER":
-                // overriding tokenbot
-                "Clanker"
-            case "WPOL":
-                "Polygon"
-            case "WHYPE":
-                "Hyperliquid"
-            default:
-                name
-        }
+        Atlas.CrossChainAssets.getCrossChainAsset(symbol: symbol)?.displayName ?? name
     }
 
     public var isBridgeable: Bool {
