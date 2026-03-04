@@ -32,7 +32,7 @@ struct CharterTradewindsBridgeTests {
                 ),
                 expect: .exactFlows(
                     [
-                        // Burn route: Arbitrum USDC -> CCTP Bridge
+                        // Bridge route: Arbitrum USDC -> Base USDC (collapsed CCTP v2)
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .bridge(bridgeType: .cctpV2, isCappedMax: false),
@@ -42,10 +42,10 @@ struct CharterTradewindsBridgeTests {
                                     symbol: "USDC",
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
                                 ),
-                                sink: .cctpBridge(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    destNetwork: Eth.Network.base,
-                                    destAsset: BaseNetwork.Assets.USDC.assetAddress,
+                                sink: .tokenBalance(
+                                    network: Eth.Network.base,
+                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    symbol: "USDC",
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
                                 ),
                                 rate: Percentage(fromNumber: Number("995000000000000000")),  // 0.995
@@ -60,34 +60,6 @@ struct CharterTradewindsBridgeTests {
                                 maxFlow: "10000e6"
                             ),
                             amount: "10.552764e6"  // (10e6 + 0.5e6) / 0.995 = 10.552764e6 (rounded)
-                        ),
-                        // Mint route: CCTP Bridge -> Base USDC
-                        .init(
-                            route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .mint(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    bridgeType: .cctpV2,
-                                    burnRate: Percentage(fromNumber: Number("995000000000000000")),  // 0.995
-                                    burnFee: Number("500000")  // 0.5 USDC
-                                ),
-                                source: .cctpBridge(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    destNetwork: Eth.Network.base,
-                                    destAsset: BaseNetwork.Assets.USDC.assetAddress,
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
-                                ),
-                                sink: .tokenBalance(
-                                    network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
-                                    symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
-                                ),
-                                rate: 1.0,
-                                fees: [],
-                                minFlow: "0",
-                                maxFlow: "10000e6"
-                            ),
-                            amount: "10e6"  // Final amount to be received
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
@@ -139,7 +111,7 @@ struct CharterTradewindsBridgeTests {
                 ),
                 expect: .exactFlows(
                     [
-                        // Burn route: Arbitrum USDC -> CCTP Bridge
+                        // Bridge route: Arbitrum USDC -> Base USDC (collapsed CCTP v2)
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
                                 type: .bridge(bridgeType: .cctpV2, isCappedMax: false),  // Should select CCTP v2 as it's cheaper
@@ -149,10 +121,10 @@ struct CharterTradewindsBridgeTests {
                                     symbol: "USDC",
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
                                 ),
-                                sink: .cctpBridge(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    destNetwork: Eth.Network.base,
-                                    destAsset: BaseNetwork.Assets.USDC.assetAddress,
+                                sink: .tokenBalance(
+                                    network: Eth.Network.base,
+                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    symbol: "USDC",
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
                                 ),
                                 rate: Percentage(fromNumber: Number("997000000000000000")),  // 0.997
@@ -167,34 +139,6 @@ struct CharterTradewindsBridgeTests {
                                 maxFlow: "10000e6"
                             ),
                             amount: "15346039"  // (15e6 + 0.3e6) / 0.997 = 15.346039e6 (rounded)
-                        ),
-                        // Mint route: CCTP Bridge -> Base USDC
-                        .init(
-                            route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
-                                type: .mint(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    bridgeType: .cctpV2,
-                                    burnRate: Percentage(fromNumber: Number("997000000000000000")),  // 0.997
-                                    burnFee: Number("300000")  // 0.3 USDC
-                                ),
-                                source: .cctpBridge(
-                                    sourceNetwork: Eth.Network.arbitrum,
-                                    destNetwork: Eth.Network.base,
-                                    destAsset: BaseNetwork.Assets.USDC.assetAddress,
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
-                                ),
-                                sink: .tokenBalance(
-                                    network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
-                                    symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
-                                ),
-                                rate: 1.0,
-                                fees: [],
-                                minFlow: "0",
-                                maxFlow: "10000e6"
-                            ),
-                            amount: "15e6"  // Output from burn after fees
                         ),
                         .init(
                             route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(

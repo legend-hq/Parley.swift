@@ -63,16 +63,8 @@ public enum Tradewinds {
         public let fees: [Fee<Node.FeeType>]  // Annotated fees
         public let minFlow: Number  // Minimum flow constraint
         public let maxFlow: Number  // Maximum capacity
-        // Computed property based on type, source, sink, and rate
-        public var id: String {
-            let typeStr: String
-            if let identifiable = type as? RouteIdentifiable {
-                typeStr = identifiable.identifier
-            } else {
-                typeStr = "\(type)"
-            }
-            return "\(typeStr)_\(source)_\(sink)_\(rate)"
-        }
+        /// Pre-computed identifier (avoids repeated string interpolation in hot paths)
+        public let id: String
         public init(
             type: ID,
             source: Node,
@@ -89,6 +81,13 @@ public enum Tradewinds {
             self.fees = fees
             self.minFlow = minFlow
             self.maxFlow = maxFlow
+            let typeStr: String
+            if let identifiable = type as? RouteIdentifiable {
+                typeStr = identifiable.identifier
+            } else {
+                typeStr = "\(type)"
+            }
+            self.id = "\(typeStr)_\(source)_\(sink)_\(rate)"
         }
         // Helper computed properties for fee calculations
         public var totalInFees: Number {
@@ -96,6 +95,11 @@ public enum Tradewinds {
         }
         public var totalOutFees: Number {
             fees.filter { !$0.isInFee }.reduce(Number(0)) { $0 + $1.amount }
+        }
+        /// Total of non-operation in-fees (e.g., QuotePay) that are additive to minFlow.
+        public var totalNonOperationInFees: Number {
+            fees.filter { $0.isInFee && "\($0.type)".lowercased() == "quotepay" }
+                .reduce(Number(0)) { $0 + $1.amount }
         }
         public func hash(into hasher: inout Hasher) {
             hasher.combine(type)
@@ -512,9 +516,63 @@ public enum Tradewinds {
         let isRoot: Bool
     }
 
-    private struct SearchState<Node: TradewindsNode>: Hashable {
-        let current: SearchNode<Node>
-        let pathNodes: Set<Node>  // Track nodes in path to prevent physical cycles
+    /// Min-heap priority queue for Dijkstra's algorithm.
+    /// Provides O(log n) insert and extract-min vs O(n) linear scan.
+    private struct MinHeap<Element> {
+        private var elements: [Element] = []
+        private let comparator: (Element, Element) -> Bool  // true if $0 < $1
+
+        var isEmpty: Bool { elements.isEmpty }
+
+        init(comparator: @escaping (Element, Element) -> Bool) {
+            self.comparator = comparator
+        }
+
+        mutating func insert(_ element: Element) {
+            elements.append(element)
+            siftUp(from: elements.count - 1)
+        }
+
+        mutating func extractMin() -> Element? {
+            guard !elements.isEmpty else { return nil }
+            if elements.count == 1 { return elements.removeLast() }
+            let min = elements[0]
+            elements[0] = elements.removeLast()
+            siftDown(from: 0)
+            return min
+        }
+
+        private mutating func siftUp(from index: Int) {
+            var i = index
+            while i > 0 {
+                let parent = (i - 1) / 2
+                if comparator(elements[i], elements[parent]) {
+                    elements.swapAt(i, parent)
+                    i = parent
+                } else {
+                    break
+                }
+            }
+        }
+
+        private mutating func siftDown(from index: Int) {
+            var i = index
+            let count = elements.count
+            while true {
+                let left = 2 * i + 1
+                let right = 2 * i + 2
+                var smallest = i
+                if left < count && comparator(elements[left], elements[smallest]) {
+                    smallest = left
+                }
+                if right < count && comparator(elements[right], elements[smallest]) {
+                    smallest = right
+                }
+                if smallest == i { break }
+                elements.swapAt(i, smallest)
+                i = smallest
+            }
+        }
     }
 
     /// Find shortest path from available start nodes to target using Dijkstra's algorithm
@@ -535,9 +593,22 @@ public enum Tradewinds {
         var routeMap: [SearchNode<Node>: Route<Node, ID>] = [:]
         var visited = Set<SearchNode<Node>>()
 
-        // Priority queue stores (cost, SearchNode, pathNodes)
-        // pathNodes is used to prevent cycles during exploration
-        var pq: [(cost: Double, current: SearchNode<Node>, pathNodes: Set<Node>)] = []
+        // Pre-compute string descriptions for deterministic tie-breaking
+        var nodeStrings: [SearchNode<Node>: String] = [:]
+        func nodeString(_ sn: SearchNode<Node>) -> String {
+            if let cached = nodeStrings[sn] { return cached }
+            let s = String(describing: sn.node)
+            nodeStrings[sn] = s
+            return s
+        }
+
+        // Min-heap priority queue: O(log n) insert and extract vs O(n) linear scan
+        typealias PQEntry = (cost: Double, current: SearchNode<Node>)
+        var pq = MinHeap<PQEntry>(comparator: { a, b in
+            if a.cost != b.cost { return a.cost < b.cost }
+            if a.current.isRoot != b.current.isRoot { return a.current.isRoot }
+            return nodeString(a.current) < nodeString(b.current)
+        })
 
         // Start from all nodes with available resources (except the target)
         // Filter out nodes whose paths to target have failed
@@ -550,29 +621,22 @@ public enum Tradewinds {
         for node in startNodes {
             let sn = SearchNode(node: node, isRoot: true)
             dist[sn] = 0.0
-            pq.append((0.0, sn, [node]))
+            pq.insert((0.0, sn))
         }
 
         if pq.isEmpty { return nil }
 
-        while !pq.isEmpty {
-            // Find minimum with deterministic tie-breaking
-            var minIndex = 0
-            for i in 1..<pq.count {
-                if pq[i].cost < pq[minIndex].cost {
-                    minIndex = i
-                } else if pq[i].cost == pq[minIndex].cost {
-                    if pq[i].current.isRoot != pq[minIndex].current.isRoot {
-                        if pq[i].current.isRoot { minIndex = i }
-                    } else if String(describing: pq[i].current.node)
-                        < String(describing: pq[minIndex].current.node)
-                    {
-                        minIndex = i
-                    }
-                }
+        // Cycle detection via prev-chain walk (replaces Set<Node> copying)
+        func isInPrevChain(_ node: Node, from current: SearchNode<Node>) -> Bool {
+            var cursor = current
+            while true {
+                if cursor.node == node { return true }
+                guard let p = prev[cursor] else { return false }
+                cursor = p
             }
-            let (currentDist, current, pathNodes) = pq.remove(at: minIndex)
+        }
 
+        while let (currentDist, current) = pq.extractMin() {
             if visited.contains(current) { continue }
             visited.insert(current)
 
@@ -585,8 +649,8 @@ public enum Tradewinds {
 
             // Check neighbors
             for (route, cost) in graph[current.node] ?? [] {
-                // Prevent physical cycles (don't return to a node already in this path)
-                if pathNodes.contains(route.sink) { continue }
+                // Prevent physical cycles by walking the prev chain
+                if isInPrevChain(route.sink, from: current) { continue }
 
                 // Skip failed routes only when exploring from a root state.
                 if current.isRoot && failedRoutes.contains(route.id) { continue }
@@ -621,9 +685,7 @@ public enum Tradewinds {
                     dist[nextSearchNode] = newDist
                     prev[nextSearchNode] = current
                     routeMap[nextSearchNode] = route
-                    var nextPathNodes = pathNodes
-                    nextPathNodes.insert(route.sink)
-                    pq.append((newDist, nextSearchNode, nextPathNodes))
+                    pq.insert((newDist, nextSearchNode))
                 }
             }
         }
@@ -745,11 +807,8 @@ public enum Tradewinds {
             // We identify non-operation fees as those with type .quotePay
             // Always enforce minFlow against the post-QuotePay input.
             // QuotePay is a non-operation in-fee and must be additive to minFlow.
-            let totalNonOperationInFees: Number = route.fees
-                .filter { fee in fee.isInFee && "\(fee.type)".lowercased() == "quotepay" }
-                .reduce(Number(0)) { $0 + $1.amount }
             let minFlowIncludingInFees =
-                HPAmount(from: route.minFlow) + HPAmount(from: totalNonOperationInFees)
+                HPAmount(from: route.minFlow) + HPAmount(from: route.totalNonOperationInFees)
             if needed.toNumber() < minFlowIncludingInFees.toNumber() {
                 needed = minFlowIncludingInFees
             }
@@ -817,11 +876,8 @@ public enum Tradewinds {
                 // First hop: limited by available resources
                 flowAmount = HPAmount.min(HPAmount(from: constrainedFlow), bottleneck)
                 // Can't meet minimum requirements (considering non-operation inFees only)
-                let totalNonOperationInFees: Number = route.fees
-                    .filter { fee in fee.isInFee && "\(fee.type)".lowercased() == "quotepay" }
-                    .reduce(Number(0)) { $0 + $1.amount }
                 let minFlowIncludingInFees =
-                    HPAmount(from: route.minFlow) + HPAmount(from: totalNonOperationInFees)
+                    HPAmount(from: route.minFlow) + HPAmount(from: route.totalNonOperationInFees)
                 if flowAmount.toNumber() < minFlowIncludingInFees.toNumber() {
                     return ([], 0, nil)
                 }
@@ -849,11 +905,8 @@ public enum Tradewinds {
                 // Flow the minimum of total available and what's constrained by route/target
                 flowAmount = HPAmount.min(totalAvailable, constrainedFlow)
                 // Ensure we meet route constraints (considering non-operation inFees only)
-                let totalNonOperationInFees: Number = route.fees
-                    .filter { fee in fee.isInFee && "\(fee.type)".lowercased() == "quotepay" }
-                    .reduce(Number(0)) { $0 + $1.amount }
                 let minFlowIncludingInFees =
-                    HPAmount(from: route.minFlow) + HPAmount(from: totalNonOperationInFees)
+                    HPAmount(from: route.minFlow) + HPAmount(from: route.totalNonOperationInFees)
                 if flowAmount.toNumber() < minFlowIncludingInFees.toNumber() {
                     // Try to use exactly minFlow if available (use integer comparison to avoid tiny fractional underflow)
                     if totalAvailable.toNumber() >= minFlowIncludingInFees.toNumber() {
@@ -952,11 +1005,6 @@ public enum Tradewinds {
                 nodesWithFailedPaths.insert(route.source)
             }
         }
-        // Track which start nodes have at least one failed route (need incoming resources)
-        func startNodeNeedsIncomingRoutes(_ node: Node) -> Bool {
-            guard let routes = graph[node] else { return false }
-            return routes.contains { failedRoutes.contains($0.route.id) }
-        }
         // Repeatedly find best path until target is met
         var iterations = 0
         let maxIterations = 100  // Prevent infinite loops
@@ -989,22 +1037,24 @@ public enum Tradewinds {
             }
             // Check capacity constraints along the path (fee-aware backpropagation)
             // Convert each hop's remaining capacity into source terms using backward single-hop transforms.
+            let unpaid: PaidRoutes = []
             for (i, route) in path.enumerated() {
                 let remainingCapacity = route.maxFlow - (usedCapacity[route.id] ?? Number(0))
                 let capacityAtSourceTerms: Number = {
                     if i == 0 { return max(remainingCapacity, Number(0)) }
                     var cap = max(remainingCapacity, Number(0))
-                    let unpaid: PaidRoutes = []
                     for backIndex in stride(from: i - 1, through: 0, by: -1) {
-                        cap = backwardSourceNeeded(
-                            route: path[backIndex],
-                            target: cap,
-                            paid: unpaid
-                        )
+                        // Early exit: if cap already exceeds current bottleneck, this hop can't
+                        // constrain further. Only safe when all rates <= 1 (no negative costs),
+                        // because backwardSourceNeeded divides by rate — if rate > 1, cap can
+                        // decrease, so a later step could still produce a tighter constraint.
+                        if !hasNegativeCosts && cap >= bottleneck { return bottleneck }
+                        cap = backwardSourceNeeded(route: path[backIndex], target: cap, paid: unpaid)
                     }
                     return cap
                 }()
                 bottleneck = min(bottleneck, capacityAtSourceTerms)
+                if bottleneck <= Number(0) { break }
             }
             // Helper function to calculate flows for a path
             let pathCalc = calculateFlowsForPath(

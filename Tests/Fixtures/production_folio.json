@@ -1,0 +1,2322 @@
+{
+  "balances": {
+    "locked_reward/morpho_reward/world_chain/WLD/0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0e18",
+    "reward/comet_reward/arbitrum/0x6f7d514bbd4aff3bcd1140b7344b32f063dee486/COMP/0x88730d254a2f7e6ac8388c3198afd694ba9f7fae/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.001208e18",
+    "reward/comet_reward/optimism/0x2e44e174f7d53f0212823acc11c01a11d58c5bcb/COMP/0x443ea0340cb75a160f31a440722dec7b5bc3c2e9/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.002548e18",
+    "reward/morpho_reward/world_chain/WLD/0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.127303137420172603e18",
+    "token/arbitrum/ARB/0x6d90e1eee903e3e6a4352d1da352547dde587964": "194.152396446220849305e18",
+    "token/arbitrum/ETH/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.000008100798828385e18",
+    "token/arbitrum/WETH/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.017019091541482444e18",
+    "token/base/COMP/0x6d90e1eee903e3e6a4352d1da352547dde587964": "1.000020931594893516e18",
+    "token/base/HIGHER/0x6d90e1eee903e3e6a4352d1da352547dde587964": "149808.293053504616874098e18",
+    "token/base/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "10.002351e6",
+    "token/ethereum/Cake/0x6d90e1eee903e3e6a4352d1da352547dde587964": "3.599809961769212583e18",
+    "token/ethereum/EUL/0x6d90e1eee903e3e6a4352d1da352547dde587964": "5.168613199962908355e18",
+    "token/ethereum/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.000001e6",
+    "token/ethereum/WETH/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.005914493511384833e18",
+    "token/hyper_evm/HYPE/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.030021215639518229e18",
+    "token/hyper_evm/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "29.849606e6",
+    "token/hyper_evm/WHYPE/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.030952897786282266e18",
+    "token/hyper_evm/XAUt/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.011519e6",
+    "token/polygon/POL/0x6d90e1eee903e3e6a4352d1da352547dde587964": "5.990662236688541247e18",
+    "token/polygon/WETH/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.000136797873392216e18",
+    "token/unichain/COMP/0x6d90e1eee903e3e6a4352d1da352547dde587964": "1.864799890125653494e18",
+    "token/unichain/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.000001e6",
+    "token/world_chain/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "204.981568e6",
+    "token/world_chain/WLD/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0.445446395769270869e18",
+    "yield_market/morpho_vault/ethereum/0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "6.013449e6",
+    "yield_market/morpho_vault/hyper_evm/0x8a862fd6c12f9ad34c9c2ff45ab2b6712e8cea27/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "10.034045e6",
+    "yield_market/morpho_vault/world_chain/0xb1e80387ebe53ff75a89736097d34dc8d9e9045b/USDC/0x6d90e1eee903e3e6a4352d1da352547dde587964": "22.071441e6"
+  },
+  "borrow_markets": {
+    "comet/arbitrum/0x6f7d514bbd4aff3bcd1140b7344b32f063dee486/WETH": {
+      "borrow_apr": "0.076360136239296",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.005006766514862727",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "15000000e6",
+          "total_supply": "14448.696281e6",
+          "usd_price": "0.99999377"
+        },
+        "USDT": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "20000000e6",
+          "total_supply": "323.114128e6",
+          "usd_price": "0.99981"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "500e8",
+          "total_supply": "6.94713459e8",
+          "usd_price": "67809.83352308"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "12000e18",
+          "total_supply": "298.310682001786487256e18",
+          "usd_price": "2107.87479912"
+        },
+        "rETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "3750e18",
+          "total_supply": "5.960437533531490311e18",
+          "usd_price": "2275.76723489"
+        },
+        "rsETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "3500e18",
+          "total_supply": "42.036707687663481429e18",
+          "usd_price": "2094.21147215"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "24000e18",
+          "total_supply": "591.049144806681462981e18",
+          "usd_price": "2139.88279839"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "10000e18",
+          "total_supply": "292.218712366535054502e18",
+          "usd_price": "2412.67173931"
+        }
+      },
+      "total_borrow": "1265.487926964931591109e18"
+    },
+    "comet/arbitrum/0x9c4ec768c28520b50860ea7a15bd7213a9ff58bf/USDC": {
+      "borrow_apr": "0.03093964730208",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.004100377311861738",
+      "collaterals": {
+        "ARB": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "16000000e18",
+          "total_supply": "1461227.838634956182973814e18",
+          "usd_price": "0.10178543"
+        },
+        "GMX": {
+          "borrow_collateral_factor": "0.6",
+          "liquidate_collateral_factor": "0.75",
+          "liquidation_factor": "0.85",
+          "supply_cap": "120000e18",
+          "total_supply": "2119.620269136839856355e18",
+          "usd_price": "7.08083785"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.75",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1000e8",
+          "total_supply": "282.34747686e8",
+          "usd_price": "67809.83352308"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "40000e18",
+          "total_supply": "2628.822685548336015738e18",
+          "usd_price": "1964.13"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1400e18",
+          "total_supply": "88.307947631090811221e18",
+          "usd_price": "2107.87479912"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "8000e18",
+          "total_supply": "3440.750798880228711542e18",
+          "usd_price": "2412.67173931"
+        }
+      },
+      "total_borrow": "15175201.362674e6"
+    },
+    "comet/arbitrum/0xd98be00b5d27fc98112bde293e487f8d4ca57d07/USDT": {
+      "borrow_apr": "0.032557671350496",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.004961975688440136",
+      "collaterals": {
+        "ARB": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "7500000e18",
+          "total_supply": "475305.507462528383894047e18",
+          "usd_price": "0.10178543"
+        },
+        "GMX": {
+          "borrow_collateral_factor": "0.6",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "50000e18",
+          "total_supply": "2024.11946869423761506e18",
+          "usd_price": "7.08083785"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.7",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1000e8",
+          "total_supply": "247.81343161e8",
+          "usd_price": "67809.83352308"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "20000e18",
+          "total_supply": "2559.278773677975710285e18",
+          "usd_price": "1964.13"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "16000e18",
+          "total_supply": "2775.383176197742189779e18",
+          "usd_price": "2412.67173931"
+        }
+      },
+      "total_borrow": "13796729.69028e6"
+    },
+    "comet/base/0x46e6b214b524310239732d51387075e0e70970bf/WETH": {
+      "borrow_apr": "0.0235152252144",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.00321265433834219",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "20000000e6",
+          "total_supply": "28844.411757e6",
+          "usd_price": "1.00002873"
+        },
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "45e8",
+          "total_supply": "1.25991448e8",
+          "usd_price": "68025.31872318"
+        },
+        "cbETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "7500e18",
+          "total_supply": "250.357231057036660214e18",
+          "usd_price": "2209.54980501"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1000e18",
+          "total_supply": "178.82112378847828539e18",
+          "usd_price": "2109.96171067"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "7500e18",
+          "total_supply": "805.796234564236114905e18",
+          "usd_price": "2142.12806424"
+        },
+        "wrsETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1200e18",
+          "total_supply": "21.811932818951685592e18",
+          "usd_price": "2096.4088175"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.975",
+          "supply_cap": "1200e18",
+          "total_supply": "11.555193925597259236e18",
+          "usd_price": "2413.17007854"
+        }
+      },
+      "total_borrow": "1969.027587373323257145e18"
+    },
+    "comet/base/0xb125e6687d4313864e53df431d5425969c15eb2f/USDC": {
+      "borrow_apr": "0.037149355240272",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.002922979163778977",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.85",
+          "liquidate_collateral_factor": "0.9",
+          "liquidation_factor": "0.95",
+          "supply_cap": "11000e18",
+          "total_supply": "2308.713985763889109407e18",
+          "usd_price": "1966.19085774"
+        },
+        "cbBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "400e8",
+          "total_supply": "110.21428842e8",
+          "usd_price": "68025.31872318"
+        },
+        "cbETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "7500e18",
+          "total_supply": "817.680947180753184902e18",
+          "usd_price": "2209.54980501"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "3000e18",
+          "total_supply": "782.644507506484538447e18",
+          "usd_price": "2413.17007854"
+        }
+      },
+      "total_borrow": "8510072.755932e6"
+    },
+    "comet/optimism/0x2e44e174f7d53f0212823acc11c01a11d58c5bcb/USDC": {
+      "borrow_apr": "0.03490168401504",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.010809810472527343",
+      "collaterals": {
+        "OP": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "1400000e18",
+          "total_supply": "94287.84773428583095558e18",
+          "usd_price": "0.12543661"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "130e8",
+          "total_supply": "44.85661187e8",
+          "usd_price": "67796.42734643"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2600e18",
+          "total_supply": "167.017642976497837698e18",
+          "usd_price": "1964.79636"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1200e18",
+          "total_supply": "641.641787519494144775e18",
+          "usd_price": "2413.49027369"
+        }
+      },
+      "total_borrow": "2300135.478869e6"
+    },
+    "comet/optimism/0x995e394b8b2437ac8ce61ee0bc610d617962b214/USDT": {
+      "borrow_apr": "0.035324798931936",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.010400706392387315",
+      "collaterals": {
+        "OP": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.7",
+          "liquidation_factor": "0.8",
+          "supply_cap": "1000000e18",
+          "total_supply": "90485.872695958565166444e18",
+          "usd_price": "0.12543661"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "100e8",
+          "total_supply": "48.73020009e8",
+          "usd_price": "67796.42734643"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.88",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2600e18",
+          "total_supply": "251.907690046644477696e18",
+          "usd_price": "1964.79636"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "1300e18",
+          "total_supply": "746.371012911197842146e18",
+          "usd_price": "2413.49027369"
+        }
+      },
+      "total_borrow": "2989045.572038e6"
+    },
+    "comet/optimism/0xe36a30d249f7761327fd973001a32010b521b6fd/WETH": {
+      "borrow_apr": "0.02266438125384",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.002257572717306619",
+      "collaterals": {
+        "USDC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "15000000e6",
+          "total_supply": "3958.030178e6",
+          "usd_price": "1.00005216"
+        },
+        "USDT": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.95",
+          "supply_cap": "10000000e6",
+          "total_supply": "1503.030354e6",
+          "usd_price": "0.99979"
+        },
+        "WBTC": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "60e8",
+          "total_supply": "0.02295979e8",
+          "usd_price": "67796.42734643"
+        },
+        "ezETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "3200e18",
+          "total_supply": "221.186863679916097365e18",
+          "usd_price": "2108.58933322"
+        },
+        "rETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "5000e18",
+          "total_supply": "75.960975104873214155e18",
+          "usd_price": "2276.40625344"
+        },
+        "weETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1600e18",
+          "total_supply": "1053.332760763551581298e18",
+          "usd_price": "2140.60877464"
+        },
+        "wrsETH": {
+          "borrow_collateral_factor": "0.9",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.96",
+          "supply_cap": "1400e18",
+          "total_supply": "15.058826858932575482e18",
+          "usd_price": "2094.82200512"
+        },
+        "wstETH": {
+          "borrow_collateral_factor": "0.88",
+          "liquidate_collateral_factor": "0.93",
+          "liquidation_factor": "0.97",
+          "supply_cap": "3900e18",
+          "total_supply": "88.953995817305481791e18",
+          "usd_price": "2413.49027369"
+        }
+      },
+      "total_borrow": "1401.441147009070113691e18"
+    },
+    "comet/polygon/0xaeb318360f27748acb200ce616e389a6c9409a07/USDT": {
+      "borrow_apr": "0.03706994973672",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.75",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.9",
+          "supply_cap": "180e8",
+          "total_supply": "53.24112183e8",
+          "usd_price": "67852.31865919"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.8",
+          "liquidate_collateral_factor": "0.85",
+          "liquidation_factor": "0.93",
+          "supply_cap": "2000e18",
+          "total_supply": "314.684925792223537975e18",
+          "usd_price": "1964.14944663"
+        },
+        "WPOL": {
+          "borrow_collateral_factor": "0.65",
+          "liquidate_collateral_factor": "0.8",
+          "liquidation_factor": "0.85",
+          "supply_cap": "5000000e18",
+          "total_supply": "97395.345222302983085933e18",
+          "usd_price": "0.10035405"
+        }
+      },
+      "total_borrow": "1356897.237351e6"
+    },
+    "comet/unichain/0x2c7118c4c88b9841fcf839074c26ae8f035f2921/USDC": {
+      "borrow_apr": "0.034243908712992",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.02183433221166172",
+      "collaterals": {
+        "UNI": {
+          "borrow_collateral_factor": "0.68",
+          "liquidate_collateral_factor": "0.74",
+          "liquidation_factor": "0.83",
+          "supply_cap": "100000e18",
+          "total_supply": "4347.306382208062055444e18",
+          "usd_price": "3.8678094"
+        },
+        "WETH": {
+          "borrow_collateral_factor": "0.83",
+          "liquidate_collateral_factor": "0.9",
+          "liquidation_factor": "0.95",
+          "supply_cap": "5000e18",
+          "total_supply": "367.187886602670928051e18",
+          "usd_price": "1964.8501757"
+        }
+      },
+      "total_borrow": "286949.477924e6"
+    },
+    "morpho/base/WETH/USDC": {
+      "borrow_apr": "0.051042377598336",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "1966.19085773"
+        }
+      },
+      "total_borrow": "47170681.367339e6"
+    },
+    "morpho/base/cbBTC/USDC": {
+      "borrow_apr": "0.051129593402256",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "cbBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "67988.31433715"
+        }
+      },
+      "total_borrow": "932674134.469545e6"
+    },
+    "morpho/base/cbETH/USDC": {
+      "borrow_apr": "0.051203267395488",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "cbETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2209.54980501"
+        }
+      },
+      "total_borrow": "1539202.177632e6"
+    },
+    "morpho/hyper_evm/WHYPE/USDC": {
+      "borrow_apr": "0.056543568242832",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WHYPE": {
+          "borrow_collateral_factor": "0.625",
+          "liquidate_collateral_factor": "0.625",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "31.06887584"
+        }
+      },
+      "total_borrow": "2294884.343853e6"
+    },
+    "morpho/hyper_evm/WHYPE/USDH": {
+      "borrow_apr": "0.053954156964384",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WHYPE": {
+          "borrow_collateral_factor": "0.625",
+          "liquidate_collateral_factor": "0.625",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "31.09882522"
+        }
+      },
+      "total_borrow": "2941760.625542e6"
+    },
+    "morpho/unichain/WBTC/USDC": {
+      "borrow_apr": "0.069925833450288",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "68055.00972324"
+        }
+      },
+      "total_borrow": "112558.160774e6"
+    },
+    "morpho/unichain/weETH/USDC": {
+      "borrow_apr": "0.066908139923664",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "weETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2140.57637432"
+        }
+      },
+      "total_borrow": "2184.939905e6"
+    },
+    "morpho/unichain/weETH/WETH": {
+      "borrow_apr": "0.016379098553088",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "weETH": {
+          "borrow_collateral_factor": "0.945",
+          "liquidate_collateral_factor": "0.945",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2140.57637432"
+        }
+      },
+      "total_borrow": "2272.405169195182692747e18"
+    },
+    "morpho/unichain/wstETH/USDC": {
+      "borrow_apr": "0.067004008196832",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "wstETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2413.39108592"
+        }
+      },
+      "total_borrow": "83364.845842e6"
+    },
+    "morpho/unichain/wstETH/WETH": {
+      "borrow_apr": "0.016589451052512",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "wstETH": {
+          "borrow_collateral_factor": "0.965",
+          "liquidate_collateral_factor": "0.965",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "2413.39108593"
+        }
+      },
+      "total_borrow": "315.624463941070936822e18"
+    },
+    "morpho/world_chain/WBTC/USDC": {
+      "borrow_apr": "0.009709216577568",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.04332013055751111",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "67971.93396932"
+        }
+      },
+      "total_borrow": "2427490.421799e6"
+    },
+    "morpho/world_chain/WBTC/WETH": {
+      "borrow_apr": "0.000277145810496",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0",
+      "collaterals": {
+        "WBTC": {
+          "borrow_collateral_factor": "0.915",
+          "liquidate_collateral_factor": "0.915",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "68066.68626113"
+        }
+      },
+      "total_borrow": "32.575372908226745467e18"
+    },
+    "morpho/world_chain/WETH/USDC": {
+      "borrow_apr": "0.01103825878704",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.061150564541093404",
+      "collaterals": {
+        "WETH": {
+          "borrow_collateral_factor": "0.86",
+          "liquidate_collateral_factor": "0.86",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "1963.17335283"
+        }
+      },
+      "total_borrow": "2579552.4198e6"
+    },
+    "morpho/world_chain/WLD/USDC": {
+      "borrow_apr": "0.019814994476208",
+      "borrow_cap": null,
+      "borrow_rewards_apr": "0.06939979461487748",
+      "collaterals": {
+        "WLD": {
+          "borrow_collateral_factor": "0.77",
+          "liquidate_collateral_factor": "0.77",
+          "liquidation_factor": null,
+          "supply_cap": null,
+          "total_supply": null,
+          "usd_price": "0.38905839"
+        }
+      },
+      "total_borrow": "1822318.216449e6"
+    }
+  },
+  "bridge_hints": {
+    "across/arbitrum/USDC/base/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/arbitrum/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.030437e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/arbitrum/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/arbitrum/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000207e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/arbitrum/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002275e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/arbitrum/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866355931502152"
+    },
+    "across/arbitrum/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000215e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/arbitrum/WETH/base/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001863775056316e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "199.149817170655440576e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/arbitrum/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000021271565989522e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "1192.14956813031184145e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999729879174532326"
+    },
+    "across/arbitrum/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.00000014204432523e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.534115975916075613e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/arbitrum/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001333203850142e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999825331140252575"
+    },
+    "across/arbitrum/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000195825333095e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "148.825558086984777147e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/arbitrum/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000146565349612e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999446279302692768"
+    },
+    "across/base/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.00568e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/base/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.030522e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/base/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/base/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/base/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002197e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/base/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866355931502152"
+    },
+    "across/base/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000216e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/base/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000004491393214204e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.488814405370189903e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/base/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000021038420896032e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "1192.14956813031184145e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999729879174532326"
+    },
+    "across/base/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000142089367602e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.534115975916075613e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/base/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.00000128781694253e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999825331140252575"
+    },
+    "across/base/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000195825333095e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "148.825558086984777147e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/base/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000147040703708e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999446279302692768"
+    },
+    "across/ethereum/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.005666e6",
+      "max_amount": "1041455.703656e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/USDC/base/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "2038910.514885e6",
+      "max_amount_instant": "1130408.768018e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 6,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "975207.382341e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.5e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "1059307.707067e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.002281e6",
+      "max_amount": "992552.041959e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.5e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "1056053.162064e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.5e6",
+      "rate": "0.9998995"
+    },
+    "across/ethereum/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000216e6",
+      "max_amount": "933076.501946e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.5e6",
+      "rate": "0.9999"
+    },
+    "across/ethereum/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000004485584607985e18",
+      "max_amount": "1606.671769053065807929e18",
+      "max_amount_instant": "144.488814405370189903e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/ethereum/WETH/base/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000001864109812273e18",
+      "max_amount": "1661.332771818351058602e18",
+      "max_amount_instant": "199.149817170655440576e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/ethereum/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000000142298016344e18",
+      "max_amount": "1606.717070623611693639e18",
+      "max_amount_instant": "144.534115975916075613e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/ethereum/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000001337254416982e18",
+      "max_amount": "1494.071691593689806809e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/ethereum/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000000195811122274e18",
+      "max_amount": "1611.008512734680395173e18",
+      "max_amount_instant": "148.825558086984777147e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/ethereum/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 16,
+      "fixed_cost": "0.000000147040703708e18",
+      "max_amount": "1507.713653055696218099e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999921249999999999"
+    },
+    "across/hyper_evm/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.005657e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/hyper_evm/USDC/base/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/hyper_evm/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 6,
+      "fixed_cost": "0.029743e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/hyper_evm/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/hyper_evm/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.002191e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/hyper_evm/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247032763832362"
+    },
+    "across/hyper_evm/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.000215e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999247532763832362"
+    },
+    "across/optimism/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.00568e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/optimism/USDC/base/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002702e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/optimism/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.029743e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/optimism/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/optimism/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002197e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/optimism/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866355931502152"
+    },
+    "across/optimism/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000216e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/optimism/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000004491393214204e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.488814405370189903e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/optimism/WETH/base/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001871890032996e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "199.149817170655440576e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/optimism/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000020729044691049e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "1192.14956813031184145e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999729879174532326"
+    },
+    "across/optimism/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.00000128781694253e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999825331140252575"
+    },
+    "across/optimism/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000195825333095e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "148.825558086984777147e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/optimism/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000146641620417e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999446279302692768"
+    },
+    "across/polygon/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.005686e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766979754109821"
+    },
+    "across/polygon/USDC/base/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766979754109821"
+    },
+    "across/polygon/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.030522e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766979754109821"
+    },
+    "across/polygon/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/polygon/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766979754109821"
+    },
+    "across/polygon/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766479754109821"
+    },
+    "across/polygon/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000215e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999766979754109821"
+    },
+    "across/polygon/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000004496308188696e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.488814405370189903e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/polygon/WETH/base/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001863775056316e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "199.149817170655440576e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/polygon/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000021212272594861e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "1192.14956813031184145e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/polygon/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000142044187486e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.534115975916075613e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/polygon/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000195892014497e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "148.825558086984777147e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999873231920272973"
+    },
+    "across/polygon/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000146472673451e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.999446279302692768"
+    },
+    "across/unichain/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.005666e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/USDC/base/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.030522e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/unichain/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002302e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000215e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "24574.755079e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999866855931502152"
+    },
+    "across/unichain/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000004469499236918e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.488814405370189903e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/unichain/WETH/base/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001863933169677e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "199.149817170655440576e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/unichain/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000021271565989522e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "1192.14956813031184145e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/unichain/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000142044187486e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "144.534115975916075613e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/unichain/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001349360348891e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/unichain/WETH/world_chain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000146641620417e18",
+      "max_amount": "1192.14956813031184145e18",
+      "max_amount_instant": "45.530698408000600073e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.996596006346846463"
+    },
+    "across/world_chain/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.005686e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "132953.956788e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999666438944343617"
+    },
+    "across/world_chain/USDC/base/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002683e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999666438944343617"
+    },
+    "across/world_chain/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.029937e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "726625.961452e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999666438944343617"
+    },
+    "across/world_chain/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 4,
+      "fixed_cost": "0.00047e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "66705.635474e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.9999"
+    },
+    "across/world_chain/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000206e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "150805.9602e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999666438944343617"
+    },
+    "across/world_chain/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.002284e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "84050.295092e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999666438944343617"
+    },
+    "across/world_chain/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000344e6",
+      "max_amount": "726625.961452e6",
+      "max_amount_instant": "147551.415197e6",
+      "min_amount": "0.500049e6",
+      "rate": "0.999665938944343617"
+    },
+    "across/world_chain/WETH/arbitrum/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000004496308188696e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "114.435097498703068894e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "across/world_chain/WETH/base/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001863775056316e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "114.435097498703068894e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "across/world_chain/WETH/ethereum/WETH": {
+      "estimated_fill_time_sec": 9,
+      "fixed_cost": "0.000020863728169846e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "114.435097498703068894e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "across/world_chain/WETH/optimism/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000142023405802e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "114.435097498703068894e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "across/world_chain/WETH/polygon/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000001284019166541e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "31.888736945994188783e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "across/world_chain/WETH/unichain/WETH": {
+      "estimated_fill_time_sec": 2,
+      "fixed_cost": "0.000000195733700997e18",
+      "max_amount": "114.435097498703068894e18",
+      "max_amount_instant": "114.435097498703068894e18",
+      "min_amount": "0.000254300216663784e18",
+      "rate": "0.998529500460809616"
+    },
+    "cctp_v2/arbitrum/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/arbitrum/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/base/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/ethereum/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/ethereum/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.9999"
+    },
+    "cctp_v2/hyper_evm/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/hyper_evm/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/optimism/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/optimism/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/polygon/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/polygon/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "1"
+    },
+    "cctp_v2/unichain/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/unichain/USDC/world_chain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99985"
+    },
+    "cctp_v2/world_chain/USDC/arbitrum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/base/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/ethereum/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/hyper_evm/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/optimism/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/polygon/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    },
+    "cctp_v2/world_chain/USDC/unichain/USDC": {
+      "estimated_fill_time_sec": 8,
+      "fixed_cost": "0e6",
+      "max_amount": "54908032.398136e6",
+      "max_amount_instant": "54908032.398136e6",
+      "min_amount": "0.000001e6",
+      "rate": "0.99987"
+    }
+  },
+  "completion_statuses": {},
+  "hex_data": {
+    "nonce_secret/arbitrum/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x7ee4d341dab4429098cba3269ccd139edea2525774745ac19de240b4ae84bd6a",
+    "nonce_secret/base/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x68dde7a862ef04833bde19b45b6c81458d16896618b0acaa977e31d1c8619ab0",
+    "nonce_secret/ethereum/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x58d71593bdae5cad2aad7b0ac411cb618219f6611b758e2bbf56c1b3cd7bb305",
+    "nonce_secret/hyper_evm/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x671bf6bb92e4a7f971615f7ef4dea48b8bd1c175ba62a32488cc7f2526d18db5",
+    "nonce_secret/optimism/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0xf5fd27c3f4e9e531e865d157c16a8949a647d0a41a942ff3da2e9ce7ff32b160",
+    "nonce_secret/polygon/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x1afb15f03119bac8a5b20cf881496b16f7f88cca7d4fda0b555d5818085c587a",
+    "nonce_secret/unichain/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0x25a9dbe66c020f6cb36b90f0dfc56532b2a36fa8c2c8a96e4ccfe79de595d869",
+    "nonce_secret/world_chain/0x6d90e1eee903e3e6a4352d1da352547dde587964": "0xece440a2eb287c82adb2d2220598f08732ac97283e9e96cc057217b1be2c644b"
+  },
+  "patches": {},
+  "prices": {
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/1inch": "0.093074",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/aave": "108.83",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/aero": "0.34111",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/anon": "0.00018763",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/arb": "0.101796",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/ath": "0.00617822",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/blur": "0.01938167",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/bnkr": "0.00051483",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/brett": "0.00728864",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/cake": "1.33",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/cbbtc": "67918",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/cbeth": "2208.12",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/clanker": "27.15",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/comp": "17.03",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/crv": "0.249424",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/degen": "0.0006967",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/dot": "1.51",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/eigen": "0.188163",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/ena": "0.109121",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/eth": "1965.26",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/eul": "1.14",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/eurc": "1.16",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/ezeth": "2106.95",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/gho": "1",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/gmx": "7.06",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/higher": "0.0004258",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/hype": "31.12",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/icp": "2.43",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/jup": "0.176636",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/kaito": "0.351222",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/ldo": "0.300211",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/link": "8.7",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/lum": "0.260898",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/mog": "0.00000016",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/morpho": "1.94",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/op": "0.125167",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/pendle": "1.25",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/pepe": "0.0000034",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/pol": "0.100006",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/prime": "0.430371",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/reth": "2275.37",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/rpl": "1.87",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/rseth": "2090.07",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/rsweth": "2082.19",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/shib": "0.00000544",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/snx": "0.304782",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/steth": "1963.57",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/syrup": "0.228044",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/toshi": "0.00020315",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/towns": "0.00337225",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/uni": "3.85",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/usdc": "0.999902",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/usde": "0.999615",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/usdh": "1.001",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/usdt": "0.999996",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/usol": "84.26",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/uxrp": "1.35",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/virtual": "0.726522",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/vvv": "6.05",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/wbtc": "67702",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/weeth": "2137.83",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/well": "0.00428081",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/weth": "1963.98",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/whype": "31.11",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/wld": "0.388736",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/wpol": "0.099976",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/wrseth": "2091.65",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/wsteth": "2410.73",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/xaut": "5067.97",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/xaut0": "5065.86",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/zora": "0.01706764",
+    "asset_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/zro": "1.83",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/arbitrum/baseline": "0.01572208",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/base/baseline": "0.00550272",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/ethereum/baseline": "0.16283069",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/hyper_evm/baseline": "0.01881709",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/optimism/baseline": "0.00157257",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/polygon/baseline": "0.00701918",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/unichain/baseline": "0.00196526",
+    "network_operation_quote/0x9b8a4d20c909bd75e8c6342990ed00703e6babdfd1f484b885293e0467932061/world_chain/baseline": "0.0015724",
+    "token/1INCH": "0.093124",
+    "token/AAVE": "109.1",
+    "token/AERO": "0.341242",
+    "token/ANON": "0.00018766",
+    "token/ARB": "0.101849",
+    "token/ATH": "0.00617231",
+    "token/BLUR": "0.01940692",
+    "token/BNKR": "0.0005126",
+    "token/BRETT": "0.00731506",
+    "token/CLANKER": "27.17",
+    "token/COMP": "17.03",
+    "token/CRV": "0.249711",
+    "token/Cake": "1.33",
+    "token/DEGEN": "0.00069855",
+    "token/DOT": "1.52",
+    "token/EIGEN": "0.188509",
+    "token/ENA": "0.109501",
+    "token/ETH": "1965.34",
+    "token/EUL": "1.13",
+    "token/EURC": "1.16",
+    "token/GHO": "1",
+    "token/GMX": "7.06",
+    "token/HIGHER": "0.0004258",
+    "token/HYPE": "31.09",
+    "token/ICP": "2.43",
+    "token/JUP": "0.177199",
+    "token/KAITO": "0.353417",
+    "token/LDO": "0.300903",
+    "token/LINK": "8.71",
+    "token/LUM": "0.260912",
+    "token/MORPHO": "1.95",
+    "token/Mog": "0.00000016",
+    "token/OP": "0.125508",
+    "token/PENDLE": "1.25",
+    "token/PEPE": "0.00000342",
+    "token/POL": "0.100325",
+    "token/PRIME": "0.4319",
+    "token/RPL": "1.87",
+    "token/SHIB": "0.00000546",
+    "token/SNX": "0.305449",
+    "token/SYRUP": "0.228219",
+    "token/TOSHI": "0.00020308",
+    "token/TOWNS": "0.00337647",
+    "token/UNI": "3.85",
+    "token/USDC": "0.999966",
+    "token/USDH": "1.001",
+    "token/USDHL": "0.998185",
+    "token/USDT": "0.999999",
+    "token/USDe": "0.999763",
+    "token/VIRTUAL": "0.729492",
+    "token/VVV": "5.95",
+    "token/WBTC": "67831",
+    "token/WELL": "0.00427781",
+    "token/WETH": "1965.91",
+    "token/WHYPE": "31.11",
+    "token/WLD": "0.389132",
+    "token/WPOL": "0.100346",
+    "token/XAUT0": "5065.38",
+    "token/XAUt": "5067.34",
+    "token/XAUt0": "4949.22",
+    "token/ZORA": "0.01707972",
+    "token/ZRO": "1.83",
+    "token/cbBTC": "68000",
+    "token/cbETH": "2209.34",
+    "token/ezETH": "2108.64",
+    "token/rETH": "2276.92",
+    "token/rsETH": "2092.15",
+    "token/rswETH": "2084.42",
+    "token/stETH": "1964.59",
+    "token/uSOL": "84.67",
+    "token/uXRP": "1.35",
+    "token/weETH": "2140.12",
+    "token/wrsETH": "2092.74",
+    "token/wstETH": "2413.32"
+  },
+  "rewards": {
+    "comet_reward/arbitrum/0x6f7d514bbd4aff3bcd1140b7344b32f063dee486/COMP/0x88730d254a2f7e6ac8388c3198afd694ba9f7fae/0x6d90e1eee903e3e6a4352d1da352547dde587964": {
+      "proof": {
+        "proof_type": "none"
+      }
+    },
+    "comet_reward/optimism/0x2e44e174f7d53f0212823acc11c01a11d58c5bcb/COMP/0x443ea0340cb75a160f31a440722dec7b5bc3c2e9/0x6d90e1eee903e3e6a4352d1da352547dde587964": {
+      "proof": {
+        "proof_type": "none"
+      }
+    },
+    "morpho_reward/world_chain/WLD/0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae/0x6d90e1eee903e3e6a4352d1da352547dde587964": {
+      "proof": {
+        "proof": [
+          "0x61fe6300c153c25fdb1188e1eb9e099119a89663d4ee46d92295b8eacdec9932",
+          "0x0aae672b2b46da71a4aed6d9498ad7aac238c81e1dfc8a5849a06a0141facafe",
+          "0xee603e1abdbbaaf6226c939658358af44be6ef8fea37447ae24ee65460be6711",
+          "0xaabb999446a7795c7c67d11c70b38d566d74e3659978c2f5a5a17cd71c889b10",
+          "0x0a368488efcb33758be3d1adddcede5508ef48fbccf4f76924c893640e78732e",
+          "0xc1ba5d729312402d14c0331aaa188399ae46247a3080640bd19085645134060a",
+          "0xb92f2f1ea14d83c46ca211365a817e897b17bce213d87516413fbb1e35da0222",
+          "0x796b7deaffc4b74b90b87dfd801fa2d821d77a6a42c2118c6078af12e9545ee3",
+          "0xc851315ddfb7b999b52328fd0982fcc0606e6495974ca8aa51d30e6e5aa298b1",
+          "0x816d913161366890428b09e543f53e0f33c93b807bce2edd137593293a25a4a5",
+          "0xb0ab17c39ef0e12b3e3261ae442cfa42df3163b1de4fd910ddaa2218584a5b69",
+          "0x7a0ef75f1e70346cb1b606e9f18243882431bb43f843195644e1c7bdde100416",
+          "0xdcda10ab10b8f85f9832975c75cf7cfd6bff6b75b25aa4a7406da52dbfd1be28",
+          "0xe09c581d0a581b94ebc5a09bbfdb579e1e15fd864dde12451dc5a4aaed7d6d66",
+          "0x9a3889189c3a5425a2f9b0c7e18cf0188bfbd8a0d1ad8f07823255db1b29e534",
+          "0xdeb6a0588a2e3ca4d1fe31ae80b19ff9bf29fd01adc88222742c99b530eb2e51",
+          "0xe9254443df2c4d2457dc48642c009c81bac9b24fc1e7bf907551ac7c11b6de66",
+          "0x6f5c43079e2e1774b11ea38ed4a71a4ec3880b87e63c80818cca7235ade1864f",
+          "0x12177736de17595d8fdc20aa550d67d8aafe6e34fcaa5f44322673a756068ef0",
+          "0xe48d7e4dcf0f30b7835a370a5f725e72ac76e3e8636f49c437805ef1fbbe45b4"
+        ],
+        "proof_amount": "5.826053275036792724e18",
+        "proof_type": "morpho_reward"
+      }
+    }
+  },
+  "swap_hints": {
+    "wrapper/arbitrum/ETH/arbitrum/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/arbitrum/stETH/arbitrum/wstETH": {
+      "exchange_rate": "1.228366625077394495",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/base/ETH/base/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/base/stETH/base/wstETH": {
+      "exchange_rate": "1.228366625077394495",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/ethereum/ETH/ethereum/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/ethereum/stETH/ethereum/wstETH": {
+      "exchange_rate": "1.228366625077394495",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/hyper_evm/HYPE/hyper_evm/WHYPE": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/optimism/ETH/optimism/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/optimism/stETH/optimism/wstETH": {
+      "exchange_rate": "1.228366625077394495",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/polygon/POL/polygon/WPOL": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/unichain/ETH/unichain/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/unichain/stETH/unichain/wstETH": {
+      "exchange_rate": "1.227965566146079453",
+      "max_amount": null,
+      "min_amount": null
+    },
+    "wrapper/world_chain/ETH/world_chain/WETH": {
+      "exchange_rate": "1",
+      "max_amount": null,
+      "min_amount": null
+    }
+  },
+  "yield_markets": {
+    "morpho_vault/base/0xc1256ae5ff1cf2719d4937adb3bbccab2e00a2ca/USDC": {
+      "supply_apr": "0.039404306694413189",
+      "supply_cap": null,
+      "supply_rewards_apr": "0.006797730702512281",
+      "total_supply": "16586423.044652e6"
+    },
+    "morpho_vault/ethereum/0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458/USDC": {
+      "supply_apr": "0.036224949176606931",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "32912346.628869e6"
+    },
+    "morpho_vault/hyper_evm/0x207ccae51ad2e1c240c4ab4c94b670d438d2201c/USDH": {
+      "supply_apr": "0.042581535957265592",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "5978084.339033e6"
+    },
+    "morpho_vault/hyper_evm/0x8a862fd6c12f9ad34c9c2ff45ab2b6712e8cea27/USDC": {
+      "supply_apr": "0.043776344886972199",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "28385234.396778e6"
+    },
+    "morpho_vault/unichain/0x38f4f3b6533de0023b9dcd04b02f93d36ad1f9f9/USDC": {
+      "supply_apr": "0.020467360241973101",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "3460025.611064e6"
+    },
+    "morpho_vault/unichain/0x830898200f0e8be8dc1c9a836f4ab29ecedf76eb/WETH": {
+      "supply_apr": "0.012478004331849138",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "1555.646094414328892165e18"
+    },
+    "morpho_vault/unichain/0x89849b6e57e1c61e447257242bda97c70fa99b6b/USDT": {
+      "supply_apr": "0.065740211275091941",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "84989.471286e6"
+    },
+    "morpho_vault/world_chain/0x0db7e405278c2674f462ac9d9eb8b8346d1c1571/WETH": {
+      "supply_apr": "0.000116520399962608",
+      "supply_cap": null,
+      "supply_rewards_apr": "0.04020251372668712",
+      "total_supply": "2128.612999518094316318e18"
+    },
+    "morpho_vault/world_chain/0x348831b46876d3df2db98bdec5e3b4083329ab9f/WLD": {
+      "supply_apr": "0.000064767600846897",
+      "supply_cap": null,
+      "supply_rewards_apr": "0.0256770786902117",
+      "total_supply": "16810622.632120510793946558e18"
+    },
+    "morpho_vault/world_chain/0xb1e80387ebe53ff75a89736097d34dc8d9e9045b/USDC": {
+      "supply_apr": "0.007906027587263578",
+      "supply_cap": null,
+      "supply_rewards_apr": "0.05217019350152264",
+      "total_supply": "10041140.656148e6"
+    },
+    "morpho_vault/world_chain/0xbc8c37467c5df9d50b42294b8628c25888becf61/WBTC": {
+      "supply_apr": "0",
+      "supply_cap": null,
+      "supply_rewards_apr": "0",
+      "total_supply": "0.13020778e8"
+    }
+  }
+}

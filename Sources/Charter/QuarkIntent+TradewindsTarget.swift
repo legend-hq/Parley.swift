@@ -14,7 +14,7 @@ internal func generateRoute(
     cappedMaxNodes: Set<TradewindsLegendNode>,
     exactWithdrawalAmounts: [EthAddress: Number] = [:],  // Maps market address to exact withdrawal amount
     logger: Charter.Logger?
-) -> Tradewinds.Route<TradewindsLegendNode, LegendRouteType>? {
+) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
     let maxFlow = Number.MAX_UINT_256
 
     // Handle routes between different node types
@@ -35,7 +35,7 @@ internal func generateRoute(
             ),
                 !wrapQuoteRate.isZero
             {
-                return makeLegendRoute(
+                return [makeLegendRoute(
                     type: .wrap,
                     source: sourceNode,
                     sink: sinkNode,
@@ -43,14 +43,14 @@ internal func generateRoute(
                     minFlow: Number(0),
                     maxFlow: maxFlow,
                     folio: folio
-                )
+                )]
             } else if let unwrapQuoteRate = folio.getUnwrapQuote(
                 underlyingNetwork: sourceNetwork,
                 underlyingSymbol: sourceSymbol,
                 wrappedNetwork: sinkNetwork,
                 wrappedSymbol: sinkSymbol
             ) {
-                return makeLegendRoute(
+                return [makeLegendRoute(
                     type: .unwrap,
                     source: sourceNode,
                     sink: sinkNode,
@@ -58,7 +58,7 @@ internal func generateRoute(
                     minFlow: Number(0),
                     maxFlow: maxFlow,
                     folio: folio
-                )
+                )]
             }
 
         case (
@@ -78,9 +78,9 @@ internal func generateRoute(
             if sourceWallet == actorWallet {
                 // Actor is sending - only allow if sink is NOT in userWallets (no transfers to other user wallets)
                 guard !userWallets.contains(sinkWallet) || sinkWallet == actorWallet else {
-                    return nil
+                    return []
                 }
-                return makeLegendRoute(
+                return [makeLegendRoute(
                     type: .transferOut,
                     source: sourceNode,
                     sink: sinkNode,
@@ -88,10 +88,10 @@ internal func generateRoute(
                     minFlow: Number(0),
                     maxFlow: maxFlow,
                     folio: folio
-                )
+                )]
             } else if userWallets.contains(sourceWallet) && sinkWallet == actorWallet {
                 // Other user wallets can send TO actor
-                return makeLegendRoute(
+                return [makeLegendRoute(
                     type: .tokenTransfer,
                     source: sourceNode,
                     sink: sinkNode,
@@ -99,24 +99,26 @@ internal func generateRoute(
                     minFlow: Number(0),
                     maxFlow: maxFlow,
                     folio: folio
-                )
+                )]
             }
 
             // No other transfers allowed
-            return nil
+            return []
 
         case (
             .tokenBalance(let sourceNetwork, _, let sourceSymbol, let sourceWallet),
             .tokenBalance(let sinkNetwork, _, let sinkSymbol, let sinkWallet)
         ):
 
-            // Case 3: Cross-chain Across bridge (tokenBalance -> tokenBalance)
+            // Case 3: Cross-chain bridge (tokenBalance -> tokenBalance)
+            // Supports both Across and CCTP v2 bridges
             // For bridges: only allow actor to bridge their own funds
-            // This minimizes bridge operations and fees
-            // TODO: Consider allowing direct bridging to recipient for transfer intents
             if sourceWallet != actorWallet || sinkWallet != actorWallet {
-                return nil
+                return []
             }
+
+            var bridgeRoutes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] = []
+            let isCappedMax = cappedMaxNodes.contains(sourceNode)
 
             // Across bridge
             if let bridgeHint = folio.getAcrossQuote(
@@ -125,21 +127,11 @@ internal func generateRoute(
                 sourceSymbol: sourceSymbol,
                 sinkSymbol: sinkSymbol
             ) {
-                // For bridges: only allow actor to bridge their own funds
-                // This minimizes bridge operations and fees
-                // TODO: Consider allowing direct bridging to recipient for transfer intents
-                if sourceWallet != actorWallet || sinkWallet != actorWallet {
-                    return nil
-                }
-
-                let isCappedMax = cappedMaxNodes.contains(sourceNode)
-                return makeLegendRoute(
+                bridgeRoutes.append(makeLegendRoute(
                     type: .bridge(bridgeType: .across, isCappedMax: isCappedMax),
                     source: sourceNode,
                     sink: sinkNode,
-                    // Convert percentage directly to Rate to avoid precision loss
                     rate: Percentage(fromNumber: Number(bridgeHint.rate.underlying)),
-                    // Bridge fees are treated as outFee (deducted after rate)
                     fees: [
                         Tradewinds.Fee(
                             type: .bridgeAcross,
@@ -150,41 +142,21 @@ internal func generateRoute(
                     minFlow: bridgeHint.minAmount.underlying,
                     maxFlow: bridgeHint.maxAmountInstant.underlying,
                     folio: folio
-                )
+                ))
             }
 
-        case (
-            .tokenBalance(let sourceNetwork, _, let sourceSymbol, let sourceWallet),
-            .cctpBridge(let bridgeSourceNetwork, let bridgeDestNetwork, let bridgeDestAsset, let bridgeWallet)
-        )
-        where sourceNetwork == bridgeSourceNetwork && sourceWallet == bridgeWallet
-            && sourceWallet == actorWallet:
-            // Case 4: CCTP v2 burn route (tokenBalance -> cctpBridge)
-
-            // Get the sink token symbol from the bridge destination asset
-            guard let sinkAsset = Atlas.getAssetByAddress(
-                network: bridgeDestNetwork,
-                token: bridgeDestAsset
-            ) else {
-                return nil
-            }
-
+            // CCTP v2 bridge
             if let cctpHint = folio.getCCTPv2Quote(
                 sourceNetwork: sourceNetwork,
-                sinkNetwork: bridgeDestNetwork,
+                sinkNetwork: sinkNetwork,
                 sourceSymbol: sourceSymbol,
-                sinkSymbol: sinkAsset.symbol
+                sinkSymbol: sinkSymbol
             ) {
-                let isCappedMax = cappedMaxNodes.contains(sourceNode)
-
-                // Burn route: source token -> CCTP Bridge
-                return makeLegendRoute(
+                bridgeRoutes.append(makeLegendRoute(
                     type: .bridge(bridgeType: .cctpV2, isCappedMax: isCappedMax),
                     source: sourceNode,
                     sink: sinkNode,
-                    // Convert percentage directly to Rate to avoid precision loss
                     rate: Percentage(fromNumber: Number(cctpHint.rate.underlying)),
-                    // Bridge fees are treated as outFee (deducted after rate)
                     fees: [
                         Tradewinds.Fee(
                             type: .bridgeCCTPv2,
@@ -195,42 +167,10 @@ internal func generateRoute(
                     minFlow: cctpHint.minAmount.underlying,
                     maxFlow: cctpHint.maxAmount.underlying,
                     folio: folio
-                )
+                ))
             }
 
-        case (
-            .cctpBridge(let bridgeSourceNetwork, let bridgeDestNetwork, let bridgeDestAsset, let bridgeWallet),
-            .tokenBalance(let sinkNetwork, let sinkAddress, let sinkSymbol, let sinkWallet)
-        )
-        where bridgeDestNetwork == sinkNetwork && bridgeDestAsset == sinkAddress
-            && bridgeWallet == sinkWallet && sinkWallet == actorWallet:
-            // Case 5: CCTP v2 mint route (cctpBridge -> tokenBalance)
-
-            // For CCTP, the same asset symbol exists on both source and dest networks
-            // We use the sink symbol directly from the tokenBalance node
-            if let cctpHint = folio.getCCTPv2Quote(
-                sourceNetwork: bridgeSourceNetwork,
-                sinkNetwork: sinkNetwork,
-                sourceSymbol: sinkSymbol,  // Use the symbol from the sink token balance
-                sinkSymbol: sinkSymbol
-            ) {
-                // Mint route: CCTP Bridge -> sink token
-                // Store burn route's rate and fees to compute burn amount later
-                return makeLegendRoute(
-                    type: .mint(
-                        sourceNetwork: bridgeSourceNetwork,
-                        bridgeType: .cctpV2,
-                        burnRate: Percentage(fromNumber: Number(cctpHint.rate.underlying)),
-                        burnFee: cctpHint.fixedCost.underlying
-                    ),
-                    source: sourceNode,
-                    sink: sinkNode,
-                    rate: 1.0,  // 1:1 conversion for mint
-                    minFlow: Number(0),
-                    maxFlow: maxFlow,
-                    folio: folio
-                )
-            }
+            return bridgeRoutes
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -241,7 +181,7 @@ internal func generateRoute(
             // Token to Comet supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .cometSupply(isCappedMax: isCappedMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -249,7 +189,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,  // TODO: Use actual supply cap from folio
                 folio: folio
-            )
+            )]
 
         case (
             .cometSupplyBalance(let network, let comet, let baseAsset, let wallet),
@@ -276,7 +216,7 @@ internal func generateRoute(
                 flowMax = maxFlow
             }
 
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .cometWithdraw(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -284,7 +224,7 @@ internal func generateRoute(
                 minFlow: minFlow,
                 maxFlow: flowMax,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -295,7 +235,7 @@ internal func generateRoute(
             // Token to Morpho vault supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .morphoVaultSupply(isCappedMax: isCappedMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -303,7 +243,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,  // TODO: Use actual supply cap from folio
                 folio: folio
-            )
+            )]
 
         case (
             .morphoVaultSupplyBalance(let network, let vault, let baseAsset, let wallet),
@@ -330,7 +270,7 @@ internal func generateRoute(
                 flowMax = maxFlow
             }
 
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .morphoVaultWithdraw(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -338,7 +278,7 @@ internal func generateRoute(
                 minFlow: minFlow,
                 maxFlow: flowMax,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -349,7 +289,7 @@ internal func generateRoute(
             // Token to Aave supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .aaveSupply(isCappedMax: isCappedMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -357,7 +297,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,  // TODO: Use actual supply cap from folio
                 folio: folio
-            )
+            )]
 
         case (
             .aaveSupplyBalance(let network, let pool, let baseAsset, let wallet),
@@ -384,7 +324,7 @@ internal func generateRoute(
                 flowMax = maxFlow
             }
 
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .aaveWithdraw(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -392,7 +332,7 @@ internal func generateRoute(
                 minFlow: minFlow,
                 maxFlow: flowMax,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -402,7 +342,7 @@ internal func generateRoute(
             && address == collateralAsset:
             // Token to Comet collateral (must be same network, same wallet, same asset, only actor)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .cometSupplyCollateral(isCappedMax: isCappedMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -410,7 +350,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -420,7 +360,7 @@ internal func generateRoute(
             && address == borrowAsset:
             // Token to Comet borrow position (repay) - must be same network, same wallet, same asset, only actor
             let isMax = cappedMaxNodes.contains(sourceNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .cometRepay(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -428,7 +368,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -438,7 +378,7 @@ internal func generateRoute(
             && address == borrowAsset:
             // Token to Morpho borrow position (repay) - must be same network, same wallet, same asset, only actor
             let isMax = cappedMaxNodes.contains(sourceNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .morphoRepay(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -446,7 +386,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         case (
             .tokenBalance(let network, let address, _, let wallet),
@@ -456,7 +396,7 @@ internal func generateRoute(
             && address == collateralAsset:
             // Token to Morpho collateral (must be same network, same wallet, same asset, only actor)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .morphoSupplyCollateral(isCappedMax: isCappedMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -464,7 +404,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         case (
             .cometCollateralBalance(let collateralNetwork, _, let collateralAsset, let wallet),
@@ -475,7 +415,7 @@ internal func generateRoute(
             // Comet collateral to token balance (withdrawal)
             // Use source node maxness for withdrawal operations
             let isMax = cappedMaxNodes.contains(sourceNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .cometWithdrawCollateral(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -483,7 +423,7 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         case (
             .morphoCollateralBalance(let collateralNetwork, _, let collateralAsset, let wallet),
@@ -494,7 +434,7 @@ internal func generateRoute(
             // Morpho collateral to token balance (withdrawal)
             // Use source node maxness for withdrawal operations
             let isMax = cappedMaxNodes.contains(sourceNode)
-            return makeLegendRoute(
+            return [makeLegendRoute(
                 type: .morphoWithdrawCollateral(isMax: isMax),
                 source: sourceNode,
                 sink: sinkNode,
@@ -502,13 +442,13 @@ internal func generateRoute(
                 minFlow: Number(0),
                 maxFlow: maxFlow,
                 folio: folio
-            )
+            )]
 
         default:
-            return nil
+            return []
     }
 
-    return nil
+    return []
 }
 
 /// Creates token balance nodes and routes for swap hint assets in a single pass.
@@ -577,51 +517,6 @@ internal func createSwapHintNodesAndRoutes(
     return (Array(nodes), routes)
 }
 
-/// Pre-creates CCTP bridge nodes for all valid cross-chain CCTP pairs
-/// These intermediate nodes enable the optimizer to route through CCTP bridges
-internal func createCCTPBridgeNodes(
-    nodes: [TradewindsLegendNode],
-    folio: Folio,
-    actorWallet: EthAddress
-) -> [TradewindsLegendNode] {
-    var cctpBridgeNodes: Set<TradewindsLegendNode> = []
-
-    // Extract all token balance nodes from the input
-    let tokenNodes = nodes.compactMap { node -> (Network, EthAddress, String)? in
-        if case .tokenBalance(let network, let address, let symbol, _) = node {
-            return (network, address, symbol)
-        }
-        return nil
-    }
-
-    // For each pair of token nodes on different networks
-    for (sourceNetwork, _, sourceSymbol) in tokenNodes {
-        for (sinkNetwork, sinkAddress, sinkSymbol) in tokenNodes {
-            // Only create CCTP bridge nodes for cross-chain pairs
-            guard sourceNetwork != sinkNetwork else { continue }
-
-            // Check if CCTP v2 bridge is available for this pair
-            if folio.getCCTPv2Quote(
-                sourceNetwork: sourceNetwork,
-                sinkNetwork: sinkNetwork,
-                sourceSymbol: sourceSymbol,
-                sinkSymbol: sinkSymbol
-            ) != nil {
-                // Create the intermediate CCTP bridge node
-                let cctpBridgeNode = TradewindsLegendNode.cctpBridge(
-                    sourceNetwork: sourceNetwork,
-                    destNetwork: sinkNetwork,
-                    destAsset: sinkAddress,
-                    wallet: actorWallet
-                )
-                cctpBridgeNodes.insert(cctpBridgeNode)
-            }
-        }
-    }
-
-    return Array(cctpBridgeNodes)
-}
-
 internal func generateRoutes(
     nodes: [TradewindsLegendNode],
     folio: Folio,
@@ -634,13 +529,6 @@ internal func generateRoutes(
 ) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
     var routes: Set<Tradewinds.Route<TradewindsLegendNode, LegendRouteType>> = []
 
-    // Pre-create CCTP bridge nodes and add them to the node set
-    let cctpBridgeNodes = createCCTPBridgeNodes(
-        nodes: nodes,
-        folio: folio,
-        actorWallet: actorWallet
-    )
-
     // Pre-create swap hint nodes and routes in one pass
     let (swapHintNodes, swapHintRoutes) = includeSwapHints
         ? createSwapHintNodesAndRoutes(folio: folio, actorWallet: actorWallet, isMaxIntent: !cappedMaxNodes.isEmpty)
@@ -648,14 +536,12 @@ internal func generateRoutes(
 
     // Use Set to deduplicate nodes
     let allNodes: Set<TradewindsLegendNode> = Set(nodes)
-        .union(cctpBridgeNodes)
         .union(swapHintNodes)
 
-    // Generate routes between all pairs of nodes (including CCTP bridge nodes and swap nodes)
+    // Generate routes between all pairs of nodes (including swap nodes)
     for sourceNode in allNodes {
         for sinkNode in allNodes where sourceNode != sinkNode {
-            // Generate standard route (wrap, unwrap, bridge, transfer, etc.)
-            if let route = generateRoute(
+            for route in generateRoute(
                 sourceNode: sourceNode,
                 sinkNode: sinkNode,
                 folio: folio,

@@ -231,7 +231,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     case .failure(let err): return .failure(err)
                 }
 
-                // For Across: sink is tokenBalance. For CCTP v2: sink is cctpBridge node
+                // For both Across and CCTP v2: sink is always tokenBalance
                 guard let destNetwork = self.route.sink.network else {
                     return .failure(.invalidNode)
                 }
@@ -265,8 +265,8 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                         )
 
                     case .cctpV2:
-                        // Burn operation from tokenBalance to cctpBridge virtual node
-                        return Charter.QuarkOperationBuilder.bridgeCCTPv2(
+                        // Emit both burn and mint operations from the collapsed bridge route
+                        let burnOps = Charter.QuarkOperationBuilder.bridgeCCTPv2(
                             srcNetwork: sourceNetwork,
                             srcAsset: srcAsset,
                             destNetwork: destNetwork,
@@ -279,54 +279,21 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                             recipient: sinkWallet,
                             isMaxBridge: bridgeIsCappedMax
                         )
+                        let mintOps = Charter.QuarkOperationBuilder.bridgeMint(
+                            srcNetwork: sourceNetwork,
+                            destNetwork: destNetwork,
+                            destAsset: destAsset,
+                            inputAmount: Amount(self.amountLessInFee, decimals: Int(destAsset.decimals)),
+                            outputAmount: Amount(self.sinkAmount, decimals: Int(destAsset.decimals)),
+                            recipient: sinkWallet,
+                            bridgeType: .cctpV2
+                        )
+                        // Combine burn + mint
+                        return burnOps.flatMap { b in mintOps.map { m in b + m } }
 
                     case .cctpV1, .unknown:
                         return .failure(.error("Unsupported bridge type: \(bridgeType)"))
                 }
-
-            case .mint(let sourceNetwork, let bridgeType, let burnRate, let burnFee):
-                // Mint operation from cctpBridge virtual node to tokenBalance
-                // Use sink node info since operation occurs on destination chain
-                guard case .success(let destNetwork) = sinkNetworkRes else {
-                    return .failure(sinkNetworkRes.asFailure)
-                }
-
-                guard case .success(let sinkWallet) = sinkWalletRes else {
-                    return .failure(sinkWalletRes.asFailure)
-                }
-
-                let destAsset: Atlas.Asset
-                switch self.route.sink.asAtlasAsset {
-                    case .success(let asset_): destAsset = asset_
-                    case .failure(let err): return .failure(err)
-                }
-
-                // Validate that mint currently only supports CCTP v2
-                guard case .cctpV2 = bridgeType else {
-                    return .failure(.error("Mint operation only supports CCTP v2 bridges, got: \(bridgeType)"))
-                }
-
-                // Compute the burn amount from the mint amount using the burn route's rate and fees
-                // Formula: ceil((mintAmount + burnFee) / burnRate) = burnAmount
-                // This reverses the burn operation: burnAmount * rate - fee = mintAmount
-                // Use ceiling division to match the burn side's ceil() rounding and prevent -1 discrepancy
-                let mintAmount = self.amountLessInFee
-                // Use high-precision arithmetic to avoid division issues
-                // burnRate.underlying is the rate * 10^factorScale
-                // burnAmount = ceil((mintAmount + burnFee) * 10^factorScale / burnRate.underlying)
-                let numerator = (mintAmount + burnFee) * Number.pow10(burnRate.factorScale)
-                let denominator = Number(burnRate.underlying)
-                let burnInputAmount = (numerator + denominator - 1) / denominator
-
-                return Charter.QuarkOperationBuilder.bridgeMint(
-                    srcNetwork: sourceNetwork,
-                    destNetwork: destNetwork,
-                    destAsset: destAsset,
-                    inputAmount: Amount(burnInputAmount, decimals: Int(destAsset.decimals)),
-                    outputAmount: Amount(mintAmount, decimals: Int(destAsset.decimals)),
-                    recipient: sinkWallet,
-                    bridgeType: bridgeType
-                )
 
             case .wrap, .unwrap:
                 guard case .success(let sourceNetwork) = sourceNetworkRes else {
