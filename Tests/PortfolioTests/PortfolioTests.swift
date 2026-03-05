@@ -133,6 +133,7 @@ let portfolioFixture =
                 address: EthAddress("0x2943ac1216979ad8db76d9147f64e61adc126e96"),
                 base: Portfolio.Comet.Base(
                     address: EthAddress("0x2d5ee574e710219a521449679a4a7f2b43f046ad"),
+                    baseBorrowMin: Amount("0//18"),
                     decimals: 18,
                     name: "Wrapped Ether",
                     positions: [
@@ -241,6 +242,7 @@ let portfolioFixture =
                 address: EthAddress("0xaec1f48e02cfb822be958b68c7957156eb3f0b6e"),
                 base: Portfolio.Comet.Base(
                     address: EthAddress("0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"),
+                    baseBorrowMin: Amount("0//6"),
                     decimals: 6,
                     name: "USD Coin",
                     positions: [
@@ -1367,6 +1369,7 @@ struct PortfolioTests {
                     comet: EthAddress("0xaec1f48e02cfb822be958b68c7957156eb3f0b6e"),
                     underlyingSymbol: "USDC"
                 ): Prelude.Folio.BorrowMarket(
+                    baseBorrowMin: Prelude.Amount(underlying: Number("0"), decimals: 6),
                     borrowApr: Prelude.Percentage(
                         underlying: SNumber("0.210960831828384e18"),
                         factorScale: 18
@@ -1501,6 +1504,7 @@ struct PortfolioTests {
                     comet: EthAddress("0x2943ac1216979ad8db76d9147f64e61adc126e96"),
                     underlyingSymbol: "WETH"
                 ): Prelude.Folio.BorrowMarket(
+                    baseBorrowMin: Prelude.Amount(underlying: Number("0"), decimals: 18),
                     borrowApr: Prelude.Percentage(
                         underlying: SNumber("0.00994522433832e18"),
                         factorScale: 18

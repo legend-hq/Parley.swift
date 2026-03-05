@@ -543,6 +543,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
 
         public struct Base: Codable, Equatable, Sendable {
             public let address: EthAddress
+            public let baseBorrowMin: Amount
             public let decimals: Int
             public let name: String
             public let positions: [Position]
@@ -554,6 +555,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
 
             enum CodingKeys: String, CodingKey {
                 case address
+                case baseBorrowMin = "base_borrow_min"
                 case decimals
                 case name
                 case positions
@@ -566,6 +568,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
 
             public init(
                 address: EthAddress,
+                baseBorrowMin: Amount,
                 decimals: Int,
                 name: String,
                 positions: [Position],
@@ -576,6 +579,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
                 usdPrice: Value
             ) {
                 self.address = address
+                self.baseBorrowMin = baseBorrowMin
                 self.decimals = decimals
                 self.name = name
                 self.positions = positions
@@ -589,6 +593,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
             public init(
                 base: Base,
                 address: EthAddress? = nil,
+                baseBorrowMin: Amount? = nil,
                 decimals: Int? = nil,
                 name: String? = nil,
                 positions: [Position]? = nil,
@@ -599,6 +604,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
                 usdPrice: Value? = nil
             ) {
                 self.address = address ?? base.address
+                self.baseBorrowMin = baseBorrowMin ?? base.baseBorrowMin
                 self.decimals = decimals ?? base.decimals
                 self.name = name ?? base.name
                 self.positions = positions ?? base.positions
@@ -1980,6 +1986,7 @@ public struct Portfolio: Codable, Equatable, Sendable {
                 earnRewardsApr: comet.supplyRewardsApr,
                 borrowApr: comet.borrowApr,
                 borrowRewardsApr: comet.borrowRewardsApr,
+                baseBorrowMin: comet.base.baseBorrowMin,
                 baseAsset: baseAsset,
                 collateralAssets: collateralAssets,
                 rewardAssets: rewardAssets

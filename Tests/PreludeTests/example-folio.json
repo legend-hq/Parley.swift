@@ -73,7 +73,8 @@
           "usd_price": "2958.81901895"
         }
       },
-      "total_borrow": "5058.45931682749e18"
+      "total_borrow": "5058.45931682749e18",
+      "base_borrow_min": null
     },
     "comet/arbitrum/0x9c4ec768c28520b50860ea7a15bd7213a9ff58bf/USDC": {
       "borrow_apr": "0.0391015739124",
@@ -129,7 +130,8 @@
           "usd_price": "2958.81901895"
         }
       },
-      "total_borrow": "29360538.205781e6"
+      "total_borrow": "29360538.205781e6",
+      "base_borrow_min": null
     },
     "comet/arbitrum/0xd98be00b5d27fc98112bde293e487f8d4ca57d07/USDT": {
       "borrow_apr": "0.037427866843392",
@@ -177,7 +179,8 @@
           "usd_price": "2958.81901895"
         }
       },
-      "total_borrow": "23751130.405252e6"
+      "total_borrow": "23751130.405252e6",
+      "base_borrow_min": null
     },
     "comet/base/0x46e6b214b524310239732d51387075e0e70970bf/WETH": {
       "borrow_apr": "0.022157441567568",
@@ -241,7 +244,8 @@
           "usd_price": "2962.17531312"
         }
       },
-      "total_borrow": "2326.66752518733e18"
+      "total_borrow": "2326.66752518733e18",
+      "base_borrow_min": null
     },
     "comet/base/0xb125e6687d4313864e53df431d5425969c15eb2f/USDC": {
       "borrow_apr": "0.039429139195872",
@@ -281,7 +285,8 @@
           "usd_price": "2962.17531312"
         }
       },
-      "total_borrow": "18093508.713789e6"
+      "total_borrow": "18093508.713789e6",
+      "base_borrow_min": null
     },
     "comet/ethereum/0xa17581a9e3356d9a858b789d68b4d866e593ae94/WETH": {
       "borrow_apr": "0.02741023846656",
@@ -313,7 +318,8 @@
           "usd_price": "2968.69282084"
         }
       },
-      "total_borrow": "44344.0480936245e18"
+      "total_borrow": "44344.0480936245e18",
+      "base_borrow_min": null
     },
     "comet/ethereum/0xc3d688b66703497daa19211eedff47f25384cdc3/USDC": {
       "borrow_apr": "0.039411939902976",
@@ -353,7 +359,8 @@
           "usd_price": "2968.69282084"
         }
       },
-      "total_borrow": "428113442.301734e6"
+      "total_borrow": "428113442.301734e6",
+      "base_borrow_min": null
     },
     "comet/optimism/0x2e44e174f7d53f0212823acc11c01a11d58c5bcb/USDC": {
       "borrow_apr": "0.038999116507392",
@@ -393,7 +400,8 @@
           "usd_price": "2960.42535365"
         }
       },
-      "total_borrow": "4814911.432487e6"
+      "total_borrow": "4814911.432487e6",
+      "base_borrow_min": null
     },
     "comet/optimism/0x995e394b8b2437ac8ce61ee0bc610d617962b214/USDT": {
       "borrow_apr": "0.037648844861904",
@@ -433,7 +441,8 @@
           "usd_price": "2960.42535365"
         }
       },
-      "total_borrow": "4496661.808083e6"
+      "total_borrow": "4496661.808083e6",
+      "base_borrow_min": null
     },
     "comet/optimism/0xe36a30d249f7761327fd973001a32010b521b6fd/WETH": {
       "borrow_apr": "0.023631747675408",
@@ -505,7 +514,8 @@
           "usd_price": "2960.42535365"
         }
       },
-      "total_borrow": "1991.7111403198e18"
+      "total_borrow": "1991.7111403198e18",
+      "base_borrow_min": null
     },
     "comet/polygon/0xaeb318360f27748acb200ce616e389a6c9409a07/USDT": {
       "borrow_apr": "0.231277891534416",
@@ -537,7 +547,8 @@
           "usd_price": "0.18173738"
         }
       },
-      "total_borrow": "3785552.015552e6"
+      "total_borrow": "3785552.015552e6",
+      "base_borrow_min": null
     },
     "comet/unichain/0x2c7118c4c88b9841fcf839074c26ae8f035f2921/USDC": {
       "borrow_apr": "0.110962185901488",
@@ -561,7 +572,8 @@
           "usd_price": "2458.72049881"
         }
       },
-      "total_borrow": "7483620.970123e6"
+      "total_borrow": "7483620.970123e6",
+      "base_borrow_min": null
     },
     "morpho/base/WETH/USDC": {
       "borrow_apr": "0.044611612328592",
@@ -577,7 +589,8 @@
           "usd_price": "2456.44854099"
         }
       },
-      "total_borrow": "1821484.333877e6"
+      "total_borrow": "1821484.333877e6",
+      "base_borrow_min": null
     },
     "morpho/base/cbBTC/USDC": {
       "borrow_apr": "0.052078487138784",
@@ -593,7 +606,8 @@
           "usd_price": "106050.87723962"
         }
       },
-      "total_borrow": "456248578.930591e6"
+      "total_borrow": "456248578.930591e6",
+      "base_borrow_min": null
     },
     "morpho/base/cbETH/USDC": {
       "borrow_apr": "0.046803949321392",
@@ -609,7 +623,8 @@
           "usd_price": "2708.06670099"
         }
       },
-      "total_borrow": "1493352.045411e6"
+      "total_borrow": "1493352.045411e6",
+      "base_borrow_min": null
     },
     "morpho/ethereum/cbBTC/USDC": {
       "borrow_apr": "0.043993833883056",
@@ -625,7 +640,8 @@
           "usd_price": "106159.47716624"
         }
       },
-      "total_borrow": "145044046.367466e6"
+      "total_borrow": "145044046.367466e6",
+      "base_borrow_min": null
     },
     "morpho/ethereum/wstETH/USDC": {
       "borrow_apr": "0.044506950052608",
@@ -641,7 +657,8 @@
           "usd_price": "2976.00343338"
         }
       },
-      "total_borrow": "28347678.180266e6"
+      "total_borrow": "28347678.180266e6",
+      "base_borrow_min": null
     },
     "morpho/unichain/WBTC/USDC": {
       "borrow_apr": "0.026311902311664",
@@ -657,7 +674,8 @@
           "usd_price": "105821.13388364"
         }
       },
-      "total_borrow": "2291176.639353e6"
+      "total_borrow": "2291176.639353e6",
+      "base_borrow_min": null
     },
     "morpho/unichain/weETH/USDC": {
       "borrow_apr": "0.069597065446848",
@@ -673,7 +691,8 @@
           "usd_price": "2632.27363715"
         }
       },
-      "total_borrow": "1262419.465967e6"
+      "total_borrow": "1262419.465967e6",
+      "base_borrow_min": null
     },
     "morpho/unichain/weETH/WETH": {
       "borrow_apr": "0.018324557073648",
@@ -689,7 +708,8 @@
           "usd_price": "2632.27363715"
         }
       },
-      "total_borrow": "10084.1276111125e18"
+      "total_borrow": "10084.1276111125e18",
+      "base_borrow_min": null
     },
     "morpho/unichain/wstETH/USDC": {
       "borrow_apr": "0.032575316247072",
@@ -705,7 +725,8 @@
           "usd_price": "2966.16215207"
         }
       },
-      "total_borrow": "1760629.914897e6"
+      "total_borrow": "1760629.914897e6",
+      "base_borrow_min": null
     },
     "morpho/unichain/wstETH/WETH": {
       "borrow_apr": "0.011373083689248",
@@ -721,7 +742,8 @@
           "usd_price": "2966.16215207"
         }
       },
-      "total_borrow": "2108.37754415254e18"
+      "total_borrow": "2108.37754415254e18",
+      "base_borrow_min": null
     },
     "morpho/world_chain/WBTC/USDC": {
       "borrow_apr": "0.078907018509648",
@@ -737,7 +759,8 @@
           "usd_price": "105955.30194785"
         }
       },
-      "total_borrow": "2821785.370969e6"
+      "total_borrow": "2821785.370969e6",
+      "base_borrow_min": null
     },
     "morpho/world_chain/WBTC/WETH": {
       "borrow_apr": "0.00049385817504",
@@ -753,7 +776,8 @@
           "usd_price": "146504.80834873"
         }
       },
-      "total_borrow": "59.1728146354254e18"
+      "total_borrow": "59.1728146354254e18",
+      "base_borrow_min": null
     },
     "morpho/world_chain/WETH/USDC": {
       "borrow_apr": "0.053198286758352",
@@ -769,7 +793,8 @@
           "usd_price": "2452.65817206"
         }
       },
-      "total_borrow": "2893753.092482e6"
+      "total_borrow": "2893753.092482e6",
+      "base_borrow_min": null
     },
     "morpho/world_chain/WLD/USDC": {
       "borrow_apr": "0.002016428333328",
@@ -785,7 +810,8 @@
           "usd_price": "0.91712142"
         }
       },
-      "total_borrow": "2061311.672354e6"
+      "total_borrow": "2061311.672354e6",
+      "base_borrow_min": null
     }
   },
   "bridge_hints": {},
