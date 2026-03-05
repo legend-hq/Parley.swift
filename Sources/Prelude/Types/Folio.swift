@@ -90,7 +90,6 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
     }
 
     public struct BorrowMarket: Codable, Equatable, Hashable, Sendable {
-        @ScientificNil public var baseBorrowMin: Amount?
         @Scientific public var borrowApr: Percentage
         @Scientific public var borrowRewardsApr: Percentage
         @ScientificNil public var borrowCap: Amount?
@@ -123,14 +122,12 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         }
 
         public init(
-            baseBorrowMin: Amount? = nil,
             borrowApr: Percentage,
             borrowRewardsApr: Percentage,
             borrowCap: Amount?,
             totalBorrow: Amount,
             collaterals: [String: Collateral]
         ) {
-            self.baseBorrowMin = baseBorrowMin
             self.borrowApr = borrowApr
             self.borrowRewardsApr = borrowRewardsApr
             self.borrowCap = borrowCap
@@ -311,7 +308,6 @@ extension Folio.YieldMarket {
 
 extension Folio.BorrowMarket {
     private enum CodingKeys: String, CodingKey {
-        case baseBorrowMin = "base_borrow_min"
         case borrowApr = "borrow_apr"
         case borrowRewardsApr = "borrow_rewards_apr"
         case borrowCap = "borrow_cap"

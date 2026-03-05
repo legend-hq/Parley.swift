@@ -233,11 +233,6 @@
                 "name": "Wrapped Ether",
                 "address": "0x2d5ee574e710219a521449679a4a7f2b43f046ad",
                 "symbol": "WETH",
-                "base_borrow_min": {
-                    "type": "decimal",
-                    "precision": 18,
-                    "uint_string": "0"
-                },
                 "usd_price": {
                     "type": "decimal",
                     "precision": 8,
@@ -508,11 +503,6 @@
                 "name": "USD Coin",
                 "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
                 "symbol": "USDC",
-                "base_borrow_min": {
-                    "type": "decimal",
-                    "precision": 6,
-                    "uint_string": "0"
-                },
                 "usd_price": {
                     "type": "decimal",
                     "precision": 8,

@@ -443,7 +443,6 @@ struct FolioCodableTests {
               },
               "borrow_markets" : {
                 "comet/base/0x5678901234567890abcdef1234567890abcdef12/USDC" : {
-                  "base_borrow_min" : null,
                   "borrow_apr" : "0.05",
                   "borrow_cap" : "1000e6",
                   "borrow_rewards_apr" : "0",

@@ -412,80 +412,75 @@ public enum PortfolioGenerator {
                     fatalError("Insufficient collateral provided for the given borrow amount")
                 }
 
-                let cometBase: [String: Any] = [
-                    "address": comet.baseAsset.address(network: network).hex,
-                    "decimals": baseDecimals,
-                    "name": comet.baseAsset.name,
-                    "symbol": comet.baseAsset.symbol,
-                    "positions": [
-                        [
-                            "supply": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": baseSupply.description,
-                            ],
-                            "borrow": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": baseBorrow.description,
-                            ],
-                            "wallet": quarkWalletAddress.hex,
-                            "base_borrow_capacity": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": baseBorrowCapacity.description,
-                            ],
-                            "base_liquidation_point": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": baseLiquidationPoint.description,
-                            ],
-                            "usd_borrow_capacity": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": usdBorrowCapacity.description,
-                            ],
-                            "usd_liquidation_point": [
-                                "type": "decimal",
-                                "precision": baseDecimals,
-                                "uint_string": usdLiquidationPoint.description,
-                            ],
-                        ]
-                    ],
-                    "usd_price": [
-                        "type": "decimal",
-                        "precision": Value.priceFeedDecimalsInt,
-                        "uint_string": comet.baseAsset.defaultUsdPrice.underlying
-                            .description,
-                    ],
-                    "total_supply": [
-                        "type": "decimal",
-                        "precision": baseDecimals,
-                        "uint_string": "33592810184362",
-                    ],
-                    "total_borrow": [
-                        "type": "decimal",
-                        "precision": baseDecimals,
-                        "uint_string": "30392470712129",
-                    ],
-                    "total_balance": [
-                        "type": "decimal",
-                        "precision": baseDecimals,
-                        "uint_string": "4083704601270",
-                    ],
-                    "base_borrow_min": [
-                        "type": "decimal",
-                        "precision": baseDecimals,
-                        "uint_string": "0",
-                    ],
-                ]
-
                 comets += [
                     [
                         "address": comet.address(network: network).hex,
                         "symbol": comet.symbol,
                         "name": comet.name,
-                        "base": cometBase,
+                        "base": [
+                            "address": comet.baseAsset.address(network: network).hex,
+                            "decimals": baseDecimals,
+                            "name": comet.baseAsset.name,
+                            "symbol": comet.baseAsset.symbol,
+                            "positions": [
+                                [
+                                    "supply": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": baseSupply.description,
+                                    ],
+                                    "borrow": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": baseBorrow.description,
+                                    ],
+                                    "wallet": quarkWalletAddress.hex,
+                                    "base_borrow_capacity": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": baseBorrowCapacity.description,
+                                    ],
+                                    "base_liquidation_point": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": baseLiquidationPoint.description,
+                                    ],
+                                    "usd_borrow_capacity": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": usdBorrowCapacity.description,
+                                    ],
+                                    "usd_liquidation_point": [
+                                        "type": "decimal",
+                                        "precision": baseDecimals,
+                                        "uint_string": usdLiquidationPoint.description,
+                                    ],
+                                ]
+                            ],
+                            "usd_price": [
+                                "type": "decimal",
+                                "precision": Value.priceFeedDecimalsInt,
+                                "uint_string": comet.baseAsset.defaultUsdPrice.underlying
+                                    .description,
+                            ],
+                            // Use some reasonable defaults for these market stats. In future we can
+                            // override them if needed
+                            "total_supply": [
+                                "type": "decimal",
+                                "precision": baseDecimals,
+                                "uint_string": "33592810184362",
+                            ],
+                            "total_borrow": [
+                                "type": "decimal",
+                                "precision": baseDecimals,
+                                "uint_string": "30392470712129",
+                            ],
+                            "total_balance": [
+                                "type": "decimal",
+                                "precision": baseDecimals,
+                                "uint_string": "4083704601270",
+                            ],
+                        ],
                         "collaterals": collaterals,
                         "reward": reward,
                         "borrow_apr": [

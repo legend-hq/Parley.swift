@@ -231,11 +231,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "73542391303561"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -446,11 +441,6 @@
               "name": "Wrapped Ether",
               "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
               "symbol": "WETH",
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 18,
-                "uint_string": "0"
-              },
               "positions": [
                 {
                   "supply": {
@@ -2402,11 +2392,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "2292581852118"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -2722,11 +2707,6 @@
                 "type": "decimal",
                 "precision": 18,
                 "uint_string": "503650043817189489745"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 18,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -5190,11 +5170,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "5297194184250"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -5612,11 +5587,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "2654857084004"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -5983,11 +5953,6 @@
                 "type": "decimal",
                 "precision": 18,
                 "uint_string": "972580098176035959431"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 18,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -7595,11 +7560,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "857078355344"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -7915,11 +7875,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "661479216939"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -8235,11 +8190,6 @@
                 "type": "decimal",
                 "precision": 18,
                 "uint_string": "275835753480863647327"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 18,
-                "uint_string": "0"
               }
             },
             "reward": {
@@ -9792,11 +9742,6 @@
                 "type": "decimal",
                 "precision": 6,
                 "uint_string": "1247626829716"
-              },
-              "base_borrow_min": {
-                "type": "decimal",
-                "precision": 6,
-                "uint_string": "0"
               }
             },
             "reward": {

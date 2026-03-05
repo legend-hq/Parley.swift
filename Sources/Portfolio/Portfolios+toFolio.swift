@@ -120,7 +120,6 @@ extension Array where Element == Portfolio {
 
                     folio.borrowMarkets.updateValue(
                         .init(
-                            baseBorrowMin: comet.base.baseBorrowMin,
                             borrowApr: comet.borrowApr,
                             borrowRewardsApr: comet.borrowRewardsApr,
                             borrowCap: nil,
