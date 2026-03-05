@@ -283,6 +283,7 @@ public class PortfolioState {
                 address: comet.address(network: network),
                 base: Portfolio.Comet.Base(
                     address: baseAsset,
+                    baseBorrowMin: Amount(0, decimals: comet.baseAsset.decimals),
                     decimals: comet.baseAsset.decimals,
                     name: comet.baseAsset.symbol,
                     positions: accountPositions.map { account, position in

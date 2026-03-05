@@ -424,6 +424,7 @@ public struct CometMarket: BorrowMarketProtocol, EarnMarketProtocol {
     public let earnRewardsApr: Percentage
     public let borrowApr: Percentage
     public let borrowRewardsApr: Percentage
+    public let baseBorrowMin: Amount
     public let baseAsset: BaseAsset
     public let collateralAssets: [CollateralAsset]
     public let rewardAssets: [RewardAsset]
@@ -441,6 +442,7 @@ public struct CometMarket: BorrowMarketProtocol, EarnMarketProtocol {
         earnRewardsApr: Percentage,
         borrowApr: Percentage,
         borrowRewardsApr: Percentage,
+        baseBorrowMin: Amount,
         baseAsset: BaseAsset,
         collateralAssets: [CollateralAsset],
         rewardAssets: [RewardAsset]
@@ -457,6 +459,7 @@ public struct CometMarket: BorrowMarketProtocol, EarnMarketProtocol {
         self.earnRewardsApr = earnRewardsApr
         self.borrowApr = borrowApr
         self.borrowRewardsApr = borrowRewardsApr
+        self.baseBorrowMin = baseBorrowMin
         self.baseAsset = baseAsset
         self.collateralAssets = collateralAssets
         self.rewardAssets = rewardAssets
