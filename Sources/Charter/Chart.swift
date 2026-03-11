@@ -6,21 +6,25 @@ extension Charter {
     public struct Chart: Codable, Sendable, Equatable {
         public let version: String
         public let quarkOperationActions: [QuarkOperationAction]
+        public let steps: [Step]
         public let eip712Data: EIP712Data
 
         public enum CodingKeys: String, CodingKey {
             case version
             case quarkOperationActions = "quark_operation_actions"
+            case steps
             case eip712Data = "eip712_data"
         }
 
         public init(
             version: String,
             quarkOperationActions: [QuarkOperationAction],
+            steps: [Step],
             eip712Data: EIP712Data
         ) {
             self.version = version
             self.quarkOperationActions = quarkOperationActions
+            self.steps = steps
             self.eip712Data = eip712Data
         }
 
@@ -128,8 +132,10 @@ extension Charter {
                 try container.encode(totalPlays, forKey: .totalPlays)
                 try container.encode(executionType, forKey: .executionType)
 
-                // Encode actionContext in its own nested container
-                try container.encode(actionContext, forKey: .actionContext)
+                // Encode actionContext body without redundant action_type
+                try actionContext.encode(
+                    to: container.superEncoder(forKey: .actionContext)
+                )
             }
 
             public init(from decoder: Decoder) throws {
@@ -182,6 +188,139 @@ extension Charter {
                 self.scriptSources = scriptSources
                 self.scriptCalldata = scriptCalldata
                 self.expiry = expiry
+            }
+        }
+
+        public enum Step: Codable, Sendable, Equatable {
+            case quarkOperation(QuarkOperationStep)
+            case exogenous(ExogenousStep)
+
+            public struct QuarkOperationStep: Codable, Sendable, Equatable {
+                public let chainId: Number
+                public let operationIndex: Int
+                public let expectedActions: [ExpectedAction]
+                public let dependsOn: [Int]
+
+                public enum CodingKeys: String, CodingKey {
+                    case chainId = "chain_id"
+                    case operationIndex = "operation_index"
+                    case expectedActions = "expected_actions"
+                    case dependsOn = "depends_on"
+                }
+
+                public init(
+                    chainId: Number,
+                    operationIndex: Int,
+                    expectedActions: [ExpectedAction],
+                    dependsOn: [Int]
+                ) {
+                    self.chainId = chainId
+                    self.operationIndex = operationIndex
+                    self.expectedActions = expectedActions
+                    self.dependsOn = dependsOn
+                }
+            }
+
+            public struct ExogenousStep: Codable, Sendable, Equatable {
+                public let chainId: Number
+                public let executionType: ExogenousExecutionType
+                public let expectedActions: [ExpectedAction]
+                public let dependsOn: [Int]
+
+                public enum CodingKeys: String, CodingKey {
+                    case chainId = "chain_id"
+                    case executionType = "execution_type"
+                    case expectedActions = "expected_actions"
+                    case dependsOn = "depends_on"
+                }
+
+                public init(
+                    chainId: Number,
+                    executionType: ExogenousExecutionType,
+                    expectedActions: [ExpectedAction],
+                    dependsOn: [Int]
+                ) {
+                    self.chainId = chainId
+                    self.executionType = executionType
+                    self.expectedActions = expectedActions
+                    self.dependsOn = dependsOn
+                }
+            }
+
+            public enum ExogenousExecutionType: String, Codable, Sendable, Equatable {
+                case bridgeReceive = "bridge_receive"
+            }
+
+            enum CodingKeys: String, CodingKey {
+                case type
+            }
+
+            public func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                switch self {
+                    case .quarkOperation(let step):
+                        try container.encode("quark_operation", forKey: .type)
+                        try step.encode(to: encoder)
+                    case .exogenous(let step):
+                        try container.encode("exogenous", forKey: .type)
+                        try step.encode(to: encoder)
+                }
+            }
+
+            public init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                let type = try container.decode(String.self, forKey: .type)
+                switch type {
+                    case "quark_operation":
+                        self = .quarkOperation(
+                            try QuarkOperationStep(from: decoder)
+                        )
+                    case "exogenous":
+                        self = .exogenous(
+                            try ExogenousStep(from: decoder)
+                        )
+                    default:
+                        throw DecodingError.dataCorruptedError(
+                            forKey: .type,
+                            in: container,
+                            debugDescription: "Unknown step type: \(type)"
+                        )
+                }
+            }
+        }
+
+        public struct ExpectedAction: Codable, Sendable, Equatable {
+            public let actionType: String
+            public let actionContext: Charter.ActionContext
+
+            public enum CodingKeys: String, CodingKey {
+                case actionType = "action_type"
+                case actionContext = "action_context"
+            }
+
+            public init(
+                actionType: String,
+                actionContext: Charter.ActionContext
+            ) {
+                self.actionType = actionType
+                self.actionContext = actionContext
+            }
+
+            public func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(actionType, forKey: .actionType)
+                try actionContext.encodeBody(
+                    to: container.superEncoder(forKey: .actionContext)
+                )
+            }
+
+            public init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.actionType = try container.decode(String.self, forKey: .actionType)
+                self.actionContext = try Charter.ActionContext.decodeBody(
+                    from: container.superDecoder(forKey: .actionContext),
+                    actionType: actionType
+                )
             }
         }
 

@@ -41,128 +41,51 @@ extension Charter {
 
         public func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            switch self {
-                case .cometBorrow(let cometBorrowActionContext):
-                    try container.encode(CometBorrowActionContext.actionType, forKey: .actionType)
-                    try cometBorrowActionContext.encode(to: encoder)
-                case .morphoBorrow(let morphoBorrowIntent):
-                    try container.encode(MorphoBorrowActionContext.actionType, forKey: .actionType)
-                    try morphoBorrowIntent.encode(to: encoder)
-                case .bridge(let bridgeIntent):
-                    try container.encode(BridgeActionContext.actionType, forKey: .actionType)
-                    try bridgeIntent.encode(to: encoder)
-                case .bridgeMint(let bridgeMintIntent):
-                    try container.encode(BridgeMintActionContext.actionType, forKey: .actionType)
-                    try bridgeMintIntent.encode(to: encoder)
-                case .cometRepay(let repayIntent):
-                    try container.encode(CometRepayActionContext.actionType, forKey: .actionType)
-                    try repayIntent.encode(to: encoder)
-                case .morphoRepay(let morphoRepayIntent):
-                    try container.encode(MorphoRepayActionContext.actionType, forKey: .actionType)
-                    try morphoRepayIntent.encode(to: encoder)
-                case .aaveSupply(let aaveSupplyIntent):
-                    try container.encode(AaveSupplyActionContext.actionType, forKey: .actionType)
-                    try aaveSupplyIntent.encode(to: encoder)
-                case .cometSupply(let cometSupplyIntent):
-                    try container.encode(CometSupplyActionContext.actionType, forKey: .actionType)
-                    try cometSupplyIntent.encode(to: encoder)
-                case .morphoVaultSupply(let morphoVaultSupplyIntent):
-                    try container.encode(
-                        MorphoVaultSupplyActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try morphoVaultSupplyIntent.encode(to: encoder)
-                case .swap(let swapIntent):
-                    try container.encode(SwapActionContext.actionType, forKey: .actionType)
-                    try swapIntent.encode(to: encoder)
-                case .transfer(let transferIntent):
-                    try container.encode(TransferActionContext.actionType, forKey: .actionType)
-                    try transferIntent.encode(to: encoder)
-                case .aaveWithdraw(let aaveWithdrawIntent):
-                    try container.encode(AaveWithdrawActionContext.actionType, forKey: .actionType)
-                    try aaveWithdrawIntent.encode(to: encoder)
-                case .cometWithdraw(let cometWithdrawIntent):
-                    try container.encode(CometWithdrawActionContext.actionType, forKey: .actionType)
-                    try cometWithdrawIntent.encode(to: encoder)
-                case .morphoVaultWithdraw(let morphoVaultWithdrawIntent):
-                    try container.encode(
-                        MorphoVaultWithdrawActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try morphoVaultWithdrawIntent.encode(to: encoder)
-                case .withdrawAndBorrow(let withdrawAndBorrowIntent):
-                    try container.encode(
-                        WithdrawAndBorrowActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try withdrawAndBorrowIntent.encode(to: encoder)
-                case .recurringSwap(let recurringSwapIntent):
-                    try container.encode(RecurringSwapActionContext.actionType, forKey: .actionType)
-                    try recurringSwapIntent.encode(to: encoder)
-                case .quotePay(let quotePayIntent):
-                    try container.encode(QuotePayActionContext.actionType, forKey: .actionType)
-                    try quotePayIntent.encode(to: encoder)
-                case .wrap(let wrapActionContext):
-                    try container.encode(WrapActionContext.actionType, forKey: .actionType)
-                    try wrapActionContext.encode(to: encoder)
-                case .unwrap(let unwrapActionContext):
-                    try container.encode(UnwrapActionContext.actionType, forKey: .actionType)
-                    try unwrapActionContext.encode(to: encoder)
-                case .cometClaimRewards(let cometClaimRewardsIntent):
-                    try container.encode(
-                        CometClaimRewardsActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try cometClaimRewardsIntent.encode(to: encoder)
-                case .multiAction(let contexts):
-                    try container.encode(MultiActionContext.actionType, forKey: .actionType)
+            try container.encode(actionType, forKey: .actionType)
+            try encodeBody(to: encoder)
+        }
 
-                    // Create a new container using MultiActionContext.CodingKeys directly on the encoder
+        /// Encodes the context body without the action_type discriminator.
+        public func encodeBody(to encoder: Encoder) throws {
+            switch self {
+                case .cometBorrow(let ctx): try ctx.encode(to: encoder)
+                case .morphoBorrow(let ctx): try ctx.encode(to: encoder)
+                case .bridge(let ctx): try ctx.encode(to: encoder)
+                case .bridgeMint(let ctx): try ctx.encode(to: encoder)
+                case .cometRepay(let ctx): try ctx.encode(to: encoder)
+                case .morphoRepay(let ctx): try ctx.encode(to: encoder)
+                case .aaveSupply(let ctx): try ctx.encode(to: encoder)
+                case .cometSupply(let ctx): try ctx.encode(to: encoder)
+                case .morphoVaultSupply(let ctx): try ctx.encode(to: encoder)
+                case .swap(let ctx): try ctx.encode(to: encoder)
+                case .transfer(let ctx): try ctx.encode(to: encoder)
+                case .aaveWithdraw(let ctx): try ctx.encode(to: encoder)
+                case .cometWithdraw(let ctx): try ctx.encode(to: encoder)
+                case .morphoVaultWithdraw(let ctx): try ctx.encode(to: encoder)
+                case .withdrawAndBorrow(let ctx): try ctx.encode(to: encoder)
+                case .recurringSwap(let ctx): try ctx.encode(to: encoder)
+                case .quotePay(let ctx): try ctx.encode(to: encoder)
+                case .wrap(let ctx): try ctx.encode(to: encoder)
+                case .unwrap(let ctx): try ctx.encode(to: encoder)
+                case .cometClaimRewards(let ctx): try ctx.encode(to: encoder)
+                case .morphoClaimRewards(let ctx): try ctx.encode(to: encoder)
+                case .addBackingToken(let ctx): try ctx.encode(to: encoder)
+                case .loopLong(let ctx): try ctx.encode(to: encoder)
+                case .unloopLong(let ctx): try ctx.encode(to: encoder)
+                case .loopShort(let ctx): try ctx.encode(to: encoder)
+                case .unloopShort(let ctx): try ctx.encode(to: encoder)
+                case .withdrawBackingToken(let ctx): try ctx.encode(to: encoder)
+                case .multiAction(let contexts):
                     var multiContainer = encoder.container(
                         keyedBy: MultiActionContext.CodingKeys.self
                     )
-
-                    // Encode action_types at root level
                     try multiContainer.encode(contexts.map(\.actionType), forKey: .actionTypes)
-
-                    // Encode action_contexts at root level
                     var actionContextsContainer = multiContainer.nestedUnkeyedContainer(
                         forKey: .actionContexts
                     )
-
                     try contexts.forEach { context in
                         try context.encode(to: actionContextsContainer.superEncoder())
                     }
-                case .morphoClaimRewards(let morphoClaimRewardsIntent):
-                    try container.encode(
-                        MorphoClaimRewardsActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try morphoClaimRewardsIntent.encode(to: encoder)
-                case .addBackingToken(let addBackingTokenIntent):
-                    try container.encode(
-                        AddBackingTokenActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try addBackingTokenIntent.encode(to: encoder)
-                case .loopLong(let loopLongIntent):
-                    try container.encode(LoopLongActionContext.actionType, forKey: .actionType)
-                    try loopLongIntent.encode(to: encoder)
-                case .unloopLong(let unloopLongIntent):
-                    try container.encode(UnloopLongActionContext.actionType, forKey: .actionType)
-                    try unloopLongIntent.encode(to: encoder)
-                case .loopShort(let loopShortIntent):
-                    try container.encode(LoopShortActionContext.actionType, forKey: .actionType)
-                    try loopShortIntent.encode(to: encoder)
-                case .unloopShort(let unloopShortIntent):
-                    try container.encode(UnloopShortActionContext.actionType, forKey: .actionType)
-                    try unloopShortIntent.encode(to: encoder)
-                case .withdrawBackingToken(let withdrawBackingTokenIntent):
-                    try container.encode(
-                        WithdrawBackingTokenActionContext.actionType,
-                        forKey: .actionType
-                    )
-                    try withdrawBackingTokenIntent.encode(to: encoder)
             }
         }
 
@@ -170,81 +93,84 @@ extension Charter {
             self = try Self.decodeActionContext(from: decoder)
         }
 
-        public static func decodeActionContext(from decoder: Decoder) throws -> ActionContext {
-            func decodeSingleActionContext(from decoder: Decoder, actionType: String) throws
-                -> ActionContext
-            {
-                switch actionType {
-                    case CometBorrowActionContext.actionType, "BORROW":
-                        return try .cometBorrow(CometBorrowActionContext(from: decoder))
-                    case MorphoBorrowActionContext.actionType:
-                        return try .morphoBorrow(MorphoBorrowActionContext(from: decoder))
-                    case BridgeActionContext.actionType, "BRIDGE_CCTP_V2_BURN":
-                        return try .bridge(BridgeActionContext(from: decoder))
-                    case BridgeMintActionContext.actionType, "BRIDGE_CCTP_V2_MINT":
-                        return try .bridgeMint(BridgeMintActionContext(from: decoder))
-                    case CometRepayActionContext.actionType, "REPAY":
-                        return try .cometRepay(CometRepayActionContext(from: decoder))
-                    case MorphoRepayActionContext.actionType:
-                        return try .morphoRepay(MorphoRepayActionContext(from: decoder))
-                    case AaveSupplyActionContext.actionType:
-                        return try .aaveSupply(AaveSupplyActionContext(from: decoder))
-                    case CometSupplyActionContext.actionType, "SUPPLY":
-                        return try .cometSupply(CometSupplyActionContext(from: decoder))
-                    case MorphoVaultSupplyActionContext.actionType:
-                        return try .morphoVaultSupply(MorphoVaultSupplyActionContext(from: decoder))
-                    case SwapActionContext.actionType:
-                        return try .swap(SwapActionContext(from: decoder))
-                    case TransferActionContext.actionType:
-                        return try .transfer(TransferActionContext(from: decoder))
-                    case AaveWithdrawActionContext.actionType:
-                        return try .aaveWithdraw(AaveWithdrawActionContext(from: decoder))
-                    case CometWithdrawActionContext.actionType, "WITHDRAW":
-                        return try .cometWithdraw(CometWithdrawActionContext(from: decoder))
-                    case MorphoVaultWithdrawActionContext.actionType:
-                        return try .morphoVaultWithdraw(
-                            MorphoVaultWithdrawActionContext(from: decoder)
-                        )
-                    case WithdrawAndBorrowActionContext.actionType:
-                        return try .withdrawAndBorrow(WithdrawAndBorrowActionContext(from: decoder))
-                    case RecurringSwapActionContext.actionType:
-                        return try .recurringSwap(RecurringSwapActionContext(from: decoder))
-                    case QuotePayActionContext.actionType:
-                        return try .quotePay(QuotePayActionContext(from: decoder))
-                    case WrapActionContext.actionType:
-                        return try .wrap(WrapActionContext(from: decoder))
-                    case UnwrapActionContext.actionType:
-                        return try .unwrap(UnwrapActionContext(from: decoder))
-                    case CometClaimRewardsActionContext.actionType:
-                        return try .cometClaimRewards(CometClaimRewardsActionContext(from: decoder))
-                    case MorphoClaimRewardsActionContext.actionType:
-                        return try .morphoClaimRewards(
-                            MorphoClaimRewardsActionContext(from: decoder)
-                        )
-                    case AddBackingTokenActionContext.actionType:
-                        return try .addBackingToken(AddBackingTokenActionContext(from: decoder))
-                    case LoopLongActionContext.actionType:
-                        return try .loopLong(LoopLongActionContext(from: decoder))
-                    case UnloopLongActionContext.actionType:
-                        return try .unloopLong(UnloopLongActionContext(from: decoder))
-                    case LoopShortActionContext.actionType:
-                        return try .loopShort(LoopShortActionContext(from: decoder))
-                    case UnloopShortActionContext.actionType:
-                        return try .unloopShort(UnloopShortActionContext(from: decoder))
-                    case WithdrawBackingTokenActionContext.actionType:
-                        return try .withdrawBackingToken(
-                            WithdrawBackingTokenActionContext(from: decoder)
-                        )
-                    default:
-                        let container = try decoder.container(keyedBy: CodingKeys.self)
+        /// Decodes an ActionContext body from a decoder given an externally-provided actionType.
+        /// Use this when the action_type is not embedded in the encoded data.
+        public static func decodeBody(from decoder: Decoder, actionType: String) throws
+            -> ActionContext
+        {
+            switch actionType {
+                case CometBorrowActionContext.actionType, "BORROW":
+                    return try .cometBorrow(CometBorrowActionContext(from: decoder))
+                case MorphoBorrowActionContext.actionType:
+                    return try .morphoBorrow(MorphoBorrowActionContext(from: decoder))
+                case BridgeActionContext.actionType, "BRIDGE_CCTP_V2_BURN":
+                    return try .bridge(BridgeActionContext(from: decoder))
+                case BridgeMintActionContext.actionType, "BRIDGE_CCTP_V2_MINT":
+                    return try .bridgeMint(BridgeMintActionContext(from: decoder))
+                case CometRepayActionContext.actionType, "REPAY":
+                    return try .cometRepay(CometRepayActionContext(from: decoder))
+                case MorphoRepayActionContext.actionType:
+                    return try .morphoRepay(MorphoRepayActionContext(from: decoder))
+                case AaveSupplyActionContext.actionType:
+                    return try .aaveSupply(AaveSupplyActionContext(from: decoder))
+                case CometSupplyActionContext.actionType, "SUPPLY":
+                    return try .cometSupply(CometSupplyActionContext(from: decoder))
+                case MorphoVaultSupplyActionContext.actionType:
+                    return try .morphoVaultSupply(MorphoVaultSupplyActionContext(from: decoder))
+                case SwapActionContext.actionType:
+                    return try .swap(SwapActionContext(from: decoder))
+                case TransferActionContext.actionType:
+                    return try .transfer(TransferActionContext(from: decoder))
+                case AaveWithdrawActionContext.actionType:
+                    return try .aaveWithdraw(AaveWithdrawActionContext(from: decoder))
+                case CometWithdrawActionContext.actionType, "WITHDRAW":
+                    return try .cometWithdraw(CometWithdrawActionContext(from: decoder))
+                case MorphoVaultWithdrawActionContext.actionType:
+                    return try .morphoVaultWithdraw(
+                        MorphoVaultWithdrawActionContext(from: decoder)
+                    )
+                case WithdrawAndBorrowActionContext.actionType:
+                    return try .withdrawAndBorrow(WithdrawAndBorrowActionContext(from: decoder))
+                case RecurringSwapActionContext.actionType:
+                    return try .recurringSwap(RecurringSwapActionContext(from: decoder))
+                case QuotePayActionContext.actionType:
+                    return try .quotePay(QuotePayActionContext(from: decoder))
+                case WrapActionContext.actionType:
+                    return try .wrap(WrapActionContext(from: decoder))
+                case UnwrapActionContext.actionType:
+                    return try .unwrap(UnwrapActionContext(from: decoder))
+                case CometClaimRewardsActionContext.actionType:
+                    return try .cometClaimRewards(CometClaimRewardsActionContext(from: decoder))
+                case MorphoClaimRewardsActionContext.actionType:
+                    return try .morphoClaimRewards(
+                        MorphoClaimRewardsActionContext(from: decoder)
+                    )
+                case AddBackingTokenActionContext.actionType:
+                    return try .addBackingToken(AddBackingTokenActionContext(from: decoder))
+                case LoopLongActionContext.actionType:
+                    return try .loopLong(LoopLongActionContext(from: decoder))
+                case UnloopLongActionContext.actionType:
+                    return try .unloopLong(UnloopLongActionContext(from: decoder))
+                case LoopShortActionContext.actionType:
+                    return try .loopShort(LoopShortActionContext(from: decoder))
+                case UnloopShortActionContext.actionType:
+                    return try .unloopShort(UnloopShortActionContext(from: decoder))
+                case WithdrawBackingTokenActionContext.actionType:
+                    return try .withdrawBackingToken(
+                        WithdrawBackingTokenActionContext(from: decoder)
+                    )
+                default:
+                    let container = try decoder.container(keyedBy: CodingKeys.self)
 
-                        throw DecodingError.dataCorruptedError(
-                            forKey: .actionType,
-                            in: container,
-                            debugDescription: "Unknown action type: \(actionType)"
-                        )
-                }
+                    throw DecodingError.dataCorruptedError(
+                        forKey: .actionType,
+                        in: container,
+                        debugDescription: "Unknown action type: \(actionType)"
+                    )
             }
+        }
+
+        public static func decodeActionContext(from decoder: Decoder) throws -> ActionContext {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             let actionType = try container.decode(String.self, forKey: .actionType)
 
@@ -276,7 +202,7 @@ extension Charter {
                     for type in actionTypes {
                         // Gets a decoder for the next element in contextsUnkeyed
                         let singleDecoder = try contextsUnkeyed.superDecoder()
-                        let action = try decodeSingleActionContext(
+                        let action = try decodeBody(
                             from: singleDecoder,
                             actionType: type
                         )
@@ -285,14 +211,13 @@ extension Charter {
 
                     return .multiAction(multiActions)
                 default:
-                    // Try nested action_context first (API format), fall back to root (cache format)
                     let actionDecoder: Decoder
                     if container.contains(.actionContext) {
                         actionDecoder = try container.superDecoder(forKey: .actionContext)
                     } else {
                         actionDecoder = decoder
                     }
-                    return try decodeSingleActionContext(
+                    return try decodeBody(
                         from: actionDecoder,
                         actionType: actionType
                     )

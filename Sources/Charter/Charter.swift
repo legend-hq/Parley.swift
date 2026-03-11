@@ -6,7 +6,7 @@ import SwiftNumber
 import Tradewinds
 
 public enum Charter {
-    public static let version = "1.5.11"
+    public static let version = "1.6.0"
 
     // MARK: - Action Type Constants
     static let ACTION_TYPE_AAVE_SUPPLY = "AAVE_SUPPLY"
@@ -144,7 +144,7 @@ public enum Charter {
         )
 
         switch operationsAndActionsResult.result {
-            case .success(let quarkOperationActions):
+            case .success(let (quarkOperationActions, steps)):
                 logger?.log("Quark Operation Actions: \(String(describing: quarkOperationActions))")
                 guard let eip712Data = quarkOperationActions.eip712Data else {
                     return (
@@ -158,6 +158,7 @@ public enum Charter {
                 let chart = Chart(
                     version: version,
                     quarkOperationActions: quarkOperationActions,
+                    steps: steps,
                     eip712Data: eip712Data,
                 )
                 return (
@@ -194,7 +195,7 @@ public enum Charter {
         )
 
         switch result.result {
-            case .success(let quarkOperationActions):
+            case .success(let (quarkOperationActions, _)):
                 return .success(quarkOperationActions)
             case .failure(let error):
                 return .failure(error)
@@ -329,7 +330,10 @@ public enum Charter {
         blockTimestamp: Number,
         logger: Charter.Logger?
     ) -> (
-        result: Result<[Charter.QuarkOperationAction], CharterError>,
+        result: Result<
+            (quarkOperationActions: [Charter.QuarkOperationAction], steps: [Chart.Step]),
+            CharterError
+        >,
         flowResult: Tradewinds.FlowResult<TradewindsLegendNode, LegendRouteType>?,
         routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]?,
         resources: [Tradewinds.Resource<TradewindsLegendNode>]?,
@@ -445,14 +449,16 @@ public enum Charter {
         )
 
         switch mergeResult {
-            case .success((let operations, let actions)):
+            case .success((let operations, let actions, let steps)):
                 let mergedQuarkOperationActions = zip(operations, actions)
                     .map { (op, act) in
                         QuarkOperationAction(operation: op, action: act)
                     }
 
                 return (
-                    result: .success(mergedQuarkOperationActions),
+                    result: .success(
+                        (quarkOperationActions: mergedQuarkOperationActions, steps: steps)
+                    ),
                     flowResult: flowResult,
                     routes: routes,
                     resources: resources,
@@ -471,7 +477,10 @@ public enum Charter {
 
     private static func mergeSameChainOperations(
         operationActions: [QuarkOperationAction]
-    ) -> Result<(operations: [Chart.QuarkOperation], actions: [Chart.Action]), CharterError> {
+    ) -> Result<
+        (operations: [Chart.QuarkOperation], actions: [Chart.Action], steps: [Chart.Step]),
+        CharterError
+    > {
         var groupedOperations: [Number: [Chart.QuarkOperation]] = [:]
         var groupedActions: [Number: [Chart.Action]] = [:]
         var chainOrder: [Number] = []
@@ -566,10 +575,20 @@ public enum Charter {
             .sorted { $0.1.chainId < $1.1.chainId }
         let contingentOps = zipped.filter { !$0.1.executionType.isImmediate }
         let sorted = immediateOps + contingentOps
-        return .success((
-            operations: sorted.map { $0.0 },
-            actions: sorted.map { $0.1 }
-        ))
+
+        let sortedOperations = sorted.map { $0.0 }
+        let sortedActions = sorted.map { $0.1 }
+
+        // Generate steps from the sorted operations/actions
+        let steps = generateSteps(actions: sortedActions)
+
+        return .success(
+            (
+                operations: sortedOperations,
+                actions: sortedActions,
+                steps: steps
+            )
+        )
     }
 
     private static func getExecutionTypeForMergedActions(
@@ -580,5 +599,143 @@ public enum Charter {
             return .contingent
         }
         return actions.last!.executionType
+    }
+
+    /// Generates steps from sorted operations/actions.
+    ///
+    /// For each operation (index `i`):
+    /// - Creates a `quark_operation` step with `operationIndex: i`
+    /// - Extracts expected actions from the action's context
+    /// - For IMMEDIATE operations: `dependsOn: []`
+    ///
+    /// For each bridge action found in a step:
+    /// - Creates an `exogenous` step for the bridge receive
+    /// - `dependsOn` references the step that sends the bridge
+    ///
+    /// For each CONTINGENT quark_operation step:
+    /// - Sets `dependsOn` to the exogenous step index(es) for its chain
+    static func generateSteps(
+        actions: [Chart.Action]
+    ) -> [Chart.Step] {
+        var steps: [Chart.Step] = []
+        // Maps destination chainId -> exogenous step indices for bridge receives
+        var exogenousStepIndicesByChain: [Number: [Int]] = [:]
+
+        for (operationIndex, action) in actions.enumerated() {
+            // Extract expected actions from the action context
+            let expectedActions = extractExpectedActions(from: action)
+
+            // Create quark_operation step (dependsOn filled in second pass for CONTINGENT)
+            let qoStep = Chart.Step.QuarkOperationStep(
+                chainId: action.chainId,
+                operationIndex: operationIndex,
+                expectedActions: expectedActions,
+                dependsOn: []  // placeholder, filled below for CONTINGENT
+            )
+            let qoStepIndex = steps.count
+            steps.append(.quarkOperation(qoStep))
+
+            // For each bridge action, create an exogenous step
+            let bridgeContexts = extractBridgeContexts(from: action.actionContext)
+            for bridgeContext in bridgeContexts {
+                let bridgeReceiveExpectedAction = Chart.ExpectedAction(
+                    actionType: Charter.ActionContext.BridgeMintActionContext.actionType,
+                    actionContext: .bridgeMint(
+                        Charter.ActionContext.BridgeMintActionContext(
+                            assetSymbol: bridgeContext.destinationAssetSymbol,
+                            bridgeType: bridgeContext.bridgeType,
+                            chainId: bridgeContext.destinationChainId,
+                            sourceChainId: bridgeContext.chainId,
+                            inputAmount: bridgeContext.inputAmount,
+                            outputAmount: bridgeContext.outputAmount,
+                            maxFee: bridgeContext.inputAmount - bridgeContext.outputAmount,
+                            recipient: bridgeContext.recipient,
+                            token: bridgeContext.token
+                        )
+                    )
+                )
+
+                let exoStep = Chart.Step.ExogenousStep(
+                    chainId: bridgeContext.destinationChainId,
+                    executionType: .bridgeReceive,
+                    expectedActions: [bridgeReceiveExpectedAction],
+                    dependsOn: [qoStepIndex]
+                )
+                let exoStepIndex = steps.count
+                steps.append(.exogenous(exoStep))
+                exogenousStepIndicesByChain[bridgeContext.destinationChainId, default: []]
+                    .append(exoStepIndex)
+            }
+        }
+
+        // Second pass: wire dependsOn for quark_operation steps that have
+        // exogenous dependencies on their chain (e.g. bridge receives).
+        // dependsOn is the source of truth for ordering — executionType is not
+        // consulted here. An empty dependsOn means the step fires immediately.
+        steps = steps.enumerated()
+            .map { (index, step) in
+                switch step {
+                    case .quarkOperation(let qoStep):
+                        if let exoIndices = exogenousStepIndicesByChain[qoStep.chainId],
+                            !exoIndices.isEmpty
+                        {
+                            return .quarkOperation(
+                                Chart.Step.QuarkOperationStep(
+                                    chainId: qoStep.chainId,
+                                    operationIndex: qoStep.operationIndex,
+                                    expectedActions: qoStep.expectedActions,
+                                    dependsOn: qoStep.dependsOn + exoIndices
+                                )
+                            )
+                        }
+                        return step
+                    case .exogenous:
+                        return step
+                }
+            }
+
+        return steps
+    }
+
+    /// Extracts expected actions from a Chart.Action.
+    /// For MULTI_ACTION, each sub-context becomes a separate expected action.
+    static func extractExpectedActions(
+        from action: Chart.Action
+    ) -> [Chart.ExpectedAction] {
+        switch action.actionContext {
+            case .multiAction(let contexts):
+                return contexts.map { context in
+                    Chart.ExpectedAction(
+                        actionType: context.actionType,
+                        actionContext: context
+                    )
+                }
+            default:
+                return [
+                    Chart.ExpectedAction(
+                        actionType: action.actionType,
+                        actionContext: action.actionContext
+                    )
+                ]
+        }
+    }
+
+    /// Extracts all bridge action contexts from an action context (handles multiAction).
+    static func extractBridgeContexts(
+        from actionContext: Charter.ActionContext
+    ) -> [Charter.ActionContext.BridgeActionContext] {
+        switch actionContext {
+            case .bridge(let bridgeContext):
+                return [bridgeContext]
+            case .multiAction(let contexts):
+                return contexts.compactMap { context in
+                    if case .bridge(let bridgeContext) = context {
+                        return bridgeContext
+                    }
+                    return nil
+                }
+            default:
+                return []
+        }
     }
 }
