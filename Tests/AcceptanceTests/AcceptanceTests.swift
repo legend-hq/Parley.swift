@@ -1369,7 +1369,7 @@ enum Filler: Hashable, Equatable {
     case filler
     case unknownFiller(EthAddress)
 
-    static let FILLER_ADDRESS = EthAddress("0xbf68331ae59b923694120bc3b9aa90943a591b3e")
+    static let FILLER_ADDRESS = EthAddress("0x1c1049ab5ff1b8b5d9f3cbc5320c21c150bfb8b9")
 
     var description: String {
         switch self {

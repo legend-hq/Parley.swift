@@ -775,7 +775,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                             scriptAddress: Create2.getScriptAddress(ApproveAndSwap.creationCode),
                             scriptFunction: ApproveAndSwap.swapExactInFn,
                             scriptCallValues: [
-                                .address(EthAddress("0xbf68331ae59b923694120bc3b9aa90943a591b3e")),  // Filler address
+                                .address(EthAddress("0x1c1049ab5ff1b8b5d9f3cbc5320c21c150bfb8b9")),  // Filler address
                                 .address(BaseNetwork.Assets.USDC.assetAddress),
                                 .uint256(Amount("500e6").underlying),
                                 .address(BaseNetwork.Assets.ETH.assetAddress),
