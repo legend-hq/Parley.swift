@@ -6,7 +6,7 @@ import SwiftNumber
 import Tradewinds
 
 public enum Charter {
-    public static let version = "1.6.0"
+    public static let version = "1.6.1"
 
     // MARK: - Action Type Constants
     static let ACTION_TYPE_AAVE_SUPPLY = "AAVE_SUPPLY"
