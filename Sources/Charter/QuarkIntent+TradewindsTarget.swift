@@ -719,17 +719,17 @@ internal func makeSupplyVenueNode(
         case .aave(let intent):
             return .aaveSupplyBalance(
                 network: network, pool: intent.aavePool,
-                baseAsset: baseAsset, wallet: intent.sender
+                baseAsset: baseAsset, wallet: intent.sender.ethAddress
             )
         case .comet(let intent):
             return .cometSupplyBalance(
                 network: network, comet: intent.comet,
-                baseAsset: baseAsset, wallet: intent.sender
+                baseAsset: baseAsset, wallet: intent.sender.ethAddress
             )
         case .morpho(let intent):
             return .morphoVaultSupplyBalance(
                 network: network, vault: intent.morphoVault,
-                baseAsset: baseAsset, wallet: intent.sender
+                baseAsset: baseAsset, wallet: intent.sender.ethAddress
             )
     }
 }
@@ -773,7 +773,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: transferIntent.assetSymbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: transferIntent.sender,
+                    actorWallet: transferIntent.sender.ethAddress,
                     network: nil  // Transfer can use resources from any network
                 )
 
@@ -789,7 +789,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: targetNetwork,
                     address: destAsset.assetAddress,
                     symbol: transferIntent.assetSymbol,
-                    wallet: transferIntent.recipient
+                    wallet: transferIntent.recipient.ethAddress
                 )
 
                 let nodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -797,7 +797,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: transferIntent.sender,
+                    actorWallet: transferIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -867,7 +867,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: destAsset.assetAddress,
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer
+                    wallet: withdrawIntent.withdrawer.ethAddress
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -879,7 +879,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer,
+                    actorWallet: withdrawIntent.withdrawer.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -946,7 +946,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -965,7 +965,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     comet: supplyIntent.comet,
                     baseAsset: baseAssetAddress,
-                    wallet: supplyIntent.sender
+                    wallet: supplyIntent.sender.ethAddress
                 )
 
                 let nodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -973,7 +973,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -1011,7 +1011,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -1028,7 +1028,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     vault: supplyIntent.morphoVault,
                     baseAsset: asset.assetAddress,
-                    wallet: supplyIntent.sender
+                    wallet: supplyIntent.sender.ethAddress
                 )
 
                 let nodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -1036,7 +1036,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -1099,7 +1099,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: asset.assetAddress,
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer
+                    wallet: withdrawIntent.withdrawer.ethAddress
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -1111,7 +1111,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer,
+                    actorWallet: withdrawIntent.withdrawer.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -1180,7 +1180,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -1197,7 +1197,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     pool: supplyIntent.aavePool,
                     baseAsset: asset.assetAddress,
-                    wallet: supplyIntent.sender
+                    wallet: supplyIntent.sender.ethAddress
                 )
 
                 let nodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -1205,7 +1205,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -1276,7 +1276,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: asset.assetAddress,
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer
+                    wallet: withdrawIntent.withdrawer.ethAddress
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -1288,7 +1288,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer,
+                    actorWallet: withdrawIntent.withdrawer.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -1394,7 +1394,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: swapIntent.sender,
+                    actorWallet: swapIntent.sender.ethAddress,
                     network: nil
                 )
 
@@ -1413,7 +1413,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: swapIntent.sellToken,
                     symbol: sellAsset.symbol,
-                    wallet: swapIntent.sender
+                    wallet: swapIntent.sender.ethAddress
                 )
 
                 // Create buy token node (this is the output, not a resource)
@@ -1421,7 +1421,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: swapIntent.buyToken,
                     symbol: buyAsset.symbol,
-                    wallet: swapIntent.sender
+                    wallet: swapIntent.sender.ethAddress
                 )
 
                 // Build node set - includes buy token node but NOT in resources
@@ -1433,7 +1433,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender,
+                    actorWallet: swapIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     logger: logger
                 )
@@ -1646,7 +1646,7 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: loopIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: loopIntent.sender
+                    wallet: loopIntent.sender.ethAddress
                 )
 
                 // Conditional source and resources based on backing amount
@@ -1668,7 +1668,7 @@ extension Charter.QuarkIntent.Type_ {
                             poolFee: loopIntent.poolFee,
                             isIncrease: loopIntent.isIncrease
                         ),
-                        wallet: loopIntent.sender
+                        wallet: loopIntent.sender.ethAddress
                     )
                     sourceNode = virtualNode
 
@@ -1692,7 +1692,7 @@ extension Charter.QuarkIntent.Type_ {
                         network: network,
                         address: backingAsset.assetAddress,
                         symbol: loopIntent.backingAssetSymbol,
-                        wallet: loopIntent.sender
+                        wallet: loopIntent.sender.ethAddress
                     )
                     sourceNode = backingAssetNode
 
@@ -1701,7 +1701,7 @@ extension Charter.QuarkIntent.Type_ {
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
                         earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                        actorWallet: loopIntent.sender,
+                        actorWallet: loopIntent.sender.ethAddress,
                         network: nil  // Can bridge from other networks
                     )
 
@@ -1727,7 +1727,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(nodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: loopIntent.sender,
+                    actorWallet: loopIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? nodes : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -1796,7 +1796,7 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: loopIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: loopIntent.sender
+                    wallet: loopIntent.sender.ethAddress
                 )
 
                 // Conditional source and resources based on backing amount
@@ -1818,7 +1818,7 @@ extension Charter.QuarkIntent.Type_ {
                             poolFee: loopIntent.poolFee,
                             isIncrease: loopIntent.isIncrease
                         ),
-                        wallet: loopIntent.sender
+                        wallet: loopIntent.sender.ethAddress
                     )
                     sourceNode = virtualNode
 
@@ -1842,7 +1842,7 @@ extension Charter.QuarkIntent.Type_ {
                         network: network,
                         address: backingAsset.assetAddress,
                         symbol: loopIntent.backingAssetSymbol,
-                        wallet: loopIntent.sender
+                        wallet: loopIntent.sender.ethAddress
                     )
                     sourceNode = backingAssetNode
 
@@ -1851,7 +1851,7 @@ extension Charter.QuarkIntent.Type_ {
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
                         earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                        actorWallet: loopIntent.sender,
+                        actorWallet: loopIntent.sender.ethAddress,
                         network: nil  // Can bridge from other networks
                     )
 
@@ -1877,7 +1877,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(nodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: loopIntent.sender,
+                    actorWallet: loopIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? nodes : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -1947,7 +1947,7 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: unloopIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: unloopIntent.sender
+                    wallet: unloopIntent.sender.ethAddress
                 )
 
                 // TODO: Unloop long resource should be based on borrow capacity.
@@ -1964,7 +1964,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: backingAsset.assetAddress,
                     symbol: unloopIntent.backingAssetSymbol,
-                    wallet: unloopIntent.sender
+                    wallet: unloopIntent.sender.ethAddress
                 )
 
                 // When exposureAmount is max (full unloop), backingAmountToExit must be 0
@@ -1995,7 +1995,7 @@ extension Charter.QuarkIntent.Type_ {
                             minSwapBackingAmount: unloopIntent.minSwapBackingAmount,
                             poolFee: unloopIntent.poolFee
                         ),
-                        wallet: unloopIntent.sender
+                        wallet: unloopIntent.sender.ethAddress
                     )
                     sinkNode = virtualNode
                     targetNode = virtualNode
@@ -2019,7 +2019,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: unloopIntent.sender,
+                    actorWallet: unloopIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -2093,7 +2093,7 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: unloopIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: unloopIntent.sender
+                    wallet: unloopIntent.sender.ethAddress
                 )
 
                 // Query folio for loop short position collateral balance
@@ -2105,7 +2105,7 @@ extension Charter.QuarkIntent.Type_ {
                         borrowTokenSymbol: exposureAsset.symbol
                     ),
                     tokenSymbol: backingAsset.symbol,
-                    wallet: unloopIntent.sender
+                    wallet: unloopIntent.sender.ethAddress
                 )
 
                 guard let collateralBalance = folio.balances[balanceKey]?.underlying else {
@@ -2126,7 +2126,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: backingAsset.assetAddress,
                     symbol: unloopIntent.backingAssetSymbol,
-                    wallet: unloopIntent.sender
+                    wallet: unloopIntent.sender.ethAddress
                 )
 
                 // When exposureAmount is max (full unloop), backingAmountToExit must be 0
@@ -2157,7 +2157,7 @@ extension Charter.QuarkIntent.Type_ {
                             maxSwapBackingAmount: unloopIntent.maxSwapBackingAmount,
                             poolFee: unloopIntent.poolFee
                         ),
-                        wallet: unloopIntent.sender
+                        wallet: unloopIntent.sender.ethAddress
                     )
                     sinkNode = virtualNode
                     targetNode = virtualNode
@@ -2181,7 +2181,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: unloopIntent.sender,
+                    actorWallet: unloopIntent.sender.ethAddress,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -2254,7 +2254,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: addBackingIntent.backingAssetSymbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: addBackingIntent.sender,
+                    actorWallet: addBackingIntent.sender.ethAddress,
                     network: nil  // Can bridge from other networks
                 )
 
@@ -2273,7 +2273,7 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: addBackingIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: addBackingIntent.sender
+                    wallet: addBackingIntent.sender.ethAddress
                 )
 
                 // Build node set
@@ -2284,7 +2284,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: network,
                     address: backingAsset.assetAddress,
                     symbol: addBackingIntent.backingAssetSymbol,
-                    wallet: addBackingIntent.sender
+                    wallet: addBackingIntent.sender.ethAddress
                 )
                 nodes.insert(backingAssetNode)
 
@@ -2295,7 +2295,7 @@ extension Charter.QuarkIntent.Type_ {
                         nodes: nodesArray,
                         folio: folio,
                         userWallets: folio.getRelevantWallets(),
-                        actorWallet: addBackingIntent.sender,
+                        actorWallet: addBackingIntent.sender.ethAddress,
                         cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                         exactWithdrawalAmounts: [:],
                         logger: logger
@@ -2369,14 +2369,14 @@ extension Charter.QuarkIntent.Type_ {
                     marketId: withdrawIntent.marketId,
                     backingAsset: backingAsset.assetAddress,
                     exposureAsset: exposureAsset.assetAddress,
-                    wallet: withdrawIntent.sender
+                    wallet: withdrawIntent.sender.ethAddress
                 )
 
                 let backingAssetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
                     address: backingAsset.assetAddress,
                     symbol: withdrawIntent.backingAssetSymbol,
-                    wallet: withdrawIntent.sender
+                    wallet: withdrawIntent.sender.ethAddress
                 )
 
                 // Query folio for position balance
@@ -2393,7 +2393,7 @@ extension Charter.QuarkIntent.Type_ {
                             borrowTokenSymbol: exposureAsset.symbol
                         ),
                         tokenSymbol: backingAsset.symbol,
-                        wallet: withdrawIntent.sender
+                        wallet: withdrawIntent.sender.ethAddress
                     )
 
                     guard let collateralBalance = folio.balances[balanceKey]?.underlying else {
@@ -2427,7 +2427,7 @@ extension Charter.QuarkIntent.Type_ {
                         nodes: nodesArray,
                         folio: folio,
                         userWallets: folio.getRelevantWallets(),
-                        actorWallet: withdrawIntent.sender,
+                        actorWallet: withdrawIntent.sender.ethAddress,
                         cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                         exactWithdrawalAmounts: [:],
                         logger: logger
@@ -2472,7 +2472,6 @@ extension Charter.QuarkIntent.Type_ {
                 let supplyIntent = migrateIntent.supplyIntent
                 let network = Network.fromChainId(supplyIntent.chainId)
                 let supplyAssetSymbol = supplyIntent.assetSymbol
-                let actorWallet = supplyIntent.sender
 
                 // Validate all intents use the same asset (can be on different chains)
                 for withdrawIntent in migrateIntent.withdrawIntents {
@@ -2507,7 +2506,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyAssetSymbol,
                     earnMarketPolicy: .specific(earnMarketPolicyAmounts),
-                    actorWallet: actorWallet,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Allow cross-chain bridging if needed
                 )
 
@@ -2550,21 +2549,21 @@ extension Charter.QuarkIntent.Type_ {
                             network: network,
                             comet: cometIntent.comet,
                             baseAsset: supplyAsset.assetAddress,
-                            wallet: cometIntent.sender
+                            wallet: cometIntent.sender.ethAddress
                         )
                     case .morpho(let morphoIntent):
                         supplyVenueNode = .morphoVaultSupplyBalance(
                             network: network,
                             vault: morphoIntent.morphoVault,
                             baseAsset: supplyAsset.assetAddress,
-                            wallet: morphoIntent.sender
+                            wallet: morphoIntent.sender.ethAddress
                         )
                     case .aave(let aaveIntent):
                         supplyVenueNode = .aaveSupplyBalance(
                             network: network,
                             pool: aaveIntent.aavePool,
                             baseAsset: supplyAsset.assetAddress,
-                            wallet: aaveIntent.sender
+                            wallet: aaveIntent.sender.ethAddress
                         )
                 }
 
@@ -2597,7 +2596,7 @@ extension Charter.QuarkIntent.Type_ {
                             case .cometSupplyBalance(let network, let market, _, let wallet),
                                 .morphoVaultSupplyBalance(let network, let market, _, let wallet),
                                 .aaveSupplyBalance(let network, let market, _, let wallet):
-                                return wallet == actorWallet
+                                return wallet == supplyIntent.sender.ethAddress
                                     && migrateIntent.withdrawIntents.contains {
                                         Network.fromChainId($0.chainId) == network
                                             && $0.market == market
@@ -2619,7 +2618,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(allNodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: actorWallet,
+                    actorWallet: supplyIntent.sender.ethAddress,
                     cappedMaxNodes: cappedMaxNodes,
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -2658,15 +2657,15 @@ extension Charter.QuarkIntent.Type_ {
                     case .comet(let cometIntent):
                         supplyNetwork = Network.fromChainId(cometIntent.chainId)
                         supplyAssetSymbol = cometIntent.assetSymbol
-                        supplySender = cometIntent.sender
+                        supplySender = cometIntent.sender.ethAddress
                     case .morpho(let morphoIntent):
                         supplyNetwork = Network.fromChainId(morphoIntent.chainId)
                         supplyAssetSymbol = morphoIntent.assetSymbol
-                        supplySender = morphoIntent.sender
+                        supplySender = morphoIntent.sender.ethAddress
                     case .aave(let aaveIntent):
                         supplyNetwork = Network.fromChainId(aaveIntent.chainId)
                         supplyAssetSymbol = aaveIntent.assetSymbol
-                        supplySender = aaveIntent.sender
+                        supplySender = aaveIntent.sender.ethAddress
                 }
 
                 // Debug logging
@@ -2680,7 +2679,7 @@ extension Charter.QuarkIntent.Type_ {
                     )
                 logger?.log("SwapAndSupply - Is cross-chain: \(swapNetwork != supplyNetwork)")
 
-                guard swapIntent.sender == supplySender else {
+                guard swapIntent.sender.ethAddress == supplySender else {
                     return .failure(.swapAndSupplyMustHaveSameSender)
                 }
 
@@ -2743,7 +2742,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
                     earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
-                    actorWallet: swapIntent.sender,
+                    actorWallet: swapIntent.sender.ethAddress,
                     network: nil  // Allow cross-chain bridging
                 )
 
@@ -2760,7 +2759,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: swapNetwork,
                     address: swapIntent.sellToken,
                     symbol: sellAsset.symbol,
-                    wallet: swapIntent.sender
+                    wallet: swapIntent.sender.ethAddress
                 )
 
                 // Create buy token nodes on MULTIPLE networks to allow cross-chain optimization
@@ -2771,7 +2770,7 @@ extension Charter.QuarkIntent.Type_ {
                         network: swapNetwork,
                         address: swapIntent.buyToken,
                         symbol: buyAsset.symbol,
-                        wallet: swapIntent.sender
+                        wallet: swapIntent.sender.ethAddress
                     )
                 )
 
@@ -2791,7 +2790,7 @@ extension Charter.QuarkIntent.Type_ {
                                 network: supplyNetwork,
                                 address: assetOnSupplyNetwork.assetAddress,
                                 symbol: symbol,
-                                wallet: swapIntent.sender
+                                wallet: swapIntent.sender.ethAddress
                             )
                             buyTokenNodes.insert(node)
                         }
@@ -2824,7 +2823,7 @@ extension Charter.QuarkIntent.Type_ {
                     network: swapNetwork,
                     address: swapIntent.buyToken,
                     symbol: buyAsset.symbol,
-                    wallet: swapIntent.sender
+                    wallet: swapIntent.sender.ethAddress
                 )
 
                 // Phase A: Generate routes for swap sub-intent (sellToken ecosystem)
@@ -2839,7 +2838,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: swapPhaseNodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender,
+                    actorWallet: swapIntent.sender.ethAddress,
                     cappedMaxNodes: swapIntent.sellAmount.isMaxUint256 ? Set(swapPhaseNodesArray) : Set(),
                     logger: logger
                 )
@@ -2857,7 +2856,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: supplyPhaseNodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender,
+                    actorWallet: swapIntent.sender.ethAddress,
                     cappedMaxNodes: supplyAmount.isMaxUint256 ? Set(supplyPhaseNodesArray) : Set(),
                     logger: logger
                 )
@@ -2990,8 +2989,8 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Validate all senders match across claims, swaps, and supply
                 let allSendersMatch = claimIntents.allSatisfy { $0.claimer == sender }
-                    && swapIntents.allSatisfy { $0.sender == sender }
-                    && supplyIntent.sender == sender
+                    && swapIntents.allSatisfy { $0.sender.ethAddress == sender }
+                    && supplyIntent.sender.ethAddress == sender
                 guard allSendersMatch else {
                     return .failure(.compounderSenderMismatch)
                 }

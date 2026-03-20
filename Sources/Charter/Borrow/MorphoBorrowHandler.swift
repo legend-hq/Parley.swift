@@ -11,7 +11,7 @@ struct MorphoBorrowHandler: BorrowIntentHandler {
     typealias BorrowIntent = Charter.MorphoBorrowIntent
 
     func getBorrower(from intent: BorrowIntent) -> EthAddress {
-        intent.borrower
+        intent.borrower.ethAddress
     }
 
     func getBorrowAmount(from intent: BorrowIntent) -> Number {

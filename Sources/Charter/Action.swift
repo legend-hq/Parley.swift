@@ -189,7 +189,7 @@ public struct TransferAction: Equatable, Identifiable, Sendable {
     public let recipient: ChainAddress
 
     public var id: String {
-        "\(transferAmount.asset.chain.chainId):\(transferAmount.asset.address.hex):\(recipient.address.hex):\(transferAmount.amount.underlying)"
+        "\(transferAmount.asset.chain.chainId):\(transferAmount.asset.address.hex):\(recipient.displayString):\(transferAmount.amount.underlying)"
     }
 
     public init(transferAmount: PricedAmount<Asset>, recipient: ChainAddress) {
@@ -206,7 +206,7 @@ public struct BridgeAction: Equatable, Identifiable, Sendable {
     public let bridgeType: DApp
 
     public var id: String {
-        "\(bridgeAmount.asset.chain.chainId):\(bridgeAmount.asset.address.hex):\(recipient.address.hex):\(bridgeAmount.amount.underlying)"
+        "\(bridgeAmount.asset.chain.chainId):\(bridgeAmount.asset.address.hex):\(recipient.displayString):\(bridgeAmount.amount.underlying)"
     }
 
     public init(
@@ -231,7 +231,7 @@ public struct BridgeMintAction: Equatable, Identifiable, Sendable {
     public let bridgeType: DApp
 
     public var id: String {
-        "\(mintAmount.asset.chain.chainId):\(mintAmount.asset.address.hex):\(sender.address.hex):\(mintAmount.amount.underlying):\(bridgeType.displayName)"
+        "\(mintAmount.asset.chain.chainId):\(mintAmount.asset.address.hex):\(sender.displayString):\(mintAmount.amount.underlying):\(bridgeType.displayName)"
     }
 
     public init(

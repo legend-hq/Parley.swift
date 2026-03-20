@@ -13,7 +13,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
     // MARK: - Core Intent Accessors
 
     func getRepayer(from intent: RepayIntent) -> EthAddress {
-        intent.repayer
+        intent.repayer.ethAddress
     }
 
     func getRepayAmount(from intent: RepayIntent) -> Number {
@@ -206,7 +206,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         if !getIsMaxIntent(from: intent) {
             let existingDebt = queryExistingDebt(
                 intent: intent,
-                repayer: intent.repayer,
+                repayer: intent.repayer.ethAddress,
                 folio: folio
             )
             if existingDebt > Number(0) && intent.amount > existingDebt {

@@ -11,7 +11,7 @@ struct CometBorrowHandler: BorrowIntentHandler {
     typealias BorrowIntent = Charter.CometBorrowIntent
 
     func getBorrower(from intent: BorrowIntent) -> EthAddress {
-        intent.borrower
+        intent.borrower.ethAddress
     }
 
     func getBorrowAmount(from intent: BorrowIntent) -> Number {

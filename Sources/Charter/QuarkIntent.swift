@@ -87,7 +87,7 @@ extension Charter {
             var network: Network {
                 switch self {
                     case .transfer(let transferIntent):
-                        return Network.fromChainId(transferIntent.chainId)
+                        return transferIntent.sender.chain
                     case .migrateSupplies(let migrateSuppliesIntent):
                         return Network.fromChainId(migrateSuppliesIntent.supplyIntent.chainId)
                     default:
@@ -166,7 +166,6 @@ extension Charter {
                     case .transfer(let transferIntent):
                         return .transfer(
                             TransferIntent(
-                                chainId: transferIntent.chainId,
                                 assetSymbol: transferIntent.assetSymbol,
                                 amount: Number.MAX_UINT_256,
                                 sender: transferIntent.sender,
@@ -178,7 +177,6 @@ extension Charter {
                             AaveSupplyIntent(
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: aaveSupplyIntent.assetSymbol,
-                                chainId: aaveSupplyIntent.chainId,
                                 aavePool: aaveSupplyIntent.aavePool,
                                 sender: aaveSupplyIntent.sender
                             )
@@ -188,7 +186,6 @@ extension Charter {
                             AaveWithdrawIntent(
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: aaveWithdrawIntent.assetSymbol,
-                                chainId: aaveWithdrawIntent.chainId,
                                 aavePool: aaveWithdrawIntent.aavePool,
                                 withdrawer: aaveWithdrawIntent.withdrawer
                             )
@@ -201,8 +198,7 @@ extension Charter {
                                 marketId: addBackingTokenIntent.marketId,
                                 amount: Number.MAX_UINT_256,
                                 isShort: addBackingTokenIntent.isShort,
-                                sender: addBackingTokenIntent.sender,
-                                chainId: addBackingTokenIntent.chainId
+                                sender: addBackingTokenIntent.sender
                             )
                         )
                     case .claimRewards:
@@ -213,7 +209,6 @@ extension Charter {
                                 amount: cometBorrowIntent.amount,
                                 assetSymbol: cometBorrowIntent.assetSymbol,
                                 borrower: cometBorrowIntent.borrower,
-                                chainId: cometBorrowIntent.chainId,
                                 collateralAmount: Number.MAX_UINT_256,
                                 collateralAssetSymbol: cometBorrowIntent.collateralAssetSymbol,
                                 comet: cometBorrowIntent.comet
@@ -224,7 +219,6 @@ extension Charter {
                             CometRepayIntent(
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: cometRepayIntent.assetSymbol,
-                                chainId: cometRepayIntent.chainId,
                                 collateralAmount: cometRepayIntent.collateralAmount,
                                 collateralAssetSymbol: cometRepayIntent.collateralAssetSymbol,
                                 comet: cometRepayIntent.comet,
@@ -236,7 +230,6 @@ extension Charter {
                             CometSupplyIntent(
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: cometSupplyIntent.assetSymbol,
-                                chainId: cometSupplyIntent.chainId,
                                 comet: cometSupplyIntent.comet,
                                 sender: cometSupplyIntent.sender
                             )
@@ -246,7 +239,6 @@ extension Charter {
                             CometWithdrawIntent(
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: cometWithdrawIntent.assetSymbol,
-                                chainId: cometWithdrawIntent.chainId,
                                 comet: cometWithdrawIntent.comet,
                                 withdrawer: cometWithdrawIntent.withdrawer
                             )
@@ -259,7 +251,6 @@ extension Charter {
                                     AaveSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: aaveIntent.assetSymbol,
-                                        chainId: aaveIntent.chainId,
                                         aavePool: aaveIntent.aavePool,
                                         sender: aaveIntent.sender
                                     )
@@ -269,7 +260,6 @@ extension Charter {
                                     CometSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: cometIntent.assetSymbol,
-                                        chainId: cometIntent.chainId,
                                         comet: cometIntent.comet,
                                         sender: cometIntent.sender
                                     )
@@ -280,8 +270,7 @@ extension Charter {
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: morphoIntent.assetSymbol,
                                         morphoVault: morphoIntent.morphoVault,
-                                        sender: morphoIntent.sender,
-                                        chainId: morphoIntent.chainId
+                                        sender: morphoIntent.sender
                                     )
                                 )
                         }
@@ -303,8 +292,7 @@ extension Charter {
                                 maxSwapBackingAmount: loopLongIntent.maxSwapBackingAmount,
                                 maxProvidedBackingAmount: Number.MAX_UINT_256,
                                 poolFee: loopLongIntent.poolFee,
-                                sender: loopLongIntent.sender,
-                                chainId: loopLongIntent.chainId
+                                sender: loopLongIntent.sender
                             )
                         )
                     case .loopShort(let loopShortIntent):
@@ -318,8 +306,7 @@ extension Charter {
                                 minSwapBackingAmount: loopShortIntent.minSwapBackingAmount,
                                 providedBackingAmount: Number.MAX_UINT_256,
                                 poolFee: loopShortIntent.poolFee,
-                                sender: loopShortIntent.sender,
-                                chainId: loopShortIntent.chainId
+                                sender: loopShortIntent.sender
                             )
                         )
                     case .migrateSupplies(let migrateSuppliesIntent):
@@ -330,7 +317,6 @@ extension Charter {
                                     AaveSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: aaveIntent.assetSymbol,
-                                        chainId: aaveIntent.chainId,
                                         aavePool: aaveIntent.aavePool,
                                         sender: aaveIntent.sender
                                     )
@@ -340,7 +326,6 @@ extension Charter {
                                     CometSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: cometIntent.assetSymbol,
-                                        chainId: cometIntent.chainId,
                                         comet: cometIntent.comet,
                                         sender: cometIntent.sender
                                     )
@@ -351,8 +336,7 @@ extension Charter {
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: morphoIntent.assetSymbol,
                                         morphoVault: morphoIntent.morphoVault,
-                                        sender: morphoIntent.sender,
-                                        chainId: morphoIntent.chainId
+                                        sender: morphoIntent.sender
                                     )
                                 )
                         }
@@ -370,7 +354,6 @@ extension Charter {
                                 assetSymbol: morphoBorrowIntent.assetSymbol,
                                 marketId: morphoBorrowIntent.marketId,
                                 borrower: morphoBorrowIntent.borrower,
-                                chainId: morphoBorrowIntent.chainId,
                                 collateralAmount: Number.MAX_UINT_256,
                                 collateralAssetSymbol: morphoBorrowIntent.collateralAssetSymbol
                             )
@@ -382,7 +365,6 @@ extension Charter {
                                 assetSymbol: morphoRepayIntent.assetSymbol,
                                 marketId: morphoRepayIntent.marketId,
                                 repayer: morphoRepayIntent.repayer,
-                                chainId: morphoRepayIntent.chainId,
                                 collateralAmount: morphoRepayIntent.collateralAmount,
                                 collateralAssetSymbol: morphoRepayIntent.collateralAssetSymbol
                             )
@@ -393,8 +375,7 @@ extension Charter {
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: morphoVaultSupplyIntent.assetSymbol,
                                 morphoVault: morphoVaultSupplyIntent.morphoVault,
-                                sender: morphoVaultSupplyIntent.sender,
-                                chainId: morphoVaultSupplyIntent.chainId
+                                sender: morphoVaultSupplyIntent.sender
                             )
                         )
                     case .morphoVaultWithdraw(let morphoVaultWithdrawIntent):
@@ -403,7 +384,6 @@ extension Charter {
                                 amount: Number.MAX_UINT_256,
                                 assetSymbol: morphoVaultWithdrawIntent.assetSymbol,
                                 morphoVault: morphoVaultWithdrawIntent.morphoVault,
-                                chainId: morphoVaultWithdrawIntent.chainId,
                                 withdrawer: morphoVaultWithdrawIntent.withdrawer
                             )
                         )
@@ -417,7 +397,6 @@ extension Charter {
                                     AaveSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: aaveIntent.assetSymbol,
-                                        chainId: aaveIntent.chainId,
                                         aavePool: aaveIntent.aavePool,
                                         sender: aaveIntent.sender
                                     )
@@ -427,7 +406,6 @@ extension Charter {
                                     CometSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: cometIntent.assetSymbol,
-                                        chainId: cometIntent.chainId,
                                         comet: cometIntent.comet,
                                         sender: cometIntent.sender
                                     )
@@ -438,8 +416,7 @@ extension Charter {
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: morphoIntent.assetSymbol,
                                         morphoVault: morphoIntent.morphoVault,
-                                        sender: morphoIntent.sender,
-                                        chainId: morphoIntent.chainId
+                                        sender: morphoIntent.sender
                                     )
                                 )
                         }
@@ -452,7 +429,6 @@ extension Charter {
                                     AaveSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: aaveIntent.assetSymbol,
-                                        chainId: aaveIntent.chainId,
                                         aavePool: aaveIntent.aavePool,
                                         sender: aaveIntent.sender
                                     )
@@ -462,7 +438,6 @@ extension Charter {
                                     CometSupplyIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: cometIntent.assetSymbol,
-                                        chainId: cometIntent.chainId,
                                         comet: cometIntent.comet,
                                         sender: cometIntent.sender
                                     )
@@ -473,8 +448,7 @@ extension Charter {
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: morphoIntent.assetSymbol,
                                         morphoVault: morphoIntent.morphoVault,
-                                        sender: morphoIntent.sender,
-                                        chainId: morphoIntent.chainId
+                                        sender: morphoIntent.sender
                                     )
                                 )
                         }
@@ -487,7 +461,6 @@ extension Charter {
                     case .swap(let swapIntent):
                         return .swap(
                             SwapIntent(
-                                chainId: swapIntent.chainId,
                                 sellToken: swapIntent.sellToken,
                                 sellAmount: Number.MAX_UINT_256,
                                 buyToken: swapIntent.buyToken,
@@ -521,8 +494,7 @@ extension Charter {
                                 backingAmountToExit: unloopLongIntent.backingAmountToExit,
                                 minSwapBackingAmount: unloopLongIntent.minSwapBackingAmount,
                                 poolFee: unloopLongIntent.poolFee,
-                                sender: unloopLongIntent.sender,
-                                chainId: unloopLongIntent.chainId
+                                sender: unloopLongIntent.sender
                             )
                         )
                     case .unloopShort(let unloopShortIntent):
@@ -535,8 +507,7 @@ extension Charter {
                                 backingAmountToExit: unloopShortIntent.backingAmountToExit,
                                 maxSwapBackingAmount: unloopShortIntent.maxSwapBackingAmount,
                                 poolFee: unloopShortIntent.poolFee,
-                                sender: unloopShortIntent.sender,
-                                chainId: unloopShortIntent.chainId
+                                sender: unloopShortIntent.sender
                             )
                         )
                     case .withdraw(let withdrawIntent):
@@ -547,7 +518,6 @@ extension Charter {
                                     AaveWithdrawIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: aaveIntent.assetSymbol,
-                                        chainId: aaveIntent.chainId,
                                         aavePool: aaveIntent.aavePool,
                                         withdrawer: aaveIntent.withdrawer
                                     )
@@ -557,7 +527,6 @@ extension Charter {
                                     CometWithdrawIntent(
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: cometIntent.assetSymbol,
-                                        chainId: cometIntent.chainId,
                                         comet: cometIntent.comet,
                                         withdrawer: cometIntent.withdrawer
                                     )
@@ -568,7 +537,6 @@ extension Charter {
                                         amount: Number.MAX_UINT_256,
                                         assetSymbol: morphoIntent.assetSymbol,
                                         morphoVault: morphoIntent.morphoVault,
-                                        chainId: morphoIntent.chainId,
                                         withdrawer: morphoIntent.withdrawer
                                     )
                                 )
@@ -582,8 +550,7 @@ extension Charter {
                                 marketId: withdrawBackingTokenIntent.marketId,
                                 amount: Number.MAX_UINT_256,
                                 isShort: withdrawBackingTokenIntent.isShort,
-                                sender: withdrawBackingTokenIntent.sender,
-                                chainId: withdrawBackingTokenIntent.chainId
+                                sender: withdrawBackingTokenIntent.sender
                             )
                         )
                 }
@@ -791,11 +758,17 @@ extension Charter {
     }
 
     public struct TransferIntent: Equatable, Codable, Hashable, Sendable {
-        public let chainId: Number
         public let assetSymbol: String
         public let amount: Number
-        public let sender: EthAddress
-        public let recipient: EthAddress
+        public let sender: ChainAddress
+        public let recipient: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
+
+        // MARK: - CodingKeys
 
         public enum CodingKeys: String, CodingKey {
             case chainId = "chain_id"
@@ -805,6 +778,21 @@ extension Charter {
             case recipient
         }
 
+        // MARK: - Primary init
+
+        public init(
+            assetSymbol: String,
+            amount: Number,
+            sender: ChainAddress,
+            recipient: ChainAddress
+        ) {
+            self.assetSymbol = assetSymbol
+            self.amount = amount
+            self.sender = sender
+            self.recipient = recipient
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
         public init(
             chainId: Number,
             assetSymbol: String,
@@ -812,20 +800,47 @@ extension Charter {
             sender: EthAddress,
             recipient: EthAddress
         ) {
-            self.chainId = chainId
+            let network = Network.fromChainId(chainId)
             self.assetSymbol = assetSymbol
             self.amount = amount
-            self.sender = sender
-            self.recipient = recipient
+            self.sender = ChainAddress(sender, chain: network)
+            self.recipient = ChainAddress(recipient, chain: network)
+        }
+
+        // MARK: - Custom Codable (flat JSON for backward compat)
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            let recipientAddress = try container.decode(EthAddress.self, forKey: .recipient)
+            self.sender = ChainAddress(senderAddress, chain: network)
+            self.recipient = ChainAddress(recipientAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(recipient.ethAddress, forKey: .recipient)
         }
     }
 
     public struct CometSupplyIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let chainId: Number
         public let comet: EthAddress
-        public let sender: EthAddress
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         enum CodingKeys: String, CodingKey {
             case amount
@@ -838,24 +853,61 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
+            comet: EthAddress,
+            sender: ChainAddress
+        ) {
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.comet = comet
+            self.sender = sender
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
             chainId: Number,
             comet: EthAddress,
             sender: EthAddress
         ) {
+            let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.chainId = chainId
             self.comet = comet
-            self.sender = sender
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.comet = try container.decode(EthAddress.self, forKey: .comet)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(comet, forKey: .comet)
+            try container.encode(sender.ethAddress, forKey: .sender)
         }
     }
 
     public struct AaveSupplyIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let chainId: Number
         public let aavePool: EthAddress
-        public let sender: EthAddress
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -868,24 +920,61 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
+            aavePool: EthAddress,
+            sender: ChainAddress
+        ) {
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.aavePool = aavePool
+            self.sender = sender
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
             chainId: Number,
             aavePool: EthAddress,
             sender: EthAddress
         ) {
+            let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.chainId = chainId
             self.aavePool = aavePool
-            self.sender = sender
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.aavePool = try container.decode(EthAddress.self, forKey: .aavePool)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(aavePool, forKey: .aavePool)
+            try container.encode(sender.ethAddress, forKey: .sender)
         }
     }
 
     public struct AaveWithdrawIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let chainId: Number
         public let aavePool: EthAddress
-        public let withdrawer: EthAddress
+        public let withdrawer: ChainAddress
+
+        /// Derived from `withdrawer.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            withdrawer.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -898,15 +987,48 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
+            aavePool: EthAddress,
+            withdrawer: ChainAddress
+        ) {
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.aavePool = aavePool
+            self.withdrawer = withdrawer
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
             chainId: Number,
             aavePool: EthAddress,
             withdrawer: EthAddress
         ) {
+            let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.chainId = chainId
             self.aavePool = aavePool
-            self.withdrawer = withdrawer
+            self.withdrawer = ChainAddress(withdrawer, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.aavePool = try container.decode(EthAddress.self, forKey: .aavePool)
+            let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
+            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(aavePool, forKey: .aavePool)
+            try container.encode(withdrawer.ethAddress, forKey: .withdrawer)
         }
     }
 
@@ -916,8 +1038,12 @@ extension Charter {
         public let marketId: Hex
         public let amount: Number
         public let isShort: Bool
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -935,8 +1061,7 @@ extension Charter {
             marketId: Hex,
             amount: Number,
             isShort: Bool,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -944,18 +1069,64 @@ extension Charter {
             self.amount = amount
             self.isShort = isShort
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            amount: Number,
+            isShort: Bool,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.amount = amount
+            self.isShort = isShort
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.isShort = try container.decode(Bool.self, forKey: .isShort)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(isShort, forKey: .isShort)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
     public struct CometBorrowIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let borrower: EthAddress
-        public let chainId: Number
+        public let borrower: ChainAddress
         public let collateralAmount: Number
         public let collateralAssetSymbol: String
         public let comet: EthAddress
+
+        /// Derived from `borrower.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            borrower.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -970,8 +1141,7 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
-            borrower: EthAddress,
-            chainId: Number,
+            borrower: ChainAddress,
             collateralAmount: Number,
             collateralAssetSymbol: String,
             comet: EthAddress
@@ -979,10 +1149,52 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.borrower = borrower
-            self.chainId = chainId
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.comet = comet
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
+            borrower: EthAddress,
+            chainId: Number,
+            collateralAmount: Number,
+            collateralAssetSymbol: String,
+            comet: EthAddress
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.borrower = ChainAddress(borrower, chain: network)
+            self.collateralAmount = collateralAmount
+            self.collateralAssetSymbol = collateralAssetSymbol
+            self.comet = comet
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            let borrowerAddress = try container.decode(EthAddress.self, forKey: .borrower)
+            self.borrower = ChainAddress(borrowerAddress, chain: network)
+            self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
+            self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
+            self.comet = try container.decode(EthAddress.self, forKey: .comet)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(borrower.ethAddress, forKey: .borrower)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(collateralAmount, forKey: .collateralAmount)
+            try container.encode(collateralAssetSymbol, forKey: .collateralAssetSymbol)
+            try container.encode(comet, forKey: .comet)
         }
 
         var isMaxIntent: Bool {
@@ -993,11 +1205,15 @@ extension Charter {
     public struct CometRepayIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let chainId: Number
         public let collateralAmount: Number
         public let collateralAssetSymbol: String
         public let comet: EthAddress
-        public let repayer: EthAddress
+        public let repayer: ChainAddress
+
+        /// Derived from `repayer.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            repayer.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1012,19 +1228,60 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
+            collateralAmount: Number,
+            collateralAssetSymbol: String,
+            comet: EthAddress,
+            repayer: ChainAddress
+        ) {
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.collateralAmount = collateralAmount
+            self.collateralAssetSymbol = collateralAssetSymbol
+            self.comet = comet
+            self.repayer = repayer
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
             chainId: Number,
             collateralAmount: Number,
             collateralAssetSymbol: String,
             comet: EthAddress,
             repayer: EthAddress
         ) {
+            let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.chainId = chainId
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.comet = comet
-            self.repayer = repayer
+            self.repayer = ChainAddress(repayer, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
+            self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
+            self.comet = try container.decode(EthAddress.self, forKey: .comet)
+            let repayerAddress = try container.decode(EthAddress.self, forKey: .repayer)
+            self.repayer = ChainAddress(repayerAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(collateralAmount, forKey: .collateralAmount)
+            try container.encode(collateralAssetSymbol, forKey: .collateralAssetSymbol)
+            try container.encode(comet, forKey: .comet)
+            try container.encode(repayer.ethAddress, forKey: .repayer)
         }
 
         var isMaxIntent: Bool {
@@ -1035,9 +1292,13 @@ extension Charter {
     public struct CometWithdrawIntent: Equatable, Codable, Hashable, Sendable {
         public let amount: Number
         public let assetSymbol: String
-        public let chainId: Number
         public let comet: EthAddress
-        public let withdrawer: EthAddress
+        public let withdrawer: ChainAddress
+
+        /// Derived from `withdrawer.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            withdrawer.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1050,15 +1311,48 @@ extension Charter {
         public init(
             amount: Number,
             assetSymbol: String,
+            comet: EthAddress,
+            withdrawer: ChainAddress
+        ) {
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.comet = comet
+            self.withdrawer = withdrawer
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
             chainId: Number,
             comet: EthAddress,
             withdrawer: EthAddress
         ) {
+            let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.chainId = chainId
             self.comet = comet
-            self.withdrawer = withdrawer
+            self.withdrawer = ChainAddress(withdrawer, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.comet = try container.decode(EthAddress.self, forKey: .comet)
+            let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
+            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(comet, forKey: .comet)
+            try container.encode(withdrawer.ethAddress, forKey: .withdrawer)
         }
     }
 
@@ -1071,8 +1365,12 @@ extension Charter {
         public let maxSwapBackingAmount: Number
         public let maxProvidedBackingAmount: Number
         public let poolFee: UInt
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -1096,8 +1394,7 @@ extension Charter {
             maxSwapBackingAmount: Number,
             maxProvidedBackingAmount: Number,
             poolFee: UInt,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -1108,7 +1405,61 @@ extension Charter {
             self.maxProvidedBackingAmount = maxProvidedBackingAmount
             self.poolFee = poolFee
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            isIncrease: Bool,
+            exposureAmount: Number,
+            maxSwapBackingAmount: Number,
+            maxProvidedBackingAmount: Number,
+            poolFee: UInt,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.isIncrease = isIncrease
+            self.exposureAmount = exposureAmount
+            self.maxSwapBackingAmount = maxSwapBackingAmount
+            self.maxProvidedBackingAmount = maxProvidedBackingAmount
+            self.poolFee = poolFee
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.isIncrease = try container.decode(Bool.self, forKey: .isIncrease)
+            self.exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+            self.maxSwapBackingAmount = try container.decode(Number.self, forKey: .maxSwapBackingAmount)
+            self.maxProvidedBackingAmount = try container.decode(Number.self, forKey: .maxProvidedBackingAmount)
+            self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(isIncrease, forKey: .isIncrease)
+            try container.encode(exposureAmount, forKey: .exposureAmount)
+            try container.encode(maxSwapBackingAmount, forKey: .maxSwapBackingAmount)
+            try container.encode(maxProvidedBackingAmount, forKey: .maxProvidedBackingAmount)
+            try container.encode(poolFee, forKey: .poolFee)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1121,8 +1472,12 @@ extension Charter {
         public let minSwapBackingAmount: Number
         public let providedBackingAmount: Number
         public let poolFee: UInt
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -1146,8 +1501,7 @@ extension Charter {
             minSwapBackingAmount: Number,
             providedBackingAmount: Number,
             poolFee: UInt,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -1158,7 +1512,61 @@ extension Charter {
             self.providedBackingAmount = providedBackingAmount
             self.poolFee = poolFee
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            isIncrease: Bool,
+            exposureAmount: Number,
+            minSwapBackingAmount: Number,
+            providedBackingAmount: Number,
+            poolFee: UInt,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.isIncrease = isIncrease
+            self.exposureAmount = exposureAmount
+            self.minSwapBackingAmount = minSwapBackingAmount
+            self.providedBackingAmount = providedBackingAmount
+            self.poolFee = poolFee
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.isIncrease = try container.decode(Bool.self, forKey: .isIncrease)
+            self.exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+            self.minSwapBackingAmount = try container.decode(Number.self, forKey: .minSwapBackingAmount)
+            self.providedBackingAmount = try container.decode(Number.self, forKey: .providedBackingAmount)
+            self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(isIncrease, forKey: .isIncrease)
+            try container.encode(exposureAmount, forKey: .exposureAmount)
+            try container.encode(minSwapBackingAmount, forKey: .minSwapBackingAmount)
+            try container.encode(providedBackingAmount, forKey: .providedBackingAmount)
+            try container.encode(poolFee, forKey: .poolFee)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1188,10 +1596,14 @@ extension Charter {
         public let amount: Number
         public let assetSymbol: String
         public let marketId: Hex
-        public let borrower: EthAddress
-        public let chainId: Number
+        public let borrower: ChainAddress
         public let collateralAmount: Number
         public let collateralAssetSymbol: String
+
+        /// Derived from `borrower.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            borrower.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1207,8 +1619,7 @@ extension Charter {
             amount: Number,
             assetSymbol: String,
             marketId: Hex,
-            borrower: EthAddress,
-            chainId: Number,
+            borrower: ChainAddress,
             collateralAmount: Number,
             collateralAssetSymbol: String
         ) {
@@ -1216,9 +1627,51 @@ extension Charter {
             self.assetSymbol = assetSymbol
             self.marketId = marketId
             self.borrower = borrower
-            self.chainId = chainId
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
+            marketId: Hex,
+            borrower: EthAddress,
+            chainId: Number,
+            collateralAmount: Number,
+            collateralAssetSymbol: String
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.marketId = marketId
+            self.borrower = ChainAddress(borrower, chain: network)
+            self.collateralAmount = collateralAmount
+            self.collateralAssetSymbol = collateralAssetSymbol
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            let borrowerAddress = try container.decode(EthAddress.self, forKey: .borrower)
+            self.borrower = ChainAddress(borrowerAddress, chain: network)
+            self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
+            self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(borrower.ethAddress, forKey: .borrower)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(collateralAmount, forKey: .collateralAmount)
+            try container.encode(collateralAssetSymbol, forKey: .collateralAssetSymbol)
         }
 
         var isMaxIntent: Bool {
@@ -1230,10 +1683,14 @@ extension Charter {
         public let amount: Number
         public let assetSymbol: String
         public let marketId: Hex
-        public let repayer: EthAddress
-        public let chainId: Number
+        public let repayer: ChainAddress
         public let collateralAmount: Number
         public let collateralAssetSymbol: String
+
+        /// Derived from `repayer.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            repayer.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1249,8 +1706,7 @@ extension Charter {
             amount: Number,
             assetSymbol: String,
             marketId: Hex,
-            repayer: EthAddress,
-            chainId: Number,
+            repayer: ChainAddress,
             collateralAmount: Number,
             collateralAssetSymbol: String
         ) {
@@ -1258,9 +1714,51 @@ extension Charter {
             self.assetSymbol = assetSymbol
             self.marketId = marketId
             self.repayer = repayer
-            self.chainId = chainId
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
+            marketId: Hex,
+            repayer: EthAddress,
+            chainId: Number,
+            collateralAmount: Number,
+            collateralAssetSymbol: String
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.marketId = marketId
+            self.repayer = ChainAddress(repayer, chain: network)
+            self.collateralAmount = collateralAmount
+            self.collateralAssetSymbol = collateralAssetSymbol
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            let repayerAddress = try container.decode(EthAddress.self, forKey: .repayer)
+            self.repayer = ChainAddress(repayerAddress, chain: network)
+            self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
+            self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(repayer.ethAddress, forKey: .repayer)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(collateralAmount, forKey: .collateralAmount)
+            try container.encode(collateralAssetSymbol, forKey: .collateralAssetSymbol)
         }
 
         var isMaxIntent: Bool {
@@ -1287,8 +1785,12 @@ extension Charter {
         public let amount: Number
         public let assetSymbol: String
         public let morphoVault: EthAddress
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1302,14 +1804,47 @@ extension Charter {
             amount: Number,
             assetSymbol: String,
             morphoVault: EthAddress,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.morphoVault = morphoVault
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
+            morphoVault: EthAddress,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.morphoVault = morphoVault
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.morphoVault = try container.decode(EthAddress.self, forKey: .morphoVault)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(morphoVault, forKey: .morphoVault)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1317,8 +1852,12 @@ extension Charter {
         public let amount: Number
         public let assetSymbol: String
         public let morphoVault: EthAddress
-        public let chainId: Number
-        public let withdrawer: EthAddress
+        public let withdrawer: ChainAddress
+
+        /// Derived from `withdrawer.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            withdrawer.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case amount
@@ -1332,25 +1871,62 @@ extension Charter {
             amount: Number,
             assetSymbol: String,
             morphoVault: EthAddress,
-            chainId: Number,
-            withdrawer: EthAddress
+            withdrawer: ChainAddress
         ) {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.morphoVault = morphoVault
-            self.chainId = chainId
             self.withdrawer = withdrawer
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            amount: Number,
+            assetSymbol: String,
+            morphoVault: EthAddress,
+            chainId: Number,
+            withdrawer: EthAddress
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.amount = amount
+            self.assetSymbol = assetSymbol
+            self.morphoVault = morphoVault
+            self.withdrawer = ChainAddress(withdrawer, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+            self.morphoVault = try container.decode(EthAddress.self, forKey: .morphoVault)
+            let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
+            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(assetSymbol, forKey: .assetSymbol)
+            try container.encode(morphoVault, forKey: .morphoVault)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(withdrawer.ethAddress, forKey: .withdrawer)
         }
     }
 
     public struct RecurringSwapIntent: Equatable, Codable, Hashable, Sendable {
-        public let chainId: Number
         public let sellToken: EthAddress
         public let sellAmount: Number
         public let buyToken: EthAddress
         public let buyAmount: Number
         public let interval: Number
-        public let sender: EthAddress
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case chainId = "chain_id"
@@ -1363,6 +1939,23 @@ extension Charter {
         }
 
         public init(
+            sellToken: EthAddress,
+            sellAmount: Number,
+            buyToken: EthAddress,
+            buyAmount: Number,
+            interval: Number,
+            sender: ChainAddress
+        ) {
+            self.sellToken = sellToken
+            self.sellAmount = sellAmount
+            self.buyToken = buyToken
+            self.buyAmount = buyAmount
+            self.interval = interval
+            self.sender = sender
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
             chainId: Number,
             sellToken: EthAddress,
             sellAmount: Number,
@@ -1371,13 +1964,37 @@ extension Charter {
             interval: Number,
             sender: EthAddress
         ) {
-            self.chainId = chainId
+            let network = Network.fromChainId(chainId)
             self.sellToken = sellToken
             self.sellAmount = sellAmount
             self.buyToken = buyToken
             self.buyAmount = buyAmount
             self.interval = interval
-            self.sender = sender
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.sellToken = try container.decode(EthAddress.self, forKey: .sellToken)
+            self.sellAmount = try container.decode(Number.self, forKey: .sellAmount)
+            self.buyToken = try container.decode(EthAddress.self, forKey: .buyToken)
+            self.buyAmount = try container.decode(Number.self, forKey: .buyAmount)
+            self.interval = try container.decode(Number.self, forKey: .interval)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(sellToken, forKey: .sellToken)
+            try container.encode(sellAmount, forKey: .sellAmount)
+            try container.encode(buyToken, forKey: .buyToken)
+            try container.encode(buyAmount, forKey: .buyAmount)
+            try container.encode(interval, forKey: .interval)
+            try container.encode(sender.ethAddress, forKey: .sender)
         }
     }
 
@@ -1407,7 +2024,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.sender, forKey: .sender)
+                    try container.encode(intent.sender.ethAddress, forKey: .sender)
 
                 case .aave(let intent):
                     try container.encode("AAVE", forKey: .marketType)
@@ -1415,7 +2032,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.sender, forKey: .sender)
+                    try container.encode(intent.sender.ethAddress, forKey: .sender)
 
                 case .morpho(let intent):
                     try container.encode("MORPHO", forKey: .marketType)
@@ -1423,7 +2040,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.sender, forKey: .sender)
+                    try container.encode(intent.sender.ethAddress, forKey: .sender)
             }
         }
 
@@ -1526,7 +2143,7 @@ extension Charter {
             }
         }
 
-        public var sender: EthAddress {
+        public var sender: ChainAddress {
             switch self {
                 case .aave(let intent):
                     return intent.sender
@@ -1590,7 +2207,6 @@ extension Charter {
     }
 
     public struct SwapIntent: Equatable, Codable, Hashable, Sendable {
-        public let chainId: Number
         public let sellToken: EthAddress
         public let sellAmount: Number
         public let buyToken: EthAddress
@@ -1599,9 +2215,14 @@ extension Charter {
         public let swapQuoteBuyAmount: Number
         public let feeToken: EthAddress
         public let feeAmount: Number
-        public let sender: EthAddress
+        public let sender: ChainAddress
         public let isExactOut: Bool
         public let isBuy: Bool
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case chainId = "chain_id"
@@ -1619,6 +2240,33 @@ extension Charter {
         }
 
         public init(
+            sellToken: EthAddress,
+            sellAmount: Number,
+            buyToken: EthAddress,
+            buyAmount: Number,
+            swapQuoteSellAmount: Number,
+            swapQuoteBuyAmount: Number,
+            feeToken: EthAddress,
+            feeAmount: Number,
+            sender: ChainAddress,
+            isExactOut: Bool,
+            isBuy: Bool
+        ) {
+            self.sellToken = sellToken
+            self.sellAmount = sellAmount
+            self.buyToken = buyToken
+            self.buyAmount = buyAmount
+            self.swapQuoteSellAmount = swapQuoteSellAmount
+            self.swapQuoteBuyAmount = swapQuoteBuyAmount
+            self.feeToken = feeToken
+            self.feeAmount = feeAmount
+            self.sender = sender
+            self.isExactOut = isExactOut
+            self.isBuy = isBuy
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
             chainId: Number,
             sellToken: EthAddress,
             sellAmount: Number,
@@ -1632,7 +2280,7 @@ extension Charter {
             isExactOut: Bool,
             isBuy: Bool
         ) {
-            self.chainId = chainId
+            let network = Network.fromChainId(chainId)
             self.sellToken = sellToken
             self.sellAmount = sellAmount
             self.buyToken = buyToken
@@ -1641,9 +2289,43 @@ extension Charter {
             self.swapQuoteBuyAmount = swapQuoteBuyAmount
             self.feeToken = feeToken
             self.feeAmount = feeAmount
-            self.sender = sender
+            self.sender = ChainAddress(sender, chain: network)
             self.isExactOut = isExactOut
             self.isBuy = isBuy
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.sellToken = try container.decode(EthAddress.self, forKey: .sellToken)
+            self.sellAmount = try container.decode(Number.self, forKey: .sellAmount)
+            self.buyToken = try container.decode(EthAddress.self, forKey: .buyToken)
+            self.buyAmount = try container.decode(Number.self, forKey: .buyAmount)
+            self.swapQuoteSellAmount = try container.decode(Number.self, forKey: .swapQuoteSellAmount)
+            self.swapQuoteBuyAmount = try container.decode(Number.self, forKey: .swapQuoteBuyAmount)
+            self.feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
+            self.feeAmount = try container.decode(Number.self, forKey: .feeAmount)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+            self.isExactOut = try container.decode(Bool.self, forKey: .isExactOut)
+            self.isBuy = try container.decode(Bool.self, forKey: .isBuy)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(chainId, forKey: .chainId)
+            try container.encode(sellToken, forKey: .sellToken)
+            try container.encode(sellAmount, forKey: .sellAmount)
+            try container.encode(buyToken, forKey: .buyToken)
+            try container.encode(buyAmount, forKey: .buyAmount)
+            try container.encode(swapQuoteSellAmount, forKey: .swapQuoteSellAmount)
+            try container.encode(swapQuoteBuyAmount, forKey: .swapQuoteBuyAmount)
+            try container.encode(feeToken, forKey: .feeToken)
+            try container.encode(feeAmount, forKey: .feeAmount)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(isExactOut, forKey: .isExactOut)
+            try container.encode(isBuy, forKey: .isBuy)
         }
     }
 
@@ -1690,8 +2372,12 @@ extension Charter {
         public let backingAmountToExit: Number
         public let minSwapBackingAmount: Number
         public let poolFee: UInt
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -1713,8 +2399,7 @@ extension Charter {
             backingAmountToExit: Number,
             minSwapBackingAmount: Number,
             poolFee: UInt,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -1724,7 +2409,57 @@ extension Charter {
             self.minSwapBackingAmount = minSwapBackingAmount
             self.poolFee = poolFee
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            exposureAmount: Number,
+            backingAmountToExit: Number,
+            minSwapBackingAmount: Number,
+            poolFee: UInt,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.exposureAmount = exposureAmount
+            self.backingAmountToExit = backingAmountToExit
+            self.minSwapBackingAmount = minSwapBackingAmount
+            self.poolFee = poolFee
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+            self.backingAmountToExit = try container.decode(Number.self, forKey: .backingAmountToExit)
+            self.minSwapBackingAmount = try container.decode(Number.self, forKey: .minSwapBackingAmount)
+            self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(exposureAmount, forKey: .exposureAmount)
+            try container.encode(backingAmountToExit, forKey: .backingAmountToExit)
+            try container.encode(minSwapBackingAmount, forKey: .minSwapBackingAmount)
+            try container.encode(poolFee, forKey: .poolFee)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1736,8 +2471,12 @@ extension Charter {
         public let backingAmountToExit: Number
         public let maxSwapBackingAmount: Number
         public let poolFee: UInt
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -1759,8 +2498,7 @@ extension Charter {
             backingAmountToExit: Number,
             maxSwapBackingAmount: Number,
             poolFee: UInt,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -1770,7 +2508,57 @@ extension Charter {
             self.maxSwapBackingAmount = maxSwapBackingAmount
             self.poolFee = poolFee
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            exposureAmount: Number,
+            backingAmountToExit: Number,
+            maxSwapBackingAmount: Number,
+            poolFee: UInt,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.exposureAmount = exposureAmount
+            self.backingAmountToExit = backingAmountToExit
+            self.maxSwapBackingAmount = maxSwapBackingAmount
+            self.poolFee = poolFee
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.exposureAmount = try container.decode(Number.self, forKey: .exposureAmount)
+            self.backingAmountToExit = try container.decode(Number.self, forKey: .backingAmountToExit)
+            self.maxSwapBackingAmount = try container.decode(Number.self, forKey: .maxSwapBackingAmount)
+            self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(exposureAmount, forKey: .exposureAmount)
+            try container.encode(backingAmountToExit, forKey: .backingAmountToExit)
+            try container.encode(maxSwapBackingAmount, forKey: .maxSwapBackingAmount)
+            try container.encode(poolFee, forKey: .poolFee)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1780,8 +2568,12 @@ extension Charter {
         public let marketId: Hex
         public let amount: Number
         public let isShort: Bool
-        public let sender: EthAddress
-        public let chainId: Number
+        public let sender: ChainAddress
+
+        /// Derived from `sender.chain.chainId` for backward compatibility.
+        public var chainId: Number {
+            sender.chain.chainId
+        }
 
         public enum CodingKeys: String, CodingKey {
             case exposureAssetSymbol = "exposure_asset_symbol"
@@ -1799,8 +2591,7 @@ extension Charter {
             marketId: Hex,
             amount: Number,
             isShort: Bool,
-            sender: EthAddress,
-            chainId: Number
+            sender: ChainAddress
         ) {
             self.exposureAssetSymbol = exposureAssetSymbol
             self.backingAssetSymbol = backingAssetSymbol
@@ -1808,7 +2599,49 @@ extension Charter {
             self.amount = amount
             self.isShort = isShort
             self.sender = sender
-            self.chainId = chainId
+        }
+
+        /// Backward-compatible convenience init that accepts flat chainId + EthAddress fields.
+        public init(
+            exposureAssetSymbol: String,
+            backingAssetSymbol: String,
+            marketId: Hex,
+            amount: Number,
+            isShort: Bool,
+            sender: EthAddress,
+            chainId: Number
+        ) {
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = exposureAssetSymbol
+            self.backingAssetSymbol = backingAssetSymbol
+            self.marketId = marketId
+            self.amount = amount
+            self.isShort = isShort
+            self.sender = ChainAddress(sender, chain: network)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let chainId = try container.decode(Number.self, forKey: .chainId)
+            let network = Network.fromChainId(chainId)
+            self.exposureAssetSymbol = try container.decode(String.self, forKey: .exposureAssetSymbol)
+            self.backingAssetSymbol = try container.decode(String.self, forKey: .backingAssetSymbol)
+            self.marketId = try container.decode(Hex.self, forKey: .marketId)
+            self.amount = try container.decode(Number.self, forKey: .amount)
+            self.isShort = try container.decode(Bool.self, forKey: .isShort)
+            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+            self.sender = ChainAddress(senderAddress, chain: network)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(exposureAssetSymbol, forKey: .exposureAssetSymbol)
+            try container.encode(backingAssetSymbol, forKey: .backingAssetSymbol)
+            try container.encode(marketId, forKey: .marketId)
+            try container.encode(amount, forKey: .amount)
+            try container.encode(isShort, forKey: .isShort)
+            try container.encode(sender.ethAddress, forKey: .sender)
+            try container.encode(chainId, forKey: .chainId)
         }
     }
 
@@ -1838,7 +2671,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.withdrawer, forKey: .withdrawer)
+                    try container.encode(intent.withdrawer.ethAddress, forKey: .withdrawer)
 
                 case .aave(let intent):
                     try container.encode("AAVE", forKey: .marketType)
@@ -1846,7 +2679,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.withdrawer, forKey: .withdrawer)
+                    try container.encode(intent.withdrawer.ethAddress, forKey: .withdrawer)
 
                 case .morpho(let intent):
                     try container.encode("MORPHO", forKey: .marketType)
@@ -1854,7 +2687,7 @@ extension Charter {
                     try container.encode(intent.amount, forKey: .amount)
                     try container.encode(intent.assetSymbol, forKey: .assetSymbol)
                     try container.encode(intent.chainId, forKey: .chainId)
-                    try container.encode(intent.withdrawer, forKey: .withdrawer)
+                    try container.encode(intent.withdrawer.ethAddress, forKey: .withdrawer)
             }
         }
 
@@ -1957,7 +2790,7 @@ extension Charter {
             }
         }
 
-        public var withdrawer: EthAddress {
+        public var withdrawer: ChainAddress {
             switch self {
                 case .aave(let intent):
                     return intent.withdrawer
