@@ -4,7 +4,7 @@
 
 Adding Solana as a second chain family alongside EVM. Charter (the transaction planner) needs to produce Solana transaction instructions in addition to EVM Quark operations.
 
-**Design principle:** Unified refactor. The Chart data model uses a single `[OperationAction]` array for both EVM and Solana, with a discriminated `Operation` enum separating chain-specific execution details from chain-agnostic action metadata.
+**Design principle:** Unified refactor. The Chart data model uses a single `[OperationAction]` array for both EVM and Solana, with a discriminated `Operation` enum separating chain-specific execution details from chain-agnostic action metadata. The V3 `steps` DAG indexes into this unified array to drive execution ordering.
 
 ---
 
@@ -31,7 +31,16 @@ Adding Solana as a second chain family alongside EVM. Charter (the transaction p
                         │                          base64 data)                │
                         │                  │                                   │
                         │                  ▼                                   │
-                        │  Chart { operationActions[], signingData }           │
+                        │  Charter merges operations, generates steps DAG      │
+                        │                  │                                   │
+                        │                  ▼                                   │
+                        │  Chart {                                             │
+                        │    operationActions[],  ← canonical                  │
+                        │    steps[],             ← execution DAG              │
+                        │    signingData,         ← compound envelope          │
+                        │    quarkOperationActions[], ← backward compat        │
+                        │    eip712Data              ← backward compat         │
+                        │  }                                                   │
                         └─────────────────────────────────────────────────────┘
                                            │
                            ┌───────────────┴───────────────┐
@@ -101,17 +110,29 @@ public enum ChainAddress {
 
 ### Chart Output (what Charter produces)
 
-> **⚠️ DATA MODEL CHANGE (v2)** — The previous spec used a dual-array approach with separate `QuarkOperationAction` and `SolanaOperationAction` types. After reviewing the full end-to-end lifecycle (`plans.details` in Prime API, backend decomposition at `quark_intent.ex:212-277`, and Charter output at `LegendRouteType+getQuarkOperationActions.swift:1934`), we determined the old model conflated operation mechanics with action semantics. The new model cleanly separates them:
+> **⚠️ DATA MODEL CHANGE (v3)** — The previous spec used a dual-array approach with separate `QuarkOperationAction` and `SolanaOperationAction` types. After reviewing the full end-to-end lifecycle (`plans.details` in Prime API, backend decomposition at `quark_intent.ex:212-277`, and Charter output at `LegendRouteType+getQuarkOperationActions.swift:1934`), and after Activities V3 landed with the `steps` DAG, we determined the correct model is:
 >
 > - **Operation** = _how_ to execute (chain-specific: EVM script calldata vs Solana instructions)
 > - **Action** = _what_ the user wants (chain-agnostic: transfer, swap, bridge)
+> - **Steps** = _execution order_ (DAG with explicit dependencies, expected actions, and observation tracking)
+>
+> `operationActions` is the **canonical** source of operation data. Steps index into it. The old `quarkOperationActions` + `eip712Data` fields are **computed projections** kept for backward compatibility with existing consumers.
 
 ```
 Chart
 ├── version: String
-├── operationActions: [OperationAction]     ← unified array (EVM + Solana)
-└── signingData: SigningData                ← compound signing envelope
+├── operationActions: [OperationAction]     ← canonical unified array (EVM + Solana)
+├── steps: [Step]                           ← execution DAG (indexes into operationActions)
+├── signingData: SigningData                ← compound signing envelope
+│
+│  Backward compatibility (derived from operationActions):
+├── quarkOperationActions: [QuarkOperationAction]   ← EVM-only projection
+└── eip712Data: EIP712Data                          ← EVM signing projection
 ```
+
+**Backward compatibility strategy:** Charter produces the canonical `operationActions` + `steps` + `signingData` first. Then it derives `quarkOperationActions` (filtering to EVM-only operations, mapping to the old field layout) and `eip712Data` (extracting `signingData.evm`). This ensures existing consumers that read the old fields continue to work while new consumers read the canonical fields.
+
+**Why not just remove the old fields:** Deep hard dependencies across the stack — `quark_intent_signature.ex` uses `eip712_data` for signature verification, `folio_patch.ex` iterates `quark_operation_actions`, `ReviewTransactionView.swift` reads `eip712Data.digest` directly, and `quark_intent.ex` validates against `quark_operation_actions`. These will be migrated to read from the new fields, at which point the old fields can be deprecated.
 
 ### OperationAction (unified — replaces QuarkOperationAction + SolanaOperationAction)
 
@@ -180,9 +201,54 @@ Action
 
 **Changes from old `Chart.Action`:** `quarkAccount: EthAddress` → `account: ChainAddress`, `nonceSecret` and `totalPlays` moved to `EVMOperation` (their correct home — they're operation execution mechanics, not action semantics).
 
-**Changes from old `SolanaAction`:** `account: SolanaAddress` → `account: ChainAddress`. Otherwise identical.
+### Steps (execution DAG — from Activities V3)
 
-**Backwards compatibility:** The new `operationActions` / `signingData` fields are additive — they're new fields on `Chart`, added alongside the existing `quarkOperationActions` / `solanaOperationActions` / `eip712Data`. The old fields stay in place and the backend continues reading from them. Migration to the new unified fields happens separately.
+Steps define the execution order and dependencies between operations. They were introduced by Activities V3 and are the backend's source of truth for when to fire each operation.
+
+```
+Step (enum)
+├── case evmOperation(EVMOperationStep)     // renamed from quarkOperation
+├── case solanaOperation(SolanaOperationStep) // NEW
+└── case exogenous(ExogenousStep)            // unchanged
+```
+
+**EVMOperationStep** (renamed from `QuarkOperationStep`):
+```
+EVMOperationStep
+├── chainId: Number
+├── operationIndex: Int              // index into operationActions[]
+├── expectedActions: [ExpectedAction]
+└── dependsOn: [Int]                 // step indices this depends on
+```
+
+**SolanaOperationStep** (new):
+```
+SolanaOperationStep
+├── chainId: Number                  // 501424
+├── operationIndex: Int              // index into operationActions[]
+├── expectedActions: [ExpectedAction]
+└── dependsOn: [Int]                 // step indices this depends on
+```
+
+**ExogenousStep** (unchanged):
+```
+ExogenousStep
+├── chainId: Number
+├── executionType: ExogenousExecutionType  // "bridge_receive"
+├── expectedActions: [ExpectedAction]
+└── dependsOn: [Int]
+```
+
+**Critical invariant: `operationIndex` always indexes into the canonical `operationActions` array.** For backward compat, the old `quarkOperationActions` is an EVM-only projection with the same ordering as the EVM entries in `operationActions`, but steps never reference it.
+
+**ExpectedAction** — describes what a step should accomplish:
+```
+ExpectedAction
+├── actionType: String
+└── actionContext: ActionContext      // uses encodeBody/decodeBody for type-directed encoding
+```
+
+These are created from the action contexts during `generateSteps()` and stored as `expected_actions` rows in the backend database.
 
 ### Shared Types (work for both chains)
 
@@ -194,6 +260,7 @@ Action
 | `LegendNode` | Tradewinds routing graph nodes | `tokenBalance` uses `ChainAddress` for address + wallet |
 | `Network` | Chain identifier | Added `.solana`, `.isSolana`, `.isEVM` |
 | `ExecutionType` | `IMMEDIATE`, `CONTINGENT`, etc. | Unchanged — shared by both |
+| `ExpectedAction` | Describes what a step should accomplish | Uses `encodeBody`/`decodeBody` for type-directed ActionContext encoding |
 
 ### SigningData (compound envelope — replaces EIP712Data)
 
@@ -239,25 +306,39 @@ Since Atlas doesn't cover Solana yet, we use `SolanaAssetRegistry` — a hardcod
 | `SolanaAddress` | `Prelude/Types/SolanaAddress.swift` | Base58 validated, 32-byte, Codable |
 | `ChainAddress` | `Prelude/Types/ChainAddress.swift` | Flat enum with one case per supported chain — non-failable init, `.chain` property, `.ethAddress`/`.solanaAddress` accessors |
 | `Network+Solana` | `Prelude/Types/Network+Solana.swift` | `.solana`, `isSolana`, `SolanaAssetRegistry` |
-| `Chart` dual arrays | `Charter/Chart.swift` | `solanaOperationActions` field, `eip712Data` optional (to be replaced by unified model) |
-| `SolanaOperationAction` | `Charter/SolanaOperationAction.swift` | Full struct: instructions + action + account metas (to be replaced by unified `OperationAction`) |
-| `ActionContext` updates | `Charter/ActionContext.swift` | Transfer + Bridge use `ChainAddress` for `token` and `recipient` |
 | `QuarkIntent` updates | `Charter/QuarkIntent.swift` | `TransferIntent` sender/recipient → `ChainAddress` |
 | `Folio` updates | `Prelude/Types/Folio.swift` + extensions | Token balance wallet → `ChainAddress`, path parsing |
 | `LegendNode` updates | `Charter/LegendNode.swift` | `tokenBalance` → `ChainAddress`, decimal fallback |
-| Elixir chart module | `mercator.ex/charter/chart.ex` | Full Solana de/serialization with doctests |
+
+### Done (merged on main — Activities V3)
+
+| Component | Files | What |
+|-----------|-------|------|
+| `steps` field on Chart | `Charter/Chart.swift` | Execution DAG with `QuarkOperationStep`, `ExogenousStep`, `ExpectedAction` |
+| `generateSteps()` | `Charter/Charter.swift` | Builds step DAG from merged operations — bridges get exogenous steps, CONTINGENT ops get `dependsOn` |
+| `ActionContext` encoding refactor | `Charter/ActionContext.swift` | Split into `encode(to:)` + `encodeBody(to:)` / `decodeBody(from:, actionType:)` |
+| Steps on Elixir side | `mercator.ex/charter/chart.ex` | `Step`, `ExpectedAction` modules with full serialize/deserialize, `ensure_steps/1` fallback |
+| `ActionContextCodable` macro | `mercator.ex/charter/action_context_codable.ex` | Typed field system (`:string`, `:integer`, `:address`, `:hex`, `:decimal`, `:boolean`, `{:optional, type}`, `{:list, type}`) |
+| Typed action contexts | `mercator.ex/charter/action_context.ex` | 35 typed ActionContext struct modules |
+| Backend step materialization | `legend.ex/quark_operations.ex` | `materialize_steps/6` creates QE/EE records with `depends_on_*` arrays |
+| Readiness system | `legend.ex/quark_executions/readiness.ex` | Explicit dependency checking via `depends_on_quark_execution_ids` + `depends_on_exogenous_execution_ids` |
+| Expected/Observed actions tables | `legend.ex` migrations | `expected_actions` and `observed_actions` tables for step completion tracking |
+| Backend Solana wallets | `legend.ex` migration + schemas | `solana_wallets` table, `signing_wallets.curve` enum (`secp256k1` / `ed25519`) |
+| Solana config | `legend.ex/legend_prelude/solana.ex` | Chain ID, token constants |
 
 ### Pending (unified data model refactor)
 
 | Component | What |
 |-----------|------|
-| Unified `OperationAction` type | Replaces `QuarkOperationAction` + `SolanaOperationAction` |
-| `Operation` enum (evm/solana) | Discriminated union with `type` key in JSON |
-| Chain-agnostic `Action` | `account: ChainAddress`, no `nonceSecret`/`totalPlays` |
-| `nonceSecret`/`totalPlays` → `EVMOperation` | Move from Action to Operation |
+| Unified `OperationAction` type | Replaces `QuarkOperationAction` + `SolanaOperationAction` with discriminated `Operation` enum |
+| Chain-agnostic `Action` | `account: ChainAddress`, no `nonceSecret`/`totalPlays` (moved to `EVMOperation`) |
 | `SigningData` compound structure | Replaces `EIP712Data` with `{ evm, solana }` |
-| `Chart.swift` — unified model | Single `operationActions` array + `signingData` |
-| `chart.ex` (Elixir) — unified model | Update de/serialization for new structure |
+| `Chart.swift` — canonical model | Add `operationActions` + `steps` + `signingData` as canonical; derive old fields |
+| `Step` enum extension | Rename `.quarkOperation` → `.evmOperation`, add `.solanaOperation` case |
+| `generateSteps()` update | Handle Solana operation steps, skip Multicall merge for Solana |
+| `chart.ex` (Elixir) — canonical model | Read from `operation_actions` when present, fall back to `quark_operation_actions` |
+| `ActionContextCodable` — `:solana_address` type | New field type for base58 encoding/decoding (distinct from EVM `:address`) |
+| Backend operation creation — fallback reads | `get_quark_operation_params()` and `folio_patch.ex` to read from `operation_actions` || `quark_operation_actions` |
 
 ### Not Done (future work)
 
@@ -273,18 +354,24 @@ The data model is in place. What's missing is the **operation construction pipel
 
 ```
 Current pipeline (EVM-only):
-  Flows ──► getQuarkOperationDetails() ──► QuarkOperationBuilder ──► QuarkOperationAction[]
+  Flows ──► getQuarkOperationDetails() ──► QuarkOperationBuilder ──► [OperationAction(.evm)]
                                               │
                                     (builds EVM calldata, ABI encoding,
                                      script addresses, nonces)
 
 Needed pipeline (dual-chain):
-  Flows ──► is Solana? ──yes──► getSolanaOperationDetails() ──► OperationAction(.solana)[]
+  Flows ──► is Solana? ──yes──► getSolanaOperationDetails() ──► [OperationAction(.solana)]
                │
                no
                │
                ▼
-            getQuarkOperationDetails() ──► OperationAction(.evm)[]  (unchanged)
+            getQuarkOperationDetails() ──► [OperationAction(.evm)]  (unchanged)
+
+  Then:
+    All OperationActions ──► mergeSameChainOperations (EVM only) + concatenate (Solana)
+                         ──► generateSteps() (produces DAG for all chains)
+                         ──► build SigningData + derive backward compat fields
+                         ──► Chart
 ```
 
 | Task | Where | What needs to happen |
@@ -292,8 +379,10 @@ Needed pipeline (dual-chain):
 | **Fork at flow level** | `Charter.swift:392-434` | Detect Solana flows (`wallet?.solanaAddress != nil`) and route to Solana builder instead of calling `getQuarkOperationActions` |
 | **`SolanaOperationBuilder`** | New file | Build `SolanaInstruction[]` for each operation type. Start with transfer (SystemProgram + SPL Token), then swap (Jupiter CPI), then bridge (Across SVM spoke pool) |
 | **Unified OperationAction output** | `Charter.swift` | Both builders produce `OperationAction` with chain-agnostic `Action`. EVM builder wraps in `.evm(EVMOperation)`, Solana builder wraps in `.solana(SolanaOperation)` |
-| **Skip Multicall merge for Solana** | `Charter.swift:437` | `mergeSameChainOperations` is EVM-only. Solana ops just concatenate instructions into one tx — no merging script needed |
+| **Skip Multicall merge for Solana** | `Charter.swift:447` | `mergeSameChainOperations` is EVM-only. Solana ops concatenate instructions into one tx natively — no merge script needed |
+| **Update `generateSteps()`** | `Charter.swift:617` | Must handle both EVM and Solana operations: emit `.evmOperation` steps for EVM, `.solanaOperation` steps for Solana, with correct `operationIndex` into the unified `operationActions` array |
 | **Build `signingData`** | `Charter.swift` | Construct compound `SigningData` — EVM sub-field when EVM ops present, Solana sub-field when Solana ops present |
+| **Derive backward compat fields** | `Charter.swift` | After building canonical `operationActions`, derive `quarkOperationActions` (EVM-only projection) and `eip712Data` (from `signingData.evm`) |
 | **Nonce handling** | `Charter.swift:396` | Solana flows don't need `nonceSecret` from Folio. The nonce guard must be chain-conditional. `nonceSecret`/`totalPlays` only populated on `EVMOperation` |
 
 ### Phase 2: Backend (Legend) — Store + Execute Solana Operations
@@ -301,21 +390,24 @@ Needed pipeline (dual-chain):
 | Task | What |
 |------|------|
 | `chain_id` range check | Solana chain_id = `501424` (fits in standard integer — no bigint migration needed). |
-| `solana_wallets` table | Store user Solana wallets (address, chain_id, account FK, signing_wallet FK) |
+| `solana_wallets` table | ✅ Already done. Store user Solana wallets (address, chain_id, account FK, signing_wallet FK) |
 | `solana_operations` table | Store Solana ops (instructions as JSONB, signature, recent_blockhash, status, action_context) |
-| Chart decomposition | Iterate `operation_actions[]`, check `operation.type` → route to `quark_operations` (EVM) or `solana_operations` (Solana) |
-| Ed25519 signing support | `signing_wallets.wallet_curve` field. Backend signature verification for ed25519 (currently hardcoded to secp256k1) |
+| Extend `materialize_steps/6` | Add `.solanaOperation` case: map `operationIndex` to Solana operation record, create `SolanaExecution` with `depends_on_*` arrays, create `expected_actions` rows from step's `expectedActions` |
+| Read from canonical fields | `get_quark_operation_params()`, `folio_patch.ex`, `folio_patch_manager.ex`: read `operation_actions` when present, fall back to `quark_operation_actions` |
+| `ActionContextCodable` — `:solana_address` | New field type with `Signet.Base58.encode/1` / `Signet.Base58.decode!/1` for Solana address serialization |
+| Ed25519 signing support | ✅ `signing_wallets.curve` already done. Backend signature verification for ed25519 (currently hardcoded to secp256k1) |
 | Solana tx builder | Assemble instructions + recent_blockhash + compute budget → serialized transaction |
 | `SolanaTrxCannon` | Submit Solana transactions via `sendTransaction` RPC |
-| `SolanaReceiptScanner` | Poll `getSignatureStatuses`. Handle processed → confirmed → finalized |
+| `SolanaReceiptScanner` | Poll `getSignatureStatuses`. Handle processed → confirmed → finalized. Insert `observed_actions` rows to satisfy step completion. |
 | Blockhash expiry handling | Solana txs expire ~90s. Need rebuild + re-sign flow |
-| ExogenousExecution for Solana | Gate Solana operations on cross-chain events (e.g., bridge fill) |
+| ExogenousExecution for Solana | Gate Solana operations on cross-chain events (e.g., bridge fill) — already supported by `ExogenousStep` in the DAG |
 
 ### Phase 3: iOS — Sign + Display Solana Operations
 
 | Task | What |
 |------|------|
 | Ed25519 signing | Sign Solana transaction message bytes (vs EIP-712 digest for EVM) |
+| Read from `signingData` | `ReviewTransactionView` currently reads `eip712Data.digest` — update to read from `signingData.evm` or `signingData.solana` depending on chart type |
 | Two-round-trip signing for mixed charts | EVM sign → submit → backend builds Solana tx → return to iOS → Solana sign → submit |
 | Activity display | `ActivityMetadata.quarkWalletAddress` → `ChainAddress` enum. Show Solana signatures (base58) instead of tx hashes |
 | Solana portfolio | Fetch balances via `getBalance` + `getTokenAccountsByOwner` RPC. Build Folio entries |
@@ -348,7 +440,7 @@ What Charter would produce for "send 1 USDC on Solana":
 
 ```json
 {
-  "version": "1.5.8",
+  "version": "1.7.0",
   "operation_actions": [
     {
       "operation": {
@@ -381,11 +473,34 @@ What Charter would produce for "send 1 USDC on Solana":
       }
     }
   ],
+  "steps": [
+    {
+      "type": "solana_operation",
+      "chain_id": "501424",
+      "operation_index": 0,
+      "expected_actions": [
+        {
+          "action_type": "TRANSFER",
+          "action_context": {
+            "amount": "1000000",
+            "asset_symbol": "USDC",
+            "chain_id": "501424",
+            "price": "100000000",
+            "recipient": "<recipient-base58>",
+            "token": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+          }
+        }
+      ],
+      "depends_on": []
+    }
+  ],
   "signing_data": {
     "solana": {
       "serialized_message": "AQAB..."
     }
-  }
+  },
+  "quark_operation_actions": [],
+  "eip712_data": null
 }
 ```
 
@@ -393,14 +508,14 @@ What Charter would produce for "send 1 USDC on Solana":
 
 ```json
 {
-  "version": "1.5.8",
+  "version": "1.7.0",
   "operation_actions": [
     {
       "operation": {
         "type": "solana",
         "instructions": [
-          { "program_id": "<spl-approve>", "accounts": [...], "data": "..." },
-          { "program_id": "<across-svm-spoke>", "accounts": [...], "data": "..." }
+          { "program_id": "<spl-approve>", "accounts": ["..."], "data": "..." },
+          { "program_id": "<across-svm-spoke>", "accounts": ["..."], "data": "..." }
         ]
       },
       "action": {
@@ -443,6 +558,35 @@ What Charter would produce for "send 1 USDC on Solana":
       }
     }
   ],
+  "steps": [
+    {
+      "type": "solana_operation",
+      "chain_id": "501424",
+      "operation_index": 0,
+      "expected_actions": [
+        { "action_type": "BRIDGE", "action_context": { "...": "..." } }
+      ],
+      "depends_on": []
+    },
+    {
+      "type": "exogenous",
+      "chain_id": "8453",
+      "execution_type": "bridge_receive",
+      "expected_actions": [
+        { "action_type": "BRIDGE_MINT", "action_context": { "...": "..." } }
+      ],
+      "depends_on": [0]
+    },
+    {
+      "type": "evm_operation",
+      "chain_id": "8453",
+      "operation_index": 1,
+      "expected_actions": [
+        { "action_type": "SUPPLY", "action_context": { "...": "..." } }
+      ],
+      "depends_on": [1]
+    }
+  ],
   "signing_data": {
     "evm": {
       "digest": "0x...",
@@ -452,8 +596,38 @@ What Charter would produce for "send 1 USDC on Solana":
     "solana": {
       "serialized_message": "AQAB..."
     }
+  },
+  "quark_operation_actions": [
+    {
+      "operation": {
+        "script_address": "0xAaveSupplyScript...",
+        "script_calldata": "0x...",
+        "script_sources": [],
+        "nonce": "0x...",
+        "expiry": "9999999999",
+        "is_replayable": false
+      },
+      "action": {
+        "chain_id": "8453",
+        "quark_account": "0xQuarkWalletOnBase...",
+        "action_type": "SUPPLY",
+        "action_context": { "...": "..." },
+        "nonce_secret": "0x...",
+        "total_plays": "1",
+        "execution_type": "CONTINGENT"
+      }
+    }
+  ],
+  "eip712_data": {
+    "digest": "0x...",
+    "domain_separator": "0x...",
+    "hash_struct": "0x..."
   }
 }
 ```
 
-Backend creates: 1 `SolanaOperation` (IMMEDIATE) + 1 `QuarkOperation` (CONTINGENT) + 1 `ExogenousExecution` gating the QuarkOperation on bridge fill.
+Backend `materialize_steps` processes the `steps` array:
+- Step 0 (`solana_operation`): creates `SolanaExecution`, `expected_actions` for BRIDGE
+- Step 1 (`exogenous`): creates `ExogenousExecution` for bridge_receive, `depends_on: [step 0]`
+- Step 2 (`evm_operation`): creates `QuarkExecution` from `QuarkOperation`, `depends_on: [step 1]` (waits for bridge)
+- `Readiness` module checks `depends_on_*_ids` — Solana/EVM/exogenous deps are all treated uniformly

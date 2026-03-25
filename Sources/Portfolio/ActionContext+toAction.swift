@@ -65,8 +65,8 @@ extension Charter.ActionContext {
     }
 }
 
-/// Helper functions to convert from ``Charter.Chart.Action`` to ``Action``s.
-extension Charter.Chart.Action {
+/// Helper functions to convert from ``Charter.Chart.EVMAction`` to ``Action``s.
+extension Charter.Chart.EVMAction {
     public func toAction(portfolios: [Portfolio]) -> Action? {
         return actionContext.toAction(portfolios: portfolios)
     }

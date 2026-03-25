@@ -22,8 +22,8 @@ struct StepGenerationTests {
         actionType: String,
         actionContext: Charter.ActionContext,
         executionType: Charter.Chart.Action.ExecutionType
-    ) -> Charter.Chart.Action {
-        Charter.Chart.Action(
+    ) -> Charter.Chart.EVMAction {
+        Charter.Chart.EVMAction(
             chainId: chainId,
             quarkAccount: EthAddress("0x1234567890123456789012345678901234567890"),
             actionType: actionType,
@@ -364,7 +364,7 @@ struct StepGenerationTests {
     @Test("Step encoding/decoding round-trip for quark_operation")
     func quarkOperationStepCodable() throws {
         let step = Charter.Chart.Step.quarkOperation(
-            Charter.Chart.Step.QuarkOperationStep(
+            Charter.Chart.Step.OperationStep(
                 chainId: Number("8453"),
                 operationIndex: 0,
                 expectedActions: [
@@ -482,7 +482,7 @@ struct StepGenerationTests {
     @Test("Step with ExpectedAction round-trips correctly after encoding fix")
     func stepWithExpectedActionRoundTrip() throws {
         let step = Charter.Chart.Step.quarkOperation(
-            Charter.Chart.Step.QuarkOperationStep(
+            Charter.Chart.Step.OperationStep(
                 chainId: Number("8453"),
                 operationIndex: 0,
                 expectedActions: [

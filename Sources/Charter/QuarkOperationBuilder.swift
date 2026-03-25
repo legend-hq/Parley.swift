@@ -47,7 +47,7 @@ extension Charter {
                 return .failure(.error(error.localizedDescription))
             }
 
-            let operation = Charter.Chart.QuarkOperation(
+            let operation = Charter.Chart.LegacyQuarkOperation(
                 nonce: nonceSecret,
                 isReplayable: false,
                 scriptAddress: operationDetails.scriptAddress,
@@ -56,7 +56,7 @@ extension Charter {
                 expiry: blockTimestamp + operationDetails.expiryBuffer,
             )
 
-            let action = Charter.Chart.Action(
+            let action = Charter.Chart.EVMAction(
                 chainId: network.chainId,
                 quarkAccount: sender,
                 actionType: operationDetails.actionType,

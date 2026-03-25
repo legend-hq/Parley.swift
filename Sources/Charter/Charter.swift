@@ -6,7 +6,7 @@ import SwiftNumber
 import Tradewinds
 
 public enum Charter {
-    public static let version = "1.6.1"
+    public static let version = "1.7.0"
 
     // MARK: - Action Type Constants
     static let ACTION_TYPE_AAVE_SUPPLY = "AAVE_SUPPLY"
@@ -478,11 +478,11 @@ public enum Charter {
     private static func mergeSameChainOperations(
         operationActions: [QuarkOperationAction]
     ) -> Result<
-        (operations: [Chart.QuarkOperation], actions: [Chart.Action], steps: [Chart.Step]),
+        (operations: [Chart.LegacyQuarkOperation], actions: [Chart.EVMAction], steps: [Chart.Step]),
         CharterError
     > {
-        var groupedOperations: [Number: [Chart.QuarkOperation]] = [:]
-        var groupedActions: [Number: [Chart.Action]] = [:]
+        var groupedOperations: [Number: [Chart.LegacyQuarkOperation]] = [:]
+        var groupedActions: [Number: [Chart.EVMAction]] = [:]
         var chainOrder: [Number] = []
         var allBridgeDestinations: Set<Number> = []
 
@@ -499,8 +499,8 @@ public enum Charter {
             }
         }
 
-        var mergedOperations: [Chart.QuarkOperation] = []
-        var mergedActions: [Chart.Action] = []
+        var mergedOperations: [Chart.LegacyQuarkOperation] = []
+        var mergedActions: [Chart.EVMAction] = []
 
         for chainId in chainOrder {
             let operations = groupedOperations[chainId]!
@@ -516,7 +516,7 @@ public enum Charter {
             if operations.count == 1 {
                 let operation = operations.first!
                 let action = actions.first!
-                let updatedAction = Chart.Action(
+                let updatedAction = Chart.EVMAction(
                     chainId: action.chainId,
                     quarkAccount: action.quarkAccount,
                     actionType: action.actionType,
@@ -541,7 +541,7 @@ public enum Charter {
                     return .failure(.error(error.localizedDescription))
                 }
 
-                let quarkOperation = Chart.QuarkOperation(
+                let quarkOperation = Chart.LegacyQuarkOperation(
                     nonce: operations.last!.nonce,
                     isReplayable: false,
                     scriptAddress: Create2.getScriptAddress(Multicall.creationCode),
@@ -550,7 +550,7 @@ public enum Charter {
                     expiry: operations.last!.expiry
                 )
 
-                let action = Chart.Action(
+                let action = Chart.EVMAction(
                     chainId: chainId,
                     quarkAccount: actions.last!.quarkAccount,
                     actionType: ActionContext.MultiActionContext.actionType,
@@ -592,7 +592,7 @@ public enum Charter {
     }
 
     private static func getExecutionTypeForMergedActions(
-        actions: [Chart.Action],
+        actions: [Chart.EVMAction],
         chainReceivesBridgeTokens: Bool
     ) -> Chart.Action.ExecutionType {
         if chainReceivesBridgeTokens {
@@ -615,7 +615,7 @@ public enum Charter {
     /// For each CONTINGENT quark_operation step:
     /// - Sets `dependsOn` to the exogenous step index(es) for its chain
     static func generateSteps(
-        actions: [Chart.Action]
+        actions: [Chart.EVMAction]
     ) -> [Chart.Step] {
         var steps: [Chart.Step] = []
         // Maps destination chainId -> exogenous step indices for bridge receives
@@ -625,8 +625,8 @@ public enum Charter {
             // Extract expected actions from the action context
             let expectedActions = extractExpectedActions(from: action)
 
-            // Create quark_operation step (dependsOn filled in second pass for CONTINGENT)
-            let qoStep = Chart.Step.QuarkOperationStep(
+            // Create evm_operation step (dependsOn filled in second pass for CONTINGENT)
+            let qoStep = Chart.Step.OperationStep(
                 chainId: action.chainId,
                 operationIndex: operationIndex,
                 expectedActions: expectedActions,
@@ -680,7 +680,7 @@ public enum Charter {
                             !exoIndices.isEmpty
                         {
                             return .quarkOperation(
-                                Chart.Step.QuarkOperationStep(
+                                Chart.Step.OperationStep(
                                     chainId: qoStep.chainId,
                                     operationIndex: qoStep.operationIndex,
                                     expectedActions: qoStep.expectedActions,
@@ -689,7 +689,7 @@ public enum Charter {
                             )
                         }
                         return step
-                    case .exogenous:
+                    case .solanaOperation, .exogenous:
                         return step
                 }
             }
@@ -697,10 +697,10 @@ public enum Charter {
         return steps
     }
 
-    /// Extracts expected actions from a Chart.Action.
+    /// Extracts expected actions from a Chart.EVMAction.
     /// For MULTI_ACTION, each sub-context becomes a separate expected action.
     static func extractExpectedActions(
-        from action: Chart.Action
+        from action: Chart.EVMAction
     ) -> [Chart.ExpectedAction] {
         switch action.actionContext {
             case .multiAction(let contexts):

@@ -67,7 +67,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
         let expected: Result<[Charter.QuarkOperationAction], Charter.CharterError> = .success(
             [
                 .init(
-                    operation: Charter.Chart.QuarkOperation(
+                    operation: Charter.Chart.LegacyQuarkOperation(
                         nonce: nonceSecret,
                         isReplayable: false,
                         scriptAddress: Create2.getScriptAddress(TransferActions.creationCode),
@@ -80,7 +80,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                         ]),
                         expiry: 100_000 + Charter.TRANSFER_EXPIRY_BUFFER
                     ),
-                    action: Charter.Chart.Action(
+                    action: Charter.Chart.EVMAction(
                         chainId: 8453,
                         quarkAccount: alice,
                         actionType: Charter.ActionContext.TransferActionContext.actionType,
