@@ -39,7 +39,7 @@ let package = Package(
             exact: "1.0.0"
         ),
         .package(
-            path: "../Atlas.swift"
+            path: "../atlas/Atlas.swift"
         ),
         .package(
             url: "https://github.com/hayesgm/SwiftKeccak.git",
