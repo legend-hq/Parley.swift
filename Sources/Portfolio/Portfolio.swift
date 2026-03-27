@@ -2329,7 +2329,7 @@ extension Portfolio {
                 }
 
                 // Ignore native tokens. These balances will get bundled into their ERC20 wrapper
-                if asset.symbol == "ETH" || asset.symbol == "POL" {
+                if asset.symbol == "ETH" || asset.symbol == "POL" || asset.symbol == "HYPE" {
                     continue
                 }
 

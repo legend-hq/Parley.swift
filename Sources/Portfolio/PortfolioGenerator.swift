@@ -841,6 +841,8 @@ public enum PortfolioGenerator {
         case cbbtc
         case comp
         case morpho
+        case hype
+        case whype
 
         static let networkTokenAddress: [Network: [MockToken: EthAddress]] = [
             .ethereum: [
@@ -882,6 +884,11 @@ public enum PortfolioGenerator {
                 .wbtc: EthAddress("0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"),
                 .comp: EthAddress("0x354A6dA3fcde098F8389cad84b0182725c6C91dE"),
             ],
+            .hyperEVM: [
+                .hype: EthAddress("0x000000000000000000000000000000000000B49E"),
+                .whype: EthAddress("0x5555555555555555555555555555555555555555"),
+                .usdc: EthAddress("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
+            ],
         ]
 
         func address(network: Network) -> EthAddress {
@@ -915,6 +922,10 @@ public enum PortfolioGenerator {
                     "Compound"
                 case .morpho:
                     "Morpho"
+                case .hype:
+                    "Hyperliquid"
+                case .whype:
+                    "Wrapped HYPE"
             }
         }
 
@@ -942,6 +953,10 @@ public enum PortfolioGenerator {
                     "COMP"
                 case .morpho:
                     "MORPHO"
+                case .hype:
+                    "HYPE"
+                case .whype:
+                    "WHYPE"
             }
         }
 
@@ -949,7 +964,7 @@ public enum PortfolioGenerator {
             switch self {
                 case .usdc, .usdt:
                     6
-                case .eth, .weth, .cbeth, .link, .degen, .comp, .morpho:
+                case .eth, .weth, .cbeth, .link, .degen, .comp, .morpho, .hype, .whype:
                     18
                 case .wbtc, .cbbtc:
                     8
@@ -970,6 +985,8 @@ public enum PortfolioGenerator {
                     return Value(double: 2.0)
                 case .comp:
                     return Value(double: 50.0)
+                case .hype, .whype:
+                    return Value(double: 25.0)
             }
         }
 
@@ -988,7 +1005,7 @@ public enum PortfolioGenerator {
                         liquidationFactor: .init(double: 0.9)
                     )
 
-                case .eth, .weth, .cbeth, .comp, .morpho:
+                case .eth, .weth, .cbeth, .comp, .morpho, .hype, .whype:
                     return (
                         borrowCollateralFactor: .init(double: 0.83),
                         liquidateCollateralFactor: .init(double: 0.9),
