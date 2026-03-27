@@ -42,7 +42,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         }
     }
 
-    var feeAsset: Result<Atlas.Asset, Charter.CharterError> {
+    var feeAsset: Result<Atlas.EvmAsset, Charter.CharterError> {
         switch self.tokenSource {
             case .source:
                 return self.route.source.asAtlasAsset
@@ -103,7 +103,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         logger: Charter.Logger?
     ) -> Result<[Charter.QuarkOperationBuilder.ImmedatiateOperationDetails], Charter.CharterError> {
         if self.quotePayFees > .zero {
-            let asset: Atlas.Asset
+            let asset: Atlas.EvmAsset
             switch self.feeAsset {
                 case .success(let asset_):
                     asset = asset_
@@ -193,7 +193,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sinkWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -225,7 +225,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sinkWalletRes.asFailure)
                 }
 
-                let srcAsset: Atlas.Asset
+                let srcAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): srcAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -236,7 +236,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(.invalidNode)
                 }
 
-                let destAsset: Atlas.Asset
+                let destAsset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): destAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -304,13 +304,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let srcAsset: Atlas.Asset
+                let srcAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): srcAsset = asset_
                     case .failure(let err): return .failure(err)
                 }
 
-                let destAsset: Atlas.Asset
+                let destAsset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): destAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -362,13 +362,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let sellAsset: Atlas.Asset
+                let sellAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): sellAsset = asset_
                     case .failure(let err): return .failure(err)
                 }
 
-                let buyAsset: Atlas.Asset
+                let buyAsset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): buyAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -384,7 +384,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 // Determine fee asset decimals based on feeToken
-                let feeAsset: Atlas.Asset
+                let feeAsset: Atlas.EvmAsset
                 if feeToken == sellAsset.assetAddress {
                     feeAsset = sellAsset
                 } else if feeToken == buyAsset.assetAddress {
@@ -433,7 +433,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -468,7 +468,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -503,7 +503,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let collateralAsset: Atlas.Asset
+                let collateralAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): collateralAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -524,7 +524,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 // Look up base asset by address
-                guard let baseAsset = Atlas.getAssetByAddress(network: sourceNetwork, token: cometMarket.baseAsset) else {
+                guard let baseAsset = Atlas.getEvmAssetByAddress(network: sourceNetwork, token: cometMarket.baseAsset) else {
                     return .failure(.error("Base asset not found in Atlas for comet: \(comet)"))
                 }
 
@@ -558,7 +558,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up borrow asset by address
                 guard
-                    let borrowAsset = Atlas.getAssetByAddress(
+                    let borrowAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: borrowAssetAddress
                     )
@@ -609,7 +609,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -648,7 +648,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let collateralAsset: Atlas.Asset
+                let collateralAsset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): collateralAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -669,7 +669,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 guard
-                    let baseAsset = Atlas.getAssetByAddress(
+                    let baseAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: cometMarket.baseAsset
                     )
@@ -721,7 +721,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let collateralAsset: Atlas.Asset
+                let collateralAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): collateralAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -729,7 +729,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up borrow asset by address
                 guard
-                    let borrowAsset = Atlas.getAssetByAddress(
+                    let borrowAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: borrowAssetAddress
                     )
@@ -798,7 +798,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up the repay asset
                 guard
-                    let repayAsset = Atlas.getAssetByAddress(
+                    let repayAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: repayAssetAddress
                     )
@@ -810,7 +810,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up collateral asset by address
                 guard
-                    let collateralAsset = Atlas.getAssetByAddress(
+                    let collateralAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: collateralAssetAddress
                     )
@@ -871,7 +871,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -899,7 +899,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 guard
-                    let loanAsset = Atlas.getAssetByAddress(
+                    let loanAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: morphoMarket.loanToken
                     )
@@ -942,7 +942,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up borrow asset by address
                 guard
-                    let borrowAsset = Atlas.getAssetByAddress(
+                    let borrowAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: borrowAssetAddress
                     )
@@ -981,7 +981,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 guard
-                    let collateralAsset = Atlas.getAssetByAddress(
+                    let collateralAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: morphoMarket.collateralToken
                     )
@@ -1018,7 +1018,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1047,7 +1047,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 guard
-                    let collateralAsset = Atlas.getAssetByAddress(
+                    let collateralAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: morphoMarket.collateralToken
                     )
@@ -1082,7 +1082,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1112,7 +1112,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 guard
-                    let loanAsset = Atlas.getAssetByAddress(
+                    let loanAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: morphoMarket.loanToken
                     )
@@ -1168,7 +1168,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let collateralAsset: Atlas.Asset
+                let collateralAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): collateralAsset = asset_
                     case .failure(let err): return .failure(err)
@@ -1176,7 +1176,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up borrow asset by address
                 guard
-                    let borrowAsset = Atlas.getAssetByAddress(
+                    let borrowAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: borrowAssetAddress
                     )
@@ -1245,7 +1245,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up the repay asset
                 guard
-                    let repayAsset = Atlas.getAssetByAddress(
+                    let repayAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: repayAssetAddress
                     )
@@ -1257,7 +1257,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Look up collateral asset by address
                 guard
-                    let collateralAsset = Atlas.getAssetByAddress(
+                    let collateralAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: collateralAssetAddress
                     )
@@ -1321,7 +1321,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1356,7 +1356,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1391,7 +1391,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1426,7 +1426,7 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceWalletRes.asFailure)
                 }
 
-                let asset: Atlas.Asset
+                let asset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): asset = asset_
                     case .failure(let err): return .failure(err)
@@ -1537,13 +1537,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Get backing asset from sink (loopVenue always contains backing asset address)
                 guard case .loopVenue(_, _, let backingAssetAddress, _, _) = self.route.sink,
-                      let backingAsset = Atlas.getAssetByAddress(network: sourceNetwork, token: backingAssetAddress)
+                      let backingAsset = Atlas.getEvmAssetByAddress(network: sourceNetwork, token: backingAssetAddress)
                 else {
                     return .failure(.unknownAsset(symbol: nil, network: sourceNetwork, address: nil))
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: exposureAsset
                     )
@@ -1599,13 +1599,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Get backing asset from sink (loopVenue always contains backing asset address)
                 guard case .loopVenue(_, _, let backingAssetAddress, _, _) = self.route.sink,
-                      let backingAsset = Atlas.getAssetByAddress(network: sourceNetwork, token: backingAssetAddress)
+                      let backingAsset = Atlas.getEvmAssetByAddress(network: sourceNetwork, token: backingAssetAddress)
                 else {
                     return .failure(.unknownAsset(symbol: nil, network: sourceNetwork, address: nil))
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: exposureAsset
                     )
@@ -1660,13 +1660,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Get backing asset from source (loopVenue always contains backing asset address)
                 guard case .loopVenue(_, _, let backingAssetAddress, _, _) = self.route.source,
-                      let backingAsset = Atlas.getAssetByAddress(network: sinkNetwork, token: backingAssetAddress)
+                      let backingAsset = Atlas.getEvmAssetByAddress(network: sinkNetwork, token: backingAssetAddress)
                 else {
                     return .failure(.unknownAsset(symbol: nil, network: sinkNetwork, address: nil))
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sinkNetwork,
                         token: exposureAsset
                     )
@@ -1722,13 +1722,13 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
 
                 // Get backing asset from source (loopVenue always contains backing asset address)
                 guard case .loopVenue(_, _, let backingAssetAddress, _, _) = self.route.source,
-                      let backingAsset = Atlas.getAssetByAddress(network: sinkNetwork, token: backingAssetAddress)
+                      let backingAsset = Atlas.getEvmAssetByAddress(network: sinkNetwork, token: backingAssetAddress)
                 else {
                     return .failure(.unknownAsset(symbol: nil, network: sinkNetwork, address: nil))
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sinkNetwork,
                         token: exposureAsset
                     )
@@ -1797,14 +1797,14 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(sourceNetworkRes.asFailure)
                 }
 
-                let backingAsset: Atlas.Asset
+                let backingAsset: Atlas.EvmAsset
                 switch self.route.source.asAtlasAsset {
                     case .success(let asset_): backingAsset = asset_
                     case .failure(let err): return .failure(err)
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sourceNetwork,
                         token: exposureAsset
                     )
@@ -1851,14 +1851,14 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 // For withdrawBackingToken, source is loopVenue, sink is tokenBalance (backing asset)
-                let backingAsset: Atlas.Asset
+                let backingAsset: Atlas.EvmAsset
                 switch self.route.sink.asAtlasAsset {
                     case .success(let asset_): backingAsset = asset_
                     case .failure(let err): return .failure(err)
                 }
 
                 guard
-                    let exposureAsset: Atlas.Asset = Atlas.getAssetByAddress(
+                    let exposureAsset: Atlas.EvmAsset = Atlas.getEvmAssetByAddress(
                         network: sinkNetwork,
                         token: exposureAsset
                     )

@@ -19,9 +19,9 @@ extension Folio {
             )
 
             metaAsset.assets = getAssets(symbol: symbol)
-            // let baseAssets: [BaseAsset] = Atlas.allNetworks.compactMap({ getBaseAsset(symbol: symbol, chain: $0.network) })
-            // let collateralAssets: [CollateralAsset] = Atlas.allNetworks.compactMap({ getCollateralAsset(symbol: symbol, chain: $0.network) })
-            // let rewardAssets: [RewardAsset] = Atlas.allNetworks.compactMap({ getRewardAsset(symbol: symbol, chain: $0.network) })
+            // let baseAssets: [BaseAsset] = Atlas.allEvmNetworks.compactMap({ getBaseAsset(symbol: symbol, chain: $0.network) })
+            // let collateralAssets: [CollateralAsset] = Atlas.allEvmNetworks.compactMap({ getCollateralAsset(symbol: symbol, chain: $0.network) })
+            // let rewardAssets: [RewardAsset] = Atlas.allEvmNetworks.compactMap({ getRewardAsset(symbol: symbol, chain: $0.network) })
 
             return metaAsset
         }
@@ -30,11 +30,11 @@ extension Folio {
     }
 
     public func getAssets(symbol: String) -> [Asset] {
-        Atlas.allNetworks.compactMap({ getAsset(symbol: symbol, chain: $0.network) })
+        Atlas.allEvmNetworks.compactMap({ getAsset(symbol: symbol, chain: $0.network) })
     }
 
     public func getAsset(symbol: String, chain: Network) -> Asset? {
-        if let atlasAsset = Atlas.getAssetBySymbol(network: chain, symbol: symbol),
+        if let atlasAsset = Atlas.getEvmAssetBySymbol(network: chain, symbol: symbol),
             let price = getAssetPrice(symbol: symbol)
         {
             return Asset(
@@ -278,7 +278,7 @@ extension Folio {
         network: Network,
         operationType: String
     ) -> Amount? {
-        if let atlasAsset = Atlas.getAssetBySymbol(network: network, symbol: symbol),
+        if let atlasAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol),
             let assetQuote = getAssetQuote(symbol: symbol),
             let getNetworkOperationFee = getNetworkOperationFee(
                 network: network,
@@ -426,7 +426,7 @@ extension Folio {
         sourceSymbol: String,
         sinkSymbol: String
     ) -> Folio.BridgeHint? {
-        let ethExists = Atlas.getAssetBySymbol(network: sinkNetwork, symbol: "ETH") != nil
+        let ethExists = Atlas.getEvmAssetBySymbol(network: sinkNetwork, symbol: "ETH") != nil
         let isSinkETH = sinkSymbol == "ETH"
         let isSinkWETH = sinkSymbol == "WETH"
 
@@ -573,25 +573,25 @@ extension Folio.RewardType {
 }
 
 extension Folio.BalanceType {
-    public var atlasAsset: Atlas.Asset? {
+    public var atlasAsset: Atlas.EvmAsset? {
         switch self {
             case .token(let network, let symbol, _):
-                return Atlas.getAssetBySymbol(network: network, symbol: symbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
             case .yieldMarket(let yieldMarket, _):
                 let (underlyingSymbol, network) = yieldMarket.underlyingSymbolAndNetwork
-                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .borrowMarket(let borrowMarket, _):
                 let (underlyingSymbol, network) = borrowMarket.underlyingSymbolAndNetwork
-                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .borrowMarketCollateral(let borrowMarket, let tokenSymbol, _):
                 let (_, network) = borrowMarket.underlyingSymbolAndNetwork
-                return Atlas.getAssetBySymbol(network: network, symbol: tokenSymbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: tokenSymbol)
             case .reward(let rewardType):
                 let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
-                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .lockedReward(let rewardType):
                 let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
-                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
         }
     }
 }

@@ -171,7 +171,7 @@ extension RepayIntentHandler {
         let repayAmount = getRepayAmount(from: intent)
         let assetSymbol = getRepayAssetSymbol(from: intent)
 
-        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: assetSymbol) else {
+        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: assetSymbol) else {
             return .failure(.unknownAsset(symbol: assetSymbol, network: network, address: nil))
         }
 
@@ -322,7 +322,7 @@ extension RepayIntentHandler {
         guard !collateralSymbols.isEmpty,
             let collateralSymbol = collateralSymbols.first,
             let collateralAmount = collateralAmounts.first,
-            let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: collateralSymbol)
+            let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: collateralSymbol)
         else {
             return .failure(.error("Missing or invalid collateral information for withdrawal"))
         }
@@ -512,10 +512,10 @@ extension RepayIntentHandler {
         let collateralSymbols = getCollateralAssetSymbols(from: intent)
         let collateralAmounts = getCollateralAmounts(from: intent)
 
-        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: assetSymbol),
+        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: assetSymbol),
             !collateralSymbols.isEmpty,
             let collateralSymbol = collateralSymbols.first,
-            let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: collateralSymbol)
+            let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: collateralSymbol)
         else {
             return .failure(.error("Missing or invalid assets for repay and collateral withdrawal"))
         }

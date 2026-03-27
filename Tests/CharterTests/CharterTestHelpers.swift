@@ -5,12 +5,10 @@ import SwiftNumber
 
 @testable import Charter
 
-// Test helper for creating resources from Atlas assets
-extension Atlas.Asset {
+// Test helper for creating resources from Atlas EVM assets
+extension Atlas.EvmAsset {
     func asResource(_ amount: Double, wallet: EthAddress) -> LegendResource {
         let amountWithDecimals = Number(amount, decimals: Int(self.decimals))
-        // Determine network from the asset - this is a bit of a hack since Asset doesn't have network info
-        // We'll need to infer it from context or pass it separately
         let network = Network.base  // Default for now, should be passed or inferred
         let node = TradewindsLegendNode.tokenBalance(
             network: network,
@@ -24,7 +22,7 @@ extension Atlas.Asset {
 
 // Extension to help with network-aware resource creation
 extension BaseNetwork.Assets {
-    static func asResource(_ asset: Atlas.Asset, amount: Double, wallet: EthAddress)
+    static func asResource(_ asset: Atlas.EvmAsset, amount: Double, wallet: EthAddress)
         -> LegendResource
     {
         let amountWithDecimals = Number(amount, decimals: Int(asset.decimals))

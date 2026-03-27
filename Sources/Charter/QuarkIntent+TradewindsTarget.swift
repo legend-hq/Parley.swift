@@ -470,7 +470,7 @@ internal func createSwapHintNodesAndRoutes(
         let capacity = swapHint.maxAmount?.underlying ?? Number(0)
         guard sellSymbol != buySymbol && capacity > 0 else { continue }
 
-        guard let atlasNetwork = Atlas.getNetwork(network: network),
+        guard let atlasNetwork = Atlas.getEvmNetwork(network: network),
               let sellAsset = atlasNetwork.getAssetBySymbol(sellSymbol),
               let buyAsset = atlasNetwork.getAssetBySymbol(buySymbol) else {
             continue
@@ -584,7 +584,7 @@ internal func buildRewardClaimGraph(
     for (rewardType, amount) in rewardBalances {
         let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
 
-        guard let asset = Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
+        guard let asset = Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
         else {
             return .failure(.unknownAsset(symbol: underlyingSymbol, network: network, address: nil))
         }
@@ -751,7 +751,7 @@ extension Charter.QuarkIntent.Type_ {
             case .transfer(let transferIntent):
                 let targetNetwork = Network.fromChainId(transferIntent.chainId)
                 guard
-                    let destAsset = Atlas.getAssetBySymbol(
+                    let destAsset = Atlas.getEvmAssetBySymbol(
                         network: targetNetwork,
                         symbol: transferIntent.assetSymbol
                     )
@@ -824,7 +824,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let destAsset = Atlas.getAssetBySymbol(
+                    let destAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -928,7 +928,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getAssetBySymbol(
+                    let asset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -993,7 +993,7 @@ extension Charter.QuarkIntent.Type_ {
             case .morphoVaultSupply(let supplyIntent):
                 let network = Network.fromChainId(supplyIntent.chainId)
                 guard
-                    let asset = Atlas.getAssetBySymbol(
+                    let asset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -1056,7 +1056,7 @@ extension Charter.QuarkIntent.Type_ {
             case .morphoVaultWithdraw(let withdrawIntent):
                 let network = Network.fromChainId(withdrawIntent.chainId)
                 guard
-                    let asset = Atlas.getAssetBySymbol(
+                    let asset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -1153,7 +1153,7 @@ extension Charter.QuarkIntent.Type_ {
 
             case .aaveSupply(let supplyIntent):
                 let network = Network.fromChainId(supplyIntent.chainId)
-                guard let networkType = Atlas.getNetwork(network: network),
+                guard let networkType = Atlas.getEvmNetwork(network: network),
                     networkType.aaveMarkets.contains(where: { $0.pool == supplyIntent.aavePool })
                 else {
                     return .failure(
@@ -1162,7 +1162,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getAssetBySymbol(
+                    let asset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -1224,7 +1224,7 @@ extension Charter.QuarkIntent.Type_ {
 
             case .aaveWithdraw(let withdrawIntent):
                 let network = Network.fromChainId(withdrawIntent.chainId)
-                guard let networkType = Atlas.getNetwork(network: network),
+                guard let networkType = Atlas.getEvmNetwork(network: network),
                     networkType.aaveMarkets.contains(where: { $0.pool == withdrawIntent.aavePool })
                 else {
                     return .failure(
@@ -1233,7 +1233,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getAssetBySymbol(
+                    let asset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -1370,7 +1370,7 @@ extension Charter.QuarkIntent.Type_ {
                 let network = Network.fromChainId(swapIntent.chainId)
 
                 // Look up sell asset by address to get its symbol
-                guard let atlasNetwork = Atlas.getNetwork(network: network),
+                guard let atlasNetwork = Atlas.getEvmNetwork(network: network),
                     let sellAsset = atlasNetwork.getAssetByAddress(swapIntent.sellToken)
                 else {
                     return .failure(
@@ -1622,11 +1622,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: loopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: loopIntent.exposureAssetSymbol
                     )
@@ -1772,11 +1772,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: loopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: loopIntent.exposureAssetSymbol
                     )
@@ -1923,11 +1923,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.exposureAssetSymbol
                     )
@@ -2069,11 +2069,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.exposureAssetSymbol
                     )
@@ -2231,11 +2231,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: addBackingIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: addBackingIntent.exposureAssetSymbol
                     )
@@ -2345,11 +2345,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getAssetBySymbol(
+                    let backingAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getAssetBySymbol(
+                    let exposureAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.exposureAssetSymbol
                     )
@@ -2531,7 +2531,7 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Get supply asset
                 guard
-                    let supplyAsset = Atlas.getAssetBySymbol(
+                    let supplyAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: supplyAssetSymbol
                     )
@@ -2684,7 +2684,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let sellAsset = Atlas.getAssetByAddress(
+                    let sellAsset = Atlas.getEvmAssetByAddress(
                         network: swapNetwork,
                         token: swapIntent.sellToken
                     )
@@ -2699,7 +2699,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let buyAsset = Atlas.getAssetByAddress(
+                    let buyAsset = Atlas.getEvmAssetByAddress(
                         network: swapNetwork,
                         token: swapIntent.buyToken
                     )
@@ -2782,7 +2782,7 @@ extension Charter.QuarkIntent.Type_ {
                     )
 
                     for symbol in relevantSymbols {
-                        if let assetOnSupplyNetwork = Atlas.getAssetBySymbol(
+                        if let assetOnSupplyNetwork = Atlas.getEvmAssetBySymbol(
                             network: supplyNetwork,
                             symbol: symbol
                         ) {
@@ -2798,7 +2798,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let supplyAsset = Atlas.getAssetBySymbol(
+                    let supplyAsset = Atlas.getEvmAssetBySymbol(
                         network: supplyNetwork,
                         symbol: supplyAssetSymbol
                     )
@@ -3000,7 +3000,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let supplyAsset = Atlas.getAssetBySymbol(
+                    let supplyAsset = Atlas.getEvmAssetBySymbol(
                         network: supplyNetwork,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -3018,8 +3018,8 @@ extension Charter.QuarkIntent.Type_ {
                 struct SwapConfig {
                     let swapIntent: Charter.SwapIntent
                     let network: Network
-                    let sellAsset: Atlas.Asset
-                    let buyAsset: Atlas.Asset
+                    let sellAsset: Atlas.EvmAsset
+                    let buyAsset: Atlas.EvmAsset
                 }
 
                 // Validate each swap intent and build configs
@@ -3028,7 +3028,7 @@ extension Charter.QuarkIntent.Type_ {
                     let swapNetwork = Network.fromChainId(swapIntent.chainId)
 
                     guard
-                        let swapSellAsset = Atlas.getAssetByAddress(
+                        let swapSellAsset = Atlas.getEvmAssetByAddress(
                             network: swapNetwork,
                             token: swapIntent.sellToken
                         )
@@ -3050,7 +3050,7 @@ extension Charter.QuarkIntent.Type_ {
                     }
 
                     guard
-                        let swapBuyAsset = Atlas.getAssetByAddress(
+                        let swapBuyAsset = Atlas.getEvmAssetByAddress(
                             network: swapNetwork,
                             token: swapIntent.buyToken
                         )
@@ -3209,7 +3209,7 @@ extension Charter.QuarkIntent.Type_ {
                 let requiresBridgeToSupply = swapConfigs.contains { $0.network != supplyNetwork }
                 if requiresBridgeToSupply {
                     for symbol in folio.getRelevantSymbols(network: supplyNetwork, assetSymbol: supplyAsset.symbol) {
-                        if let asset = Atlas.getAssetBySymbol(network: supplyNetwork, symbol: symbol) {
+                        if let asset = Atlas.getEvmAssetBySymbol(network: supplyNetwork, symbol: symbol) {
                             buyTokenNodes.insert(.tokenBalance(
                                 network: supplyNetwork,
                                 address: asset.assetAddress,
@@ -3347,7 +3347,7 @@ extension Charter.QuarkIntent.Type_ {
             if case .token(let balanceNetwork, let symbol, let wallet) = type,
                 balanceNetwork == network,
                 assetSymbols.contains(symbol),
-                let asset = Atlas.getAssetBySymbol(network: balanceNetwork, symbol: symbol)
+                let asset = Atlas.getEvmAssetBySymbol(network: balanceNetwork, symbol: symbol)
             {
                 return Tradewinds.Resource(
                     amount: .exact(balance.underlying),

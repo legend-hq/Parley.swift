@@ -9,7 +9,7 @@ typealias BalanceType = Folio.BalanceType
 // MARK: - Helper Functions
 
 func getTokenSymbolByAddress(network: Network, token: EthAddress) throws -> String {
-    if let atlasNetwork = Atlas.getNetwork(network: network),
+    if let atlasNetwork = Atlas.getEvmNetwork(network: network),
         let asset = atlasNetwork.getAssetByAddress(token)
     {
         return asset.symbol

@@ -144,7 +144,7 @@ struct CometRepayHandler: RepayIntentHandler {
 
             // Get the collateral asset to get its address
             guard
-                let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: tokenSymbol)
+                let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: tokenSymbol)
             else {
                 continue
             }
@@ -170,14 +170,14 @@ struct CometRepayHandler: RepayIntentHandler {
         let network = Network.fromChainId(intent.chainId)
 
         // Validate the repay asset exists
-        guard Atlas.getAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
+        guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
             return .failure(
                 .unknownAsset(symbol: intent.assetSymbol, network: network, address: nil))
         }
 
         // Validate collateral asset if specified
         if !intent.collateralAssetSymbol.isEmpty {
-            guard Atlas.getAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
+            guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
                 return .failure(
                     .unknownAsset(symbol: intent.collateralAssetSymbol, network: network, address: nil))
             }

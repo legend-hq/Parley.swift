@@ -45,7 +45,7 @@ struct TradewindsResourceFactory {
         var resources: [Tradewinds.Resource<TradewindsLegendNode>] = []
 
         // Iterate over all networks in Atlas
-        for networkType in Atlas.allNetworks {
+        for networkType in Atlas.allEvmNetworks {
             let network = networkType.network
 
             // Skip if we're restricted to a specific network and this isn't it
@@ -61,7 +61,7 @@ struct TradewindsResourceFactory {
 
             // For each relevant symbol, check if we have a balance or create a zero balance
             for symbol in relevantSymbols {
-                guard let atlasToken = Atlas.getAssetBySymbol(network: network, symbol: symbol)
+                guard let atlasToken = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
                 else {
                     continue
                 }
@@ -118,7 +118,7 @@ struct TradewindsResourceFactory {
         var resources: [Tradewinds.Resource<TradewindsLegendNode>] = []
 
         // Iterate over all networks in Atlas
-        for networkType in Atlas.allNetworks {
+        for networkType in Atlas.allEvmNetworks {
             let network = networkType.network
 
             // Skip if we're restricted to a specific network and this isn't it
@@ -133,7 +133,7 @@ struct TradewindsResourceFactory {
             )
 
             for symbol in relevantSymbols {
-                guard let underlyingAsset = Atlas.getAssetBySymbol(network: network, symbol: symbol)
+                guard let underlyingAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
                 else {
                     continue
                 }

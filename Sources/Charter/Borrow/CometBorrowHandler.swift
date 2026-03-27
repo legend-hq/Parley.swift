@@ -107,7 +107,7 @@ struct CometBorrowHandler: BorrowIntentHandler {
             .compactMap { tokenSymbol, balance in
                 // Get the collateral asset to get its address
                 guard
-                    let collateralAsset = Atlas.getAssetBySymbol(
+                    let collateralAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: tokenSymbol
                     )
@@ -160,7 +160,7 @@ struct CometBorrowHandler: BorrowIntentHandler {
             return .failure(.noCollateralInBorrowMarket(network: network))
         }
 
-        guard let borrowAssetInfo = Atlas.getAssetByAddress(network: network, token: borrowAsset) else {
+        guard let borrowAssetInfo = Atlas.getEvmAssetByAddress(network: network, token: borrowAsset) else {
             return .failure(.unknownAsset(symbol: intent.assetSymbol, network: network, address: borrowAsset))
         }
 
@@ -230,13 +230,13 @@ struct CometBorrowHandler: BorrowIntentHandler {
         let network = Network.fromChainId(intent.chainId)
 
         // Validate the borrow asset exists
-        guard Atlas.getAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
+        guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
             return false
         }
 
         // Validate collateral asset if specified
         if !intent.collateralAssetSymbol.isEmpty {
-            guard Atlas.getAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
+            guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
                 return false
             }
         }

@@ -254,7 +254,7 @@ public enum Charter {
         actorWallet: EthAddress,
         allowUsingEarningBalances: Bool
     ) -> Number {
-        guard let asset = Atlas.getAssetBySymbol(network: destinationChain, symbol: assetSymbol)
+        guard let asset = Atlas.getEvmAssetBySymbol(network: destinationChain, symbol: assetSymbol)
         else {
             return Number(0)
         }

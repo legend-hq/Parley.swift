@@ -121,7 +121,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         let requestedCollateralSymbol = intent.collateralAssetSymbol
 
         // Verify the market exists in Atlas
-        guard let networkType = Atlas.getNetwork(network: network),
+        guard let networkType = Atlas.getEvmNetwork(network: network),
             let _ = networkType.getMorphoMarketByMarketId(intent.marketId)
         else {
             return resources
@@ -149,7 +149,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
 
             // Get the collateral asset to get its address
             guard
-                let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: tokenSymbol)
+                let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: tokenSymbol)
             else {
                 continue
             }
@@ -175,7 +175,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         let network = Network.fromChainId(intent.chainId)
 
         // Validate the borrow asset exists
-        guard Atlas.getAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
+        guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
             return .failure(
                 .unknownAsset(symbol: intent.assetSymbol, network: network, address: nil))
         }
@@ -183,7 +183,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         // Validate collateral asset if specified
         if !intent.collateralAssetSymbol.isEmpty {
             guard
-                Atlas.getAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol)
+                Atlas.getEvmAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol)
                     != nil
             else {
                 return .failure(
@@ -196,7 +196,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         }
 
         // Verify the Morpho market exists
-        guard let networkType = Atlas.getNetwork(network: network),
+        guard let networkType = Atlas.getEvmNetwork(network: network),
             let _ = networkType.getMorphoMarketByMarketId(intent.marketId)
         else {
             return .failure(.morphoMarketNotFound(marketId: intent.marketId, network: network))

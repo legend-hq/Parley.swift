@@ -451,7 +451,7 @@ extension Array where Element == Portfolio {
         }
 
         // Add native token wrapping
-        for network in Atlas.allNetworks {
+        for network in Atlas.allEvmNetworks {
             for asset in network.assets {
                 if asset.isNativeAsset,
                     let crossChainAsset = asset.crossChainAsset,

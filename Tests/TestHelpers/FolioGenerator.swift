@@ -26,8 +26,8 @@ public func generateFolio(from givens: [Given]) -> Folio {
         )
     }
 
-    // Add default ETH/WETH wrapper hints for all networks
-    for atlasNetwork in Atlas.allNetworks {
+    // Add default ETH/WETH wrapper hints for all EVM networks
+    for atlasNetwork in Atlas.allEvmNetworks {
         let network = atlasNetwork.network
         // ETH -> WETH wrap
         folio.swapHints.updateValue(
@@ -86,7 +86,7 @@ public func generateFolio(from givens: [Given]) -> Folio {
 
 // Use networks from Atlas to ensure consistency
 var allNetworks: [Network] {
-    Atlas.allNetworks.map { $0.network }
+    Atlas.allEvmNetworks.map { $0.network }
 }
 
 public func applyGiven(folio: inout Folio, given: Given) {

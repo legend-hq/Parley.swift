@@ -103,7 +103,7 @@ struct MorphoBorrowHandler: BorrowIntentHandler {
 
         // Find the collateral asset by matching the address
         guard
-            let collateralAsset = Atlas.getAssetByAddress(
+            let collateralAsset = Atlas.getEvmAssetByAddress(
                 network: network,
                 token: morphoMarket.collateralToken
             )
@@ -161,7 +161,7 @@ struct MorphoBorrowHandler: BorrowIntentHandler {
             return .failure(.morphoMarketNotFound(marketId: intent.marketId, network: network))
         }
 
-        guard let borrowAssetInfo = Atlas.getAssetByAddress(network: network, token: borrowAsset) else {
+        guard let borrowAssetInfo = Atlas.getEvmAssetByAddress(network: network, token: borrowAsset) else {
             return .failure(.unknownAsset(symbol: intent.assetSymbol, network: network, address: borrowAsset))
         }
 
@@ -173,7 +173,7 @@ struct MorphoBorrowHandler: BorrowIntentHandler {
             return .failure(.unpricedAsset(symbol: borrowAssetInfo.symbol))
         }
 
-        guard let collateralAssetInfo = Atlas.getAssetByAddress(network: network, token: morphoMarket.collateralToken) else {
+        guard let collateralAssetInfo = Atlas.getEvmAssetByAddress(network: network, token: morphoMarket.collateralToken) else {
             return .failure(.unknownAsset(symbol: "unknown", network: network, address: morphoMarket.collateralToken))
         }
 
@@ -228,12 +228,12 @@ struct MorphoBorrowHandler: BorrowIntentHandler {
     func validateIntent(_ intent: BorrowIntent, folio: Folio) -> Bool {
         let network = Network.fromChainId(intent.chainId)
 
-        guard Atlas.getAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
+        guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
             return false
         }
 
         if !intent.collateralAssetSymbol.isEmpty {
-            guard Atlas.getAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
+            guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol) != nil else {
                 return false
             }
         }

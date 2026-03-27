@@ -107,7 +107,7 @@ extension BorrowIntentHandler {
     func validateIntent(_ intent: BorrowIntent, folio: Folio) -> Bool {
         let network = Network.fromChainId(getChainId(from: intent))
         guard
-            Atlas.getAssetBySymbol(network: network, symbol: getBorrowAssetSymbol(from: intent))
+            Atlas.getEvmAssetBySymbol(network: network, symbol: getBorrowAssetSymbol(from: intent))
                 != nil
         else {
             return false
@@ -208,7 +208,7 @@ extension BorrowIntentHandler {
         }
         let actualSymbol = getWrappedAssetSymbol(symbol, folio: folio, network: network)
 
-        guard let asset = Atlas.getAssetBySymbol(network: network, symbol: actualSymbol) else {
+        guard let asset = Atlas.getEvmAssetBySymbol(network: network, symbol: actualSymbol) else {
             return nil
         }
 
@@ -270,7 +270,7 @@ extension BorrowIntentHandler {
         ), Charter.CharterError
     > {
         let borrowSymbol = getBorrowAssetSymbol(from: intent)
-        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: borrowSymbol)
+        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: borrowSymbol)
         else {
             return .failure(.unknownAsset(symbol: borrowSymbol, network: network, address: nil))
         }
@@ -411,7 +411,7 @@ extension BorrowIntentHandler {
                 network: network,
                 folio: folio
             ),
-            let borrowAsset = Atlas.getAssetBySymbol(
+            let borrowAsset = Atlas.getEvmAssetBySymbol(
                 network: network,
                 symbol: getBorrowAssetSymbol(from: intent)
             )

@@ -71,9 +71,9 @@ extension Charter {
 
         public static func bridgeAcrossAsset(
             srcNetwork: Network,
-            srcAsset: Atlas.Asset,
+            srcAsset: Atlas.EvmAsset,
             destNetwork: Network,
-            destAsset: Atlas.Asset,
+            destAsset: Atlas.EvmAsset,
             rate: Percentage,
             assetPrice: Value,
             inputAmount: Amount,
@@ -83,7 +83,7 @@ extension Charter {
             isMaxBridge: Bool,
             blockTimestamp: Number
         ) -> Result<[ImmedatiateOperationDetails], CharterError> {
-            guard let atlasSrcNetwork = Atlas.getNetwork(network: srcNetwork) else {
+            guard let atlasSrcNetwork = Atlas.getEvmNetwork(network: srcNetwork) else {
                 return .failure(.unknownAtlasNetwork(network: srcNetwork))
             }
 
@@ -91,7 +91,7 @@ extension Charter {
             let destAssetAddress: EthAddress
             if destAsset.isNativeAsset {
                 if let wrappedTokenSymbol = destAsset.crossChainAsset?.wrappedAssetSymbol,
-                    let wrappedOutputAsset = Atlas.getAssetBySymbol(
+                    let wrappedOutputAsset = Atlas.getEvmAssetBySymbol(
                         network: destNetwork,
                         symbol: wrappedTokenSymbol
                     )
@@ -136,7 +136,7 @@ extension Charter {
             // This is due to the comlexities of Across ambiguously sending either WETH or ETH
             // If ETH exists as an asset and we're sending "WETH", then we use `ETH` here.
             let destinationAssetSymbol =
-                Atlas.getAssetBySymbol(network: destNetwork, symbol: "ETH") != nil
+                Atlas.getEvmAssetBySymbol(network: destNetwork, symbol: "ETH") != nil
                     && srcAsset.symbol == "WETH" ? "ETH" : destAsset.symbol
 
             return .success([
@@ -167,7 +167,7 @@ extension Charter {
 
         public static func transfer(
             network: Network,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isCappedMax: Bool,
@@ -184,7 +184,7 @@ extension Charter {
             if isNativeAsset {
                 // Optimistically unwrap WETH before native ETH transfers
                 if let wrappedSymbol = asset.crossChainAsset?.wrappedAssetSymbol,
-                    let wrappedAsset = Atlas.getAssetBySymbol(network: network, symbol: wrappedSymbol)
+                    let wrappedAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: wrappedSymbol)
                 {
                     switch unwrapSimple(
                         network: network,
@@ -245,9 +245,9 @@ extension Charter {
 
         public static func swap(
             network: Network,
-            sellAsset: Atlas.Asset,
+            sellAsset: Atlas.EvmAsset,
             sellAmount: Amount,
-            buyAsset: Atlas.Asset,
+            buyAsset: Atlas.EvmAsset,
             buyAmount: Amount,
             sellPrice: Number,
             buyPrice: Number,
@@ -260,7 +260,7 @@ extension Charter {
             blockTimestamp: Number
         ) -> Result<[ImmedatiateOperationDetails], CharterError> {
             // Get filler address from Atlas
-            guard let atlasNetwork = Atlas.getNetwork(network: network) else {
+            guard let atlasNetwork = Atlas.getEvmNetwork(network: network) else {
                 return .failure(.error("Network not found in Atlas: \(network)"))
             }
             let fillerAddress = atlasNetwork.filler
@@ -295,7 +295,7 @@ extension Charter {
             let actionType = Charter.ACTION_TYPE_SWAP
             // Match original QuarkBuilder with dual fee arrays
             let feeAsset =
-                Atlas.getAssetByAddress(network: network, token: feeToken) ?? buyAsset
+                Atlas.getEvmAssetByAddress(network: network, token: feeToken) ?? buyAsset
             let feePrice = (feeToken == buyAsset.assetAddress) ? buyPrice : sellPrice
 
             var feeAmounts = [legendFeeAmount]
@@ -352,8 +352,8 @@ extension Charter {
 
         public static func wrapSimple(
             network: Network,
-            sourceAsset: Atlas.Asset,
-            destAsset: Atlas.Asset,
+            sourceAsset: Atlas.EvmAsset,
+            destAsset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             sender: EthAddress
@@ -418,7 +418,7 @@ extension Charter {
 
         public static func wrapAssetUpTo(
             network: Network,
-            underlyingAsset: Atlas.Asset,
+            underlyingAsset: Atlas.EvmAsset,
             targetAmount: Number
         ) -> Result<[ImmedatiateOperationDetails], CharterError> {
             let scriptAddress = Create2.getScriptAddress(WrapperActions.creationCode)
@@ -427,7 +427,7 @@ extension Charter {
 
             guard let crossChainUnderlyingAsset = underlyingAsset.crossChainAsset,
                 let wrappedAssetSymbol = crossChainUnderlyingAsset.wrappedAssetSymbol,
-                let wrappedAsset = Atlas.getAssetBySymbol(
+                let wrappedAsset = Atlas.getEvmAssetBySymbol(
                     network: network,
                     symbol: wrappedAssetSymbol
                 )
@@ -482,8 +482,8 @@ extension Charter {
 
         public static func unwrapSimple(
             network: Network,
-            sourceAsset: Atlas.Asset,
-            destAsset: Atlas.Asset,
+            sourceAsset: Atlas.EvmAsset,
+            destAsset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             sender: EthAddress
@@ -553,7 +553,7 @@ extension Charter {
         public static func cometSupply(
             network: Network,
             comet: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isCappedMax: Bool,
@@ -593,7 +593,7 @@ extension Charter {
         public static func cometWithdraw(
             network: Network,
             comet: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isMax: Bool,
@@ -634,10 +634,10 @@ extension Charter {
         public static func cometBorrow(
             network: Network,
             comet: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
-            collateralAssets: [Atlas.Asset],
+            collateralAssets: [Atlas.EvmAsset],
             collateralAmounts: [Amount],
             collateralPrices: [Number],
             isCappedMax: Bool,
@@ -716,10 +716,10 @@ extension Charter {
         public static func cometRepay(
             network: Network,
             comet: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
-            collateralAsset: Atlas.Asset?,
+            collateralAsset: Atlas.EvmAsset?,
             collateralAmount: Amount?,
             collateralPrice: Number?,
             isMaxRepay: Bool,
@@ -736,7 +736,7 @@ extension Charter {
             let collateralAmountsUnderlying: [Number]
             let collateralAmounts: [Amount]
             let collateralPrices: [Number]
-            let collateralAssets: [Atlas.Asset]
+            let collateralAssets: [Atlas.EvmAsset]
 
             if let collateralAsset = collateralAsset,
                let collateralAmount = collateralAmount,
@@ -800,10 +800,10 @@ extension Charter {
         public static func morphoSupplyCollateralAndBorrow(
             network: Network,
             marketId: Hex,
-            collateralAsset: Atlas.Asset,
+            collateralAsset: Atlas.EvmAsset,
             collateralAmount: Amount,
             collateralPrice: Number,
-            borrowAsset: Atlas.Asset,
+            borrowAsset: Atlas.EvmAsset,
             borrowAmount: Amount,
             borrowPrice: Number,
             isCappedMax: Bool,
@@ -868,10 +868,10 @@ extension Charter {
         public static func morphoRepayAndWithdrawCollateral(
             network: Network,
             marketId: Hex,
-            repayAsset: Atlas.Asset,
+            repayAsset: Atlas.EvmAsset,
             repayAmount: Amount,
             repayPrice: Number,
-            collateralAsset: Atlas.Asset,
+            collateralAsset: Atlas.EvmAsset,
             collateralAmount: Amount,
             collateralPrice: Number,
             isMaxRepay: Bool,
@@ -939,7 +939,7 @@ extension Charter {
         public static func morphoVaultSupply(
             network: Network,
             vault: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isCappedMax: Bool,
@@ -979,7 +979,7 @@ extension Charter {
         public static func morphoVaultWithdraw(
             network: Network,
             vault: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isMax: Bool,
@@ -1021,7 +1021,7 @@ extension Charter {
         public static func aaveSupply(
             network: Network,
             pool: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isCappedMax: Bool,
@@ -1061,7 +1061,7 @@ extension Charter {
         public static func aaveWithdraw(
             network: Network,
             pool: EthAddress,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             price: Number,
             amount: Amount,
             isMax: Bool,
@@ -1192,7 +1192,7 @@ extension Charter {
             }
 
             // Get distributor addresses from Atlas for the network
-            let atlasNetwork = Atlas.getNetwork(network: network)
+            let atlasNetwork = Atlas.getEvmNetwork(network: network)
             let merklDistributor = atlasNetwork?.merklDistributor
             let morphoDistributors =
                 atlasNetwork?.morphoRewardDistributors.map { $0.distributor } ?? []
@@ -1325,9 +1325,9 @@ extension Charter {
         public static func loopLong(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAmount: Number,
             exposureAssetPrice: Number,
             maxSwapBackingAmount: Number,
@@ -1431,9 +1431,9 @@ extension Charter {
         public static func loopShort(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAmount: Number,
             exposureAssetPrice: Number,
             minSwapBackingAmount: Number,
@@ -1534,9 +1534,9 @@ extension Charter {
         public static func unloopLong(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAmount: Number,
             exposureAssetPrice: Number,
             backingAmountToExit: Number,
@@ -1629,9 +1629,9 @@ extension Charter {
         public static func unloopShort(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAmount: Number,
             exposureAssetPrice: Number,
             backingAmountToExit: Number,
@@ -1729,9 +1729,9 @@ extension Charter {
         public static func addBackingToken(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAssetPrice: Number,
             amount: Number,
             isCappedMax: Bool,
@@ -1816,9 +1816,9 @@ extension Charter {
         public static func withdrawBackingToken(
             network: Network,
             marketId: Hex,
-            backingAsset: Atlas.Asset,
+            backingAsset: Atlas.EvmAsset,
             backingAssetPrice: Number,
-            exposureAsset: Atlas.Asset,
+            exposureAsset: Atlas.EvmAsset,
             exposureAssetPrice: Number,
             amount: Number,
             isShort: Bool
@@ -1904,17 +1904,17 @@ extension Charter {
 
         public static func quotePay(
             network: Network,
-            asset: Atlas.Asset,
+            asset: Atlas.EvmAsset,
             assetPrice: Number,
             quotePayAmount: Amount,
             quoteId: Hex
         ) -> Result<[ImmedatiateOperationDetails], CharterError> {
             var operations: [ImmedatiateOperationDetails] = []
-            let paymentAsset: Atlas.Asset
+            let paymentAsset: Atlas.EvmAsset
 
             if asset.isNativeAsset {
                 guard let wrappedAssetSymbol = asset.crossChainAsset?.wrappedAssetSymbol,
-                    let wethAsset = Atlas.getAssetBySymbol(
+                    let wethAsset = Atlas.getEvmAssetBySymbol(
                         network: network,
                         symbol: wrappedAssetSymbol
                     )
@@ -2016,9 +2016,9 @@ extension Charter {
 
         public static func bridgeCCTPv2(
             srcNetwork: Network,
-            srcAsset: Atlas.Asset,
+            srcAsset: Atlas.EvmAsset,
             destNetwork: Network,
-            destAsset: Atlas.Asset,
+            destAsset: Atlas.EvmAsset,
             rate: Percentage,
             assetPrice: Value,
             inputAmount: Amount,
@@ -2082,7 +2082,7 @@ extension Charter {
         public static func bridgeMint(
             srcNetwork: Network,
             destNetwork: Network,
-            destAsset: Atlas.Asset,
+            destAsset: Atlas.EvmAsset,
             inputAmount: Amount,
             outputAmount: Amount,
             recipient: EthAddress,
@@ -2092,7 +2092,7 @@ extension Charter {
 
             let messageTransmitter = Charter.CCTP_V2_MESSAGE_TRANSMITTER
 
-            guard let atlasMintNetwork = Atlas.getNetwork(network: destNetwork) else {
+            guard let atlasMintNetwork = Atlas.getEvmNetwork(network: destNetwork) else {
                 return .failure(.unknownAtlasNetwork(network: destNetwork))
             }
 

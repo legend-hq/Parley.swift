@@ -27,7 +27,7 @@ public struct NonceSecret: Codable, Equatable, Sendable {
         var nonceSecrets: [NonceSecret] = []
 
         for account in accounts {
-            for network in Atlas.allNetworks {
+            for network in Atlas.allEvmNetworks {
                 nonceSecrets.append(
                     NonceSecret(
                         chainId: network.chainId,

@@ -496,7 +496,7 @@ public enum MorphoDistributor: Hashable, Equatable, Sendable {
     }
 
     static func merklDistributorAddress(for network: Network) -> EthAddress {
-        if let atlasNetwork = Atlas.getNetwork(network: network) {
+        if let atlasNetwork = Atlas.getEvmNetwork(network: network) {
             return atlasNetwork.merklDistributor
         }
         return MERKL_DISTRIBUTOR_ADDRESS
@@ -504,7 +504,7 @@ public enum MorphoDistributor: Hashable, Equatable, Sendable {
 
     static func address(network: Network) -> EthAddress {
         // Try Atlas first
-        if let atlasNetwork = Atlas.getNetwork(network: network),
+        if let atlasNetwork = Atlas.getEvmNetwork(network: network),
             let firstDistributor = atlasNetwork.morphoRewardDistributors.first?.distributor
         {
             return firstDistributor
@@ -523,7 +523,7 @@ public enum MorphoDistributor: Hashable, Equatable, Sendable {
 
     public static func from(network: Network, address: EthAddress) -> MorphoDistributor {
         // Check Merkl distributor
-        if let atlasNetwork = Atlas.getNetwork(network: network),
+        if let atlasNetwork = Atlas.getEvmNetwork(network: network),
             address == atlasNetwork.merklDistributor
         {
             return .merklDistributor
@@ -532,7 +532,7 @@ public enum MorphoDistributor: Hashable, Equatable, Sendable {
         }
 
         // Check Morpho distributors
-        if let atlasNetwork = Atlas.getNetwork(network: network),
+        if let atlasNetwork = Atlas.getEvmNetwork(network: network),
             atlasNetwork.morphoRewardDistributors.contains(where: { $0.distributor == address })
         {
             return .distributor

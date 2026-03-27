@@ -352,10 +352,10 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
         }
     }
 
-    var asAtlasAsset: Result<Atlas.Asset, Charter.CharterError> {
+    var asAtlasAsset: Result<Atlas.EvmAsset, Charter.CharterError> {
         if let network,
             let assetAddress,
-            let atlasAsset = Atlas.getAssetByAddress(network: network, token: assetAddress)
+            let atlasAsset = Atlas.getEvmAssetByAddress(network: network, token: assetAddress)
         {
             return .success(atlasAsset)
         }
