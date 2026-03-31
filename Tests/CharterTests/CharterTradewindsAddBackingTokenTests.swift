@@ -266,7 +266,8 @@ struct CharterTradewindsAddBackingTokenTests {
                         amount: Number("3000e6"),
                         isShort: false,
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        chainId: Number(BaseNetwork.chainId)
+                        chainId: Number(BaseNetwork.chainId),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -329,8 +330,7 @@ struct CharterTradewindsAddBackingTokenTests {
                         ),
                     ],
                     maxFlow: "3000e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

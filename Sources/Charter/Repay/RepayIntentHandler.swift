@@ -105,7 +105,7 @@ extension RepayIntentHandler {
     func handle(
         _ intent: RepayIntent,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -130,7 +130,7 @@ extension RepayIntentHandler {
                     intent: intent,
                     network: network,
                     folio: folio,
-                    allowUsingEarningBalances: allowUsingEarningBalances,
+                    earnMarketPolicy: earnMarketPolicy,
                     logger: logger
                 )
 
@@ -146,7 +146,7 @@ extension RepayIntentHandler {
                     intent: intent,
                     network: network,
                     folio: folio,
-                    allowUsingEarningBalances: allowUsingEarningBalances,
+                    earnMarketPolicy: earnMarketPolicy,
                     logger: logger
                 )
         }
@@ -158,7 +158,7 @@ extension RepayIntentHandler {
         intent: RepayIntent,
         network: Network,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -179,7 +179,7 @@ extension RepayIntentHandler {
         let resourceFactory = TradewindsResourceFactory(
             folio: folio,
             primarySymbol: assetSymbol,
-            earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+            earnMarketPolicy: earnMarketPolicy,
             actorWallet: repayer,
             network: nil  // Allow resources from any network for bridging
         )
@@ -240,7 +240,7 @@ extension RepayIntentHandler {
                 destinationChain: network,
                 folio: folio,
                 actorWallet: repayer,
-                allowUsingEarningBalances: allowUsingEarningBalances
+                earnMarketPolicy: earnMarketPolicy
             )
             
             // Get quote fee for the repay operation
@@ -406,12 +406,12 @@ extension RepayIntentHandler {
         symbol: String,
         folio: Folio,
         actorWallet: EthAddress,
-        allowUsingEarningBalances: Bool
+        earnMarketPolicy: EarnMarketPolicy
     ) -> Result<[Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError> {
         let resourceFactory = TradewindsResourceFactory(
             folio: folio,
             primarySymbol: symbol,
-            earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+            earnMarketPolicy: earnMarketPolicy,
             actorWallet: actorWallet,
             network: nil  // Allow resources from any network for bridging
         )
@@ -496,7 +496,7 @@ extension RepayIntentHandler {
         intent: RepayIntent,
         network: Network,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -528,7 +528,7 @@ extension RepayIntentHandler {
             symbol: assetSymbol,
             folio: folio,
             actorWallet: repayer,
-            allowUsingEarningBalances: allowUsingEarningBalances
+            earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
                 resources = res

@@ -73,7 +73,8 @@ struct CharterTradewindsCometTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         amount: "70e6",
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -122,8 +123,7 @@ struct CharterTradewindsCometTests {
                         ),
                     ],
                     maxFlow: "120e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -192,7 +192,8 @@ struct CharterTradewindsCometTests {
                         assetSymbol: ArbitrumNetwork.Assets.USDC.symbol,
                         amount: "50e6",
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -265,8 +266,7 @@ struct CharterTradewindsCometTests {
                         ),
                     ],
                     maxFlow: "107900000"  // (110e6 * 0.99) - 1e6 = 107.9e6
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -403,7 +403,8 @@ struct CharterTradewindsCometTests {
                         assetSymbol: ArbitrumNetwork.Assets.USDC.symbol,
                         amount: "15e6",  // Want to receive 15 USDC on Arbitrum
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -476,8 +477,7 @@ struct CharterTradewindsCometTests {
                         ),
                     ],
                     maxFlow: "18800000"  // (20e6 * 0.99) - 1e6 = 18.8e6
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -499,7 +499,8 @@ struct CharterTradewindsCometTests {
                         assetSymbol: ArbitrumNetwork.Assets.USDC.symbol,
                         amount: "25e6",  // Want to receive 25 USDC on Arbitrum
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -572,8 +573,7 @@ struct CharterTradewindsCometTests {
                         ),
                     ],
                     maxFlow: "32300000"  // (35e6 * 0.98) - 2e6 = 32.3e6
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

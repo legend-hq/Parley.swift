@@ -64,7 +64,7 @@ protocol BorrowIntentHandler {
     func handle(
         _ intent: BorrowIntent,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -118,7 +118,7 @@ extension BorrowIntentHandler {
     func handle(
         _ intent: BorrowIntent,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -159,7 +159,7 @@ extension BorrowIntentHandler {
                     intent: intent,
                     network: network,
                     folio: folio,
-                    allowUsingEarningBalances: allowUsingEarningBalances,
+                    earnMarketPolicy: earnMarketPolicy,
                     logger: logger
                 )
 
@@ -168,7 +168,7 @@ extension BorrowIntentHandler {
                     intent: intent,
                     network: network,
                     folio: folio,
-                    allowUsingEarningBalances: allowUsingEarningBalances,
+                    earnMarketPolicy: earnMarketPolicy,
                     logger: logger
                 )
         }
@@ -242,12 +242,12 @@ extension BorrowIntentHandler {
         symbol: String,
         folio: Folio,
         actorWallet: EthAddress,
-        allowUsingEarningBalances: Bool
+        earnMarketPolicy: EarnMarketPolicy
     ) -> Result<[Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError> {
         let factory = TradewindsResourceFactory(
             folio: folio,
             primarySymbol: symbol,
-            earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+            earnMarketPolicy: earnMarketPolicy,
             actorWallet: actorWallet,
             network: nil
         )
@@ -330,7 +330,7 @@ extension BorrowIntentHandler {
         intent: BorrowIntent,
         network: Network,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -355,7 +355,7 @@ extension BorrowIntentHandler {
             symbol: collateralInfo.symbol,
             folio: folio,
             actorWallet: borrower,
-            allowUsingEarningBalances: allowUsingEarningBalances
+            earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
                 resources = res
@@ -396,7 +396,7 @@ extension BorrowIntentHandler {
         intent: BorrowIntent,
         network: Network,
         folio: Folio,
-        allowUsingEarningBalances: Bool,
+        earnMarketPolicy: EarnMarketPolicy,
         logger: Charter.Logger?
     ) -> Result<
         (
@@ -431,7 +431,7 @@ extension BorrowIntentHandler {
             symbol: collateralInfo.symbol,
             folio: folio,
             actorWallet: borrower,
-            allowUsingEarningBalances: allowUsingEarningBalances
+            earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
                 resources = res

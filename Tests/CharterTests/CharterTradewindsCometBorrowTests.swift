@@ -411,7 +411,8 @@ struct CharterTradewindsCometBorrowTests {
                         chainId: BaseNetwork.network.chainId,
                         collateralAmount: "0.2e18",  // 0.2 WETH
                         collateralAssetSymbol: "WETH",
-                        comet: EthAddress("0xb125E6687d4313864e53df431d5425969c15Eb2F")
+                        comet: EthAddress("0xb125E6687d4313864e53df431d5425969c15Eb2F"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -512,8 +513,7 @@ struct CharterTradewindsCometBorrowTests {
                         ),
                     ],
                     maxFlow: "200069000000000000"  // Actual max flow after fees
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

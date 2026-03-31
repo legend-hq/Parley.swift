@@ -120,7 +120,8 @@ struct CharterTradewindsAaveTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         amount: "70e6",
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -169,8 +170,7 @@ struct CharterTradewindsAaveTests {
                         ),
                     ],
                     maxFlow: "120e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -310,7 +310,8 @@ struct CharterTradewindsAaveTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         chainId: BaseNetwork.network.chainId,
                         aavePool: EthAddress("0xd1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca"),  // Different pool
-                        sender: EthAddress("0x00000000000000000000000000000000000A11CE")
+                        sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -361,8 +362,7 @@ struct CharterTradewindsAaveTests {
                         ),
                     ],
                     maxFlow: "100e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

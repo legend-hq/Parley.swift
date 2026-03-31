@@ -12,18 +12,6 @@ struct TradewindsResourceFactory {
     let actorWallet: EthAddress
     let network: Network?
 
-    struct EarnMarketPolicyAmount: Hashable {
-        let marketAddress: EthAddress
-        let network: Network
-        let amount: Tradewinds.FlowAmount
-    }
-
-    enum EarnMarketPolicy: Equatable {
-        case none
-        case all
-        case specific(Set<EarnMarketPolicyAmount>)
-    }
-
     func createAllResources() -> Result<
         [Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError
     > {
@@ -95,20 +83,17 @@ struct TradewindsResourceFactory {
         earnMarketPolicy: EarnMarketPolicy,
         address: EthAddress,
         network: Network
-    )
-        -> EarnMarketPolicyAmount?
-    {
+    ) -> Tradewinds.FlowAmount? {
         switch earnMarketPolicy {
             case .none:
                 return nil
             case .all:
-                return EarnMarketPolicyAmount(
-                    marketAddress: address,
-                    network: network,
-                    amount: .max
-                )
-            case .specific(let allowedMarkets):
-                return allowedMarkets.first { $0.marketAddress == address && $0.network == network }
+                return .max
+            case .specific(let sources):
+                guard let source = sources.first(where: { $0.marketAddress == address && $0.network == network }) else {
+                    return nil
+                }
+                return source.amount.isMaxUint256 ? .max : .exact(source.amount)
         }
     }
 
@@ -141,7 +126,7 @@ struct TradewindsResourceFactory {
                 // Add Aave markets
                 for aaveMarket in networkType.aaveMarkets {
                     guard
-                        let earnMarketPolicyAmount = matchesEarnMarketPolicy(
+                        let flowAmount = matchesEarnMarketPolicy(
                             earnMarketPolicy: earnMarketPolicy,
                             address: aaveMarket.pool,
                             network: network
@@ -168,7 +153,7 @@ struct TradewindsResourceFactory {
                         let resourceBalance: Tradewinds.FlowAmount
                         switch validateAndCreateFlowAmount(
                             folioBalance: folioBalance,
-                            policyAmount: earnMarketPolicyAmount,
+                            flowAmount: flowAmount,
                             network: network,
                             marketAddress: aaveMarket.pool,
                             symbol: symbol,
@@ -197,7 +182,7 @@ struct TradewindsResourceFactory {
                 // Add Morpho vaults
                 for morphoVault in networkType.morphoVaults {
                     guard
-                        let earnMarketPolicyAmount = matchesEarnMarketPolicy(
+                        let flowAmount = matchesEarnMarketPolicy(
                             earnMarketPolicy: earnMarketPolicy,
                             address: morphoVault.vault,
                             network: network
@@ -221,7 +206,7 @@ struct TradewindsResourceFactory {
                     let resourceBalance: Tradewinds.FlowAmount
                     switch validateAndCreateFlowAmount(
                         folioBalance: folioBalance,
-                        policyAmount: earnMarketPolicyAmount,
+                        flowAmount: flowAmount,
                         network: network,
                         marketAddress: morphoVault.vault,
                         symbol: symbol,
@@ -249,7 +234,7 @@ struct TradewindsResourceFactory {
                 // Add Comet markets
                 for comet in networkType.comets {
                     guard
-                        let earnMarketPolicyAmount = matchesEarnMarketPolicy(
+                        let flowAmount = matchesEarnMarketPolicy(
                             earnMarketPolicy: earnMarketPolicy,
                             address: comet.cometAddress,
                             network: network
@@ -273,7 +258,7 @@ struct TradewindsResourceFactory {
                     let resourceBalance: Tradewinds.FlowAmount
                     switch validateAndCreateFlowAmount(
                         folioBalance: folioBalance,
-                        policyAmount: earnMarketPolicyAmount,
+                        flowAmount: flowAmount,
                         network: network,
                         marketAddress: comet.cometAddress,
                         symbol: symbol,
@@ -305,13 +290,13 @@ struct TradewindsResourceFactory {
 
     private func validateAndCreateFlowAmount(
         folioBalance: Number,
-        policyAmount: EarnMarketPolicyAmount,
+        flowAmount: Tradewinds.FlowAmount,
         network: Network,
         marketAddress: EthAddress,
         symbol: String,
         decimals: Int
     ) -> Result<Tradewinds.FlowAmount, Charter.CharterError> {
-        switch policyAmount.amount {
+        switch flowAmount {
             case .max:
                 return .success(.exact(folioBalance))
             case .exact(let amount):

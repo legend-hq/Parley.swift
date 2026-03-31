@@ -429,8 +429,7 @@ struct CharterTradewindsMorphoRepayTests {
                         .amt(100, .usdc),
                         .base
                     ),
-                ]),
-                allowUsingEarningBalances: false
+                ])
             )
 
         if case .failure(let error) = result {
@@ -555,7 +554,8 @@ struct CharterTradewindsMorphoRepayTests {
                         repayer: EthAddress("0x00000000000000000000000000000000000A11CE"),
                         chainId: BaseNetwork.network.chainId,
                         collateralAmount: "0",
-                        collateralAssetSymbol: ""
+                        collateralAssetSymbol: "",
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -606,8 +606,7 @@ struct CharterTradewindsMorphoRepayTests {
                         ),
                     ],
                     maxFlow: "120e6"  // Max flow is limited by available resources (120 USDC in Comet)
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -697,7 +696,8 @@ struct CharterTradewindsMorphoRepayTests {
                         repayer: EthAddress("0x00000000000000000000000000000000000A11CE"),
                         chainId: BaseNetwork.network.chainId,
                         collateralAmount: "0.1e18",  // Withdraw 0.1 WETH
-                        collateralAssetSymbol: "WETH"
+                        collateralAssetSymbol: "WETH",
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -777,8 +777,7 @@ struct CharterTradewindsMorphoRepayTests {
                         ),
                     ],
                     maxFlow: "98500000"  // 50 USDC from Aave + 48.5 USDC from bridge (50 - 1 - 0.49) = 98.5 USDC
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

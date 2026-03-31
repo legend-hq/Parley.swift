@@ -738,7 +738,6 @@ extension Charter.QuarkIntent.Type_ {
 
     func tradewindsInfo(
         folio: Folio,
-        allowUsingEarningBalances: Bool = false,
         logger: Charter.Logger? = nil
     ) -> Result<
         (
@@ -772,7 +771,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: transferIntent.assetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: transferIntent.earnMarketPolicy,
                     actorWallet: transferIntent.sender.ethAddress,
                     network: nil  // Transfer can use resources from any network
                 )
@@ -945,7 +944,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: supplyIntent.earnMarketPolicy,
                     actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
@@ -1010,7 +1009,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: supplyIntent.earnMarketPolicy,
                     actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
@@ -1179,7 +1178,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: supplyIntent.earnMarketPolicy,
                     actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Can use resources from any network for bridging
                 )
@@ -1340,7 +1339,7 @@ extension Charter.QuarkIntent.Type_ {
                     .handle(
                         borrowIntent,
                         folio: folio,
-                        allowUsingEarningBalances: allowUsingEarningBalances,
+                        earnMarketPolicy: borrowIntent.earnMarketPolicy,
                         logger: logger
                     )
 
@@ -1362,7 +1361,7 @@ extension Charter.QuarkIntent.Type_ {
                     .handle(
                         borrowIntent,
                         folio: folio,
-                        allowUsingEarningBalances: allowUsingEarningBalances,
+                        earnMarketPolicy: borrowIntent.earnMarketPolicy,
                         logger: logger
                     )
             case .swap(let swapIntent):
@@ -1393,7 +1392,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: swapIntent.earnMarketPolicy,
                     actorWallet: swapIntent.sender.ethAddress,
                     network: nil
                 )
@@ -1488,7 +1487,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: swapIntentV2.sellAssetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: swapIntentV2.earnMarketPolicy,
                     actorWallet: swapIntentV2.sender,
                     network: nil  // All networks
                 )
@@ -1582,7 +1581,7 @@ extension Charter.QuarkIntent.Type_ {
                     .handle(
                         repayIntent,
                         folio: folio,
-                        allowUsingEarningBalances: allowUsingEarningBalances,
+                        earnMarketPolicy: repayIntent.earnMarketPolicy,
                         logger: logger
                     )
 
@@ -1603,7 +1602,7 @@ extension Charter.QuarkIntent.Type_ {
                     .handle(
                         repayIntent,
                         folio: folio,
-                        allowUsingEarningBalances: allowUsingEarningBalances,
+                        earnMarketPolicy: repayIntent.earnMarketPolicy,
                         logger: logger
                     )
 
@@ -1700,7 +1699,7 @@ extension Charter.QuarkIntent.Type_ {
                     let factory = TradewindsResourceFactory(
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
-                        earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                        earnMarketPolicy: loopIntent.earnMarketPolicy,
                         actorWallet: loopIntent.sender.ethAddress,
                         network: nil  // Can bridge from other networks
                     )
@@ -1850,7 +1849,7 @@ extension Charter.QuarkIntent.Type_ {
                     let factory = TradewindsResourceFactory(
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
-                        earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                        earnMarketPolicy: loopIntent.earnMarketPolicy,
                         actorWallet: loopIntent.sender.ethAddress,
                         network: nil  // Can bridge from other networks
                     )
@@ -2253,7 +2252,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: addBackingIntent.backingAssetSymbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: addBackingIntent.earnMarketPolicy,
                     actorWallet: addBackingIntent.sender.ethAddress,
                     network: nil  // Can bridge from other networks
                 )
@@ -2489,23 +2488,20 @@ extension Charter.QuarkIntent.Type_ {
 
                 }
 
-                // Build set of withdrawal markets with their amounts
-                let earnMarketPolicyAmounts = Set(
-                    migrateIntent.withdrawIntents.map { withdrawIntent in
-                        TradewindsResourceFactory.EarnMarketPolicyAmount(
-                            marketAddress: withdrawIntent.market,
-                            network: Network.fromChainId(withdrawIntent.chainId),
-                            amount: withdrawIntent.amount.isMaxUint256
-                                ? .max : .exact(withdrawIntent.amount)
-                        )
-                    }
-                )
+                // Build list of withdrawal markets with their amounts
+                let earnMarketSources = migrateIntent.withdrawIntents.map { withdrawIntent in
+                    EarnMarketPolicy.EarnMarketSource(
+                        marketAddress: withdrawIntent.market,
+                        network: Network.fromChainId(withdrawIntent.chainId),
+                        amount: withdrawIntent.amount
+                    )
+                }
 
                 // Create resource factory targeting specific withdrawal markets
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: supplyAssetSymbol,
-                    earnMarketPolicy: .specific(earnMarketPolicyAmounts),
+                    earnMarketPolicy: .specific(earnMarketSources),
                     actorWallet: supplyIntent.sender.ethAddress,
                     network: nil  // Allow cross-chain bridging if needed
                 )
@@ -2741,7 +2737,7 @@ extension Charter.QuarkIntent.Type_ {
                 let factory = TradewindsResourceFactory(
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
-                    earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+                    earnMarketPolicy: intent.earnMarketPolicy,
                     actorWallet: swapIntent.sender.ethAddress,
                     network: nil  // Allow cross-chain bridging
                 )

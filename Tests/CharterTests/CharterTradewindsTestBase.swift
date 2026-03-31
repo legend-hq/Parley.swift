@@ -249,20 +249,17 @@ struct ChartTestCase {
     let givens: [Given]
     let intent: Charter.QuarkIntent.Type_
     let expect: FlowExpectation
-    let allowUsingEarningBalances: Bool
 
     init(
         name: String,
         givens: [Given],
         intent: Charter.QuarkIntent.Type_,
-        expect: FlowExpectation,
-        allowUsingEarningBalances: Bool = false
+        expect: FlowExpectation
     ) {
         self.name = name
         self.givens = givens
         self.intent = intent
         self.expect = expect
-        self.allowUsingEarningBalances = allowUsingEarningBalances
     }
 }
 
@@ -277,8 +274,7 @@ struct ExpectedFlow {
 func runFlowTest(_ test: ChartTestCase) {
     // Build routes and target from intent
     let tradewindsResult = test.intent.tradewindsInfo(
-        folio: generateFolio(from: test.givens),
-        allowUsingEarningBalances: test.allowUsingEarningBalances
+        folio: generateFolio(from: test.givens)
     )
 
     switch tradewindsResult {

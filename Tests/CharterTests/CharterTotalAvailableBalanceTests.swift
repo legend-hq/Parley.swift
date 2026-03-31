@@ -21,7 +21,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == "100e6")
@@ -39,7 +39,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == "98e6")
@@ -58,7 +58,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == "98.5e6")
@@ -73,7 +73,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == Number(0))
@@ -91,7 +91,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: true
+            earnMarketPolicy: .all
         )
 
         // Returns 100.0005 USDC due to MAX_WITHDRAW_BUFFER (1.00001x) applied to max withdrawals
@@ -111,7 +111,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == "50e6")
@@ -126,7 +126,7 @@ struct CharterTotalAvailableBalanceTests {
             destinationChain: .base,
             folio: folio,
             actorWallet: Account.alice.address,
-            allowUsingEarningBalances: false
+            earnMarketPolicy: .none
         )
 
         #expect(available == Number(0))

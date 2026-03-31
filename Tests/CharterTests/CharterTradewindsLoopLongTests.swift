@@ -279,7 +279,8 @@ struct CharterTradewindsLoopLongTests {
                         maxProvidedBackingAmount: Number("10000e6"),
                         poolFee: 3000,
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        chainId: Number(BaseNetwork.chainId)
+                        chainId: Number(BaseNetwork.chainId),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -344,8 +345,7 @@ struct CharterTradewindsLoopLongTests {
                         ),
                     ],
                     maxFlow: "10000e6"
-                ),
-                allowUsingEarningBalances: true  // Must be true to withdraw from Aave
+                )
             )
         )
     }

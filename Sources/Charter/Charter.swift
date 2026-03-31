@@ -252,7 +252,7 @@ public enum Charter {
         destinationChain: Network,
         folio: Folio,
         actorWallet: EthAddress,
-        allowUsingEarningBalances: Bool
+        earnMarketPolicy: EarnMarketPolicy
     ) -> Number {
         guard let asset = Atlas.getEvmAssetBySymbol(network: destinationChain, symbol: assetSymbol)
         else {
@@ -267,7 +267,7 @@ public enum Charter {
             // MAX_WITHDRAW_BUFFER (1.00001x) applied to max withdrawals. This causes the total to be
             // slightly higher than the sum of individual balances (e.g., 100.0005 instead of 100).
             // This buffer accounts for interest accrual between calculation and execution time.
-            earnMarketPolicy: allowUsingEarningBalances ? .all : .none,
+            earnMarketPolicy: earnMarketPolicy,
             actorWallet: actorWallet,
             network: nil
         )

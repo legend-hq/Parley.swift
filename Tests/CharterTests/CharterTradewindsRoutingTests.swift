@@ -47,7 +47,8 @@ struct CharterTradewindsRoutingTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         amount: "50e6",
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -98,8 +99,7 @@ struct CharterTradewindsRoutingTests {
                         ),
                     ],
                     maxFlow: "139e6"  // 60 (Aave) + (100-20)*0.99 - 20 (bridge) = 139
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

@@ -120,7 +120,8 @@ struct CharterTradewindsMorphoTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         amount: "70e6",
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B")
+                        recipient: EthAddress("0x0000000000000000000000000000000000000B0B"),
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -169,8 +170,7 @@ struct CharterTradewindsMorphoTests {
                         ),
                     ],
                     maxFlow: "120e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }
@@ -308,7 +308,8 @@ struct CharterTradewindsMorphoTests {
                         assetSymbol: BaseNetwork.Assets.USDC.symbol,
                         morphoVault: EthAddress("0xd1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca"),  // Different vault
                         sender: EthAddress("0x00000000000000000000000000000000000A11CE"),
-                        chainId: BaseNetwork.network.chainId
+                        chainId: BaseNetwork.network.chainId,
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -359,8 +360,7 @@ struct CharterTradewindsMorphoTests {
                         ),
                     ],
                     maxFlow: "100e6"
-                ),
-                allowUsingEarningBalances: true
+                )
             )
         )
     }

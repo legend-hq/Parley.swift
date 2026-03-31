@@ -437,7 +437,8 @@ struct CharterTradewindsMorphoBorrowTests {
                         borrower: EthAddress("0x00000000000000000000000000000000000A11CE"),
                         chainId: BaseNetwork.network.chainId,
                         collateralAmount: "0.2e18",  // 0.2 WETH
-                        collateralAssetSymbol: "WETH"
+                        collateralAssetSymbol: "WETH",
+                        earnMarketPolicy: .all
                     )
                 ),
                 expect: .exactFlows(
@@ -540,8 +541,7 @@ struct CharterTradewindsMorphoBorrowTests {
                         ),
                     ],
                     maxFlow: "200069000000000000"  // Actual max flow after fees
-                ),
-                allowUsingEarningBalances: true  // Always enable earning balances for this test
+                )
             )
         )
     }
