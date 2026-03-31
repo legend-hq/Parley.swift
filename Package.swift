@@ -31,8 +31,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/GoodNotes/swift-icudata-slim.git", from: "0.2.0"),
         .package(
-            url: "https://github.com/hayesgm/Eth.swift",
-            exact: "1.0.4"
+            path: "../Eth.swift"
         ),
         .package(
             url: "git@github.com:legend-hq/SwiftNumber",

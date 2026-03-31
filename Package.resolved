@@ -1,15 +1,6 @@
 {
-  "originHash" : "c47a740cf64bd83f00fe10a083aec694ef12775172088c5cbdf01ab9dd0acd2e",
+  "originHash" : "b26882dd569bb3a9c22ae007ff2b2e44fde52c3efa4c10fac89b24b443e1c2d5",
   "pins" : [
-    {
-      "identity" : "eth.swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hayesgm/Eth.swift",
-      "state" : {
-        "revision" : "b092e3bd4f73bef3fd0a4f5d9af3aabb14751800",
-        "version" : "1.0.4"
-      }
-    },
     {
       "identity" : "swift-icudata-slim",
       "kind" : "remoteSourceControl",
