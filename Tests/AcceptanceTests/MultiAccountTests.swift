@@ -1,4 +1,5 @@
 @preconcurrency import Eth
+import Prelude
 import SwiftNumber
 import TestHelpers
 import Testing
@@ -32,7 +33,7 @@ struct MultiAccountTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -88,10 +89,10 @@ struct MultiAccountTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("1"))),
                                         token: EthAddress(
                                             "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
+                                        ).on(Network.fromChainId(Number("1")))
                                     )
                                 ),
                             ]

@@ -9,7 +9,7 @@ struct TradewindsResourceFactory {
     let folio: Folio
     let primarySymbol: String
     let earnMarketPolicy: EarnMarketPolicy
-    let actorWallet: EthAddress
+    let actorWallet: ChainAddress
     let network: Network?
 
     func createAllResources() -> Result<
@@ -32,33 +32,41 @@ struct TradewindsResourceFactory {
     func createTokenResources() -> [Tradewinds.Resource<TradewindsLegendNode>] {
         var resources: [Tradewinds.Resource<TradewindsLegendNode>] = []
 
-        // Iterate over all networks in Atlas
-        for networkType in Atlas.allEvmNetworks {
-            let network = networkType.network
+        for atlasNetwork in Atlas.allNetworks {
+            let network: Network
+            let wallet: ChainAddress
+
+            switch atlasNetwork {
+            case .evm(let evmNetwork):
+                guard actorWallet.isEVM else { continue }
+                network = evmNetwork.network
+                wallet = actorWallet.ethAddress.on(network)
+            case .solana:
+                guard actorWallet.isSolana else { continue }
+                network = .solana
+                wallet = actorWallet
+            }
 
             // Skip if we're restricted to a specific network and this isn't it
             if let restrictedNetwork = self.network, restrictedNetwork != network {
                 continue
             }
 
-            // Get relevant symbols for this network
             let relevantSymbols = folio.getRelevantSymbols(
                 network: network,
                 assetSymbol: primarySymbol
             )
 
-            // For each relevant symbol, check if we have a balance or create a zero balance
             for symbol in relevantSymbols {
-                guard let atlasToken = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
+                guard let atlasAsset = Atlas.getAssetBySymbol(network: atlasNetwork, symbol: symbol)
                 else {
                     continue
                 }
 
-                // Look up the balance in folio
                 let balanceKey = Folio.BalanceType.token(
                     network: network,
                     symbol: symbol,
-                    wallet: actorWallet
+                    wallet: wallet
                 )
                 let balance = folio.balances[balanceKey]?.underlying ?? Number(0)
 
@@ -67,9 +75,9 @@ struct TradewindsResourceFactory {
                         amount: .exact(balance),
                         node: .tokenBalance(
                             network: network,
-                            address: atlasToken.assetAddress,
+                            address: atlasAsset.chainAddress(on: network),
                             symbol: symbol,
-                            wallet: actorWallet
+                            wallet: wallet
                         )
                     )
                 )
@@ -100,6 +108,10 @@ struct TradewindsResourceFactory {
     func createEarnMarketResources() -> Result<
         [Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError
     > {
+        // Earn markets are EVM-only
+        guard actorWallet.isEVM else { return .success([]) }
+        let evmActorWallet = actorWallet.ethAddress
+
         var resources: [Tradewinds.Resource<TradewindsLegendNode>] = []
 
         // Iterate over all networks in Atlas
@@ -118,7 +130,7 @@ struct TradewindsResourceFactory {
             )
 
             for symbol in relevantSymbols {
-                guard let underlyingAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
+                guard let underlyingAsset = Atlas.getAssetBySymbol(network: network, symbol: symbol)
                 else {
                     continue
                 }
@@ -146,7 +158,7 @@ struct TradewindsResourceFactory {
                                 pool: aaveMarket.pool,
                                 underlyingSymbol: symbol
                             ),
-                            wallet: actorWallet
+                            wallet: evmActorWallet
                         )
                         let folioBalance = folio.balances[balanceKey]?.underlying ?? Number(0)
 
@@ -172,7 +184,7 @@ struct TradewindsResourceFactory {
                                     network: network,
                                     pool: aaveMarket.pool,
                                     baseAsset: underlyingAsset.assetAddress,
-                                    wallet: actorWallet
+                                    wallet: evmActorWallet
                                 )
                             )
                         )
@@ -199,7 +211,7 @@ struct TradewindsResourceFactory {
                             vault: morphoVault.vault,
                             underlyingSymbol: symbol
                         ),
-                        wallet: actorWallet
+                        wallet: evmActorWallet
                     )
                     let folioBalance = folio.balances[balanceKey]?.underlying ?? Number(0)
 
@@ -225,7 +237,7 @@ struct TradewindsResourceFactory {
                                 network: network,
                                 vault: morphoVault.vault,
                                 baseAsset: underlyingAsset.assetAddress,
-                                wallet: actorWallet
+                                wallet: evmActorWallet
                             )
                         )
                     )
@@ -251,7 +263,7 @@ struct TradewindsResourceFactory {
                             comet: comet.cometAddress,
                             underlyingSymbol: symbol
                         ),
-                        wallet: actorWallet
+                        wallet: evmActorWallet
                     )
                     let folioBalance = folio.balances[balanceKey]?.underlying ?? Number(0)
 
@@ -277,7 +289,7 @@ struct TradewindsResourceFactory {
                                 network: network,
                                 comet: comet.cometAddress,
                                 baseAsset: underlyingAsset.assetAddress,
-                                wallet: actorWallet
+                                wallet: evmActorWallet
                             )
                         )
                     )

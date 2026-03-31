@@ -223,8 +223,8 @@ struct ActivityMetadataDecodingTests {
             #expect(transfer.assetSymbol == "USDC")
             #expect(transfer.chainId == Number("1"))
             #expect(transfer.price == Number("1000000000000000000"))
-            #expect(transfer.recipient == EthAddress("0x9876543210987654321098765432109876543210"))
-            #expect(transfer.token == EthAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"))
+            #expect(transfer.recipient == .ethereum(EthAddress("0x9876543210987654321098765432109876543210")))
+            #expect(transfer.token == .ethereum(EthAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")))
         } else {
             Issue.record("Expected action context to be transfer")
         }

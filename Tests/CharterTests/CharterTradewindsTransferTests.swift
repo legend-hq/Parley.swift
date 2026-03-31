@@ -35,15 +35,15 @@ struct CharterTradewindsTransferTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -84,15 +84,15 @@ struct CharterTradewindsTransferTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
@@ -112,15 +112,15 @@ struct CharterTradewindsTransferTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x000000000000000000000000000000000000b0ba")
+                                    wallet: EthAddress("0x000000000000000000000000000000000000b0ba").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -161,15 +161,15 @@ struct CharterTradewindsTransferTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
@@ -189,15 +189,15 @@ struct CharterTradewindsTransferTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -238,15 +238,15 @@ struct CharterTradewindsTransferTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
@@ -266,15 +266,15 @@ struct CharterTradewindsTransferTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -322,15 +322,15 @@ struct CharterTradewindsTransferTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -340,6 +340,100 @@ struct CharterTradewindsTransferTests {
                         )
                     ],
                     maxFlow: "4.50e6"
+                )
+            )
+        )
+    }
+
+    // MARK: - Solana Transfer Tests
+
+    @Test("Simple Solana USDC Transfer (Alice -> Bob)")
+    func testSolanaUsdcTransfer() {
+        runFlowTest(
+            ChartTestCase(
+                name: "Simple Solana USDC Transfer (Alice -> Bob)",
+                givens: [
+                    .tokenBalance(.alice, .amt(10, .usdc), .solana),
+                ],
+                intent: .transfer(
+                    Charter.TransferIntent(
+                        assetSymbol: "USDC",
+                        amount: "5e6",
+                        sender: .solana(Account.alice.solanaAddress),
+                        recipient: .solana(Account.bob.solanaAddress)
+                    )
+                ),
+                expect: .exactFlows(
+                    [
+                        .init(
+                            route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
+                                type: .transferOut,
+                                source: .tokenBalance(
+                                    network: .solana,
+                                    address: .solana(Atlas.Solana.Assets.USDC.assetAddress),
+                                    symbol: "USDC",
+                                    wallet: .solana(Account.alice.solanaAddress)
+                                ),
+                                sink: .tokenBalance(
+                                    network: .solana,
+                                    address: .solana(Atlas.Solana.Assets.USDC.assetAddress),
+                                    symbol: "USDC",
+                                    wallet: .solana(Account.bob.solanaAddress)
+                                ),
+                                rate: .one,
+                                minFlow: "0",
+                                maxFlow: Number.MAX_UINT_256
+                            ),
+                            amount: "5e6"
+                        )
+                    ],
+                    maxFlow: "10e6"
+                )
+            )
+        )
+    }
+
+    @Test("Simple Solana Native SOL Transfer (Alice -> Bob)")
+    func testSolanaSolTransfer() {
+        runFlowTest(
+            ChartTestCase(
+                name: "Simple Solana Native SOL Transfer (Alice -> Bob)",
+                givens: [
+                    .tokenBalance(.alice, .amt(2, .sol), .solana),
+                ],
+                intent: .transfer(
+                    Charter.TransferIntent(
+                        assetSymbol: "SOL",
+                        amount: "1e9",
+                        sender: .solana(Account.alice.solanaAddress),
+                        recipient: .solana(Account.bob.solanaAddress)
+                    )
+                ),
+                expect: .exactFlows(
+                    [
+                        .init(
+                            route: Tradewinds.Route<TradewindsLegendNode, LegendRouteType>(
+                                type: .transferOut,
+                                source: .tokenBalance(
+                                    network: .solana,
+                                    address: .solana(SolanaConstants.SYSTEM_PROGRAM),
+                                    symbol: "SOL",
+                                    wallet: .solana(Account.alice.solanaAddress)
+                                ),
+                                sink: .tokenBalance(
+                                    network: .solana,
+                                    address: .solana(SolanaConstants.SYSTEM_PROGRAM),
+                                    symbol: "SOL",
+                                    wallet: .solana(Account.bob.solanaAddress)
+                                ),
+                                rate: .one,
+                                minFlow: "0",
+                                maxFlow: Number.MAX_UINT_256
+                            ),
+                            amount: "1e9"
+                        )
+                    ],
+                    maxFlow: "2e9"
                 )
             )
         )

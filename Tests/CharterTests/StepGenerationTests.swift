@@ -1,6 +1,9 @@
+import Atlas
 import Eth
 import Foundation
+import Prelude
 import SwiftNumber
+import TestHelpers
 import Testing
 
 @testable import Charter
@@ -87,8 +90,8 @@ struct StepGenerationTests {
                 assetSymbol: "USDC",
                 chainId: chainId,
                 price: Number("1e8"),
-                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
-                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913")
+                recipient: EthAddress("0x1234567890123456789012345678901234567890").on(Network.fromChainId(chainId)),
+                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913").on(Network.fromChainId(chainId))
             )
         )
     }
@@ -498,11 +501,11 @@ struct StepGenerationTests {
                                 assetSymbol: "USDC",
                                 chainId: Number("8453"),
                                 price: Number("1e8"),
-                                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
-                                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913")
+                                recipient: EthAddress("0x1234567890123456789012345678901234567890").on(Network.fromChainId(Number("8453"))),
+                                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913").on(Network.fromChainId(Number("8453")))
                             )
                         )
-                    )
+                    ),
                 ],
                 dependsOn: []
             )
@@ -528,5 +531,77 @@ struct StepGenerationTests {
         // Round-trip
         let decoded = try decoder.decode(Charter.Chart.Step.self, from: data)
         #expect(decoded == step)
+    }
+
+    // MARK: - Solana step encoding/decoding
+
+    @Test("Step encoding/decoding round-trip for solana_operation")
+    func solanaOperationStepCodable() throws {
+        let step = Charter.Chart.Step.solanaOperation(
+            Charter.Chart.Step.OperationStep(
+                chainId: Network.solana.chainId,
+                operationIndex: 0,
+                expectedActions: [
+                    Charter.Chart.ExpectedAction(
+                        actionType: "TRANSFER",
+                        actionContext: .transfer(
+                            Charter.ActionContext.TransferActionContext(
+                                amount: Number("1e6"),
+                                assetSymbol: "USDC",
+                                chainId: Network.solana.chainId,
+                                price: Number("1e8"),
+                                recipient: .solana(SolanaAddress(
+                                    fromBase58: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+                                )!),
+                                token: .solana(Atlas.Solana.Assets.USDC.assetAddress)
+                            )
+                        )
+                    )
+                ],
+                dependsOn: []
+            )
+        )
+
+        let data = try encoder.encode(step)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        // Verify discriminator
+        #expect(json["type"] as? String == "solana_operation")
+        #expect(json["chain_id"] as? String == Network.solana.chainId.description)
+        #expect(json["operation_index"] as? Int == 0)
+        #expect((json["depends_on"] as? [Int]) == [])
+
+        // Round-trip
+        let decoded = try decoder.decode(Charter.Chart.Step.self, from: data)
+        #expect(decoded == step)
+    }
+
+    @Test("Single Solana operation action produces 1 solana_operation step")
+    func singleSolanaOperationAction() {
+        let amount = TokenAmount.amt(5, .usdc)
+        let operationAction = Charter.SolanaOperationBuilder.transfer(
+            sender: Account.alice.solanaAddress,
+            recipient: Account.bob.solanaAddress,
+            assetSymbol: amount.token.symbol,
+            mint: Atlas.Solana.Assets.USDC.assetAddress,
+            amount: amount.toAmount.underlying,
+            decimals: amount.token.decimals,
+            price: Number("1e8"),
+            feePayer: SolanaFixtures.feePayer
+        )
+
+        let steps = Charter.generateStepsFromOperationActions([operationAction])
+
+        #expect(steps.count == 1)
+
+        guard case .solanaOperation(let step) = steps[0] else {
+            Issue.record("Expected solana_operation step at index 0")
+            return
+        }
+        #expect(step.chainId == Network.solana.chainId)
+        #expect(step.operationIndex == 0)
+        #expect(step.dependsOn == [])
+        #expect(step.expectedActions.count == 1)
+        #expect(step.expectedActions[0].actionType == "TRANSFER")
     }
 }

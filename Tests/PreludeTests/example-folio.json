@@ -918,6 +918,7 @@
     "token/USDC": "1"
   },
   "rewards": {},
+  "solana_transaction_context": {},
   "swap_hints": {
     "wrapper/arbitrum/stETH/arbitrum/wstETH": {
       "exchange_rate": "1.20638443746718",

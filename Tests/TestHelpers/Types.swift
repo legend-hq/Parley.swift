@@ -6,6 +6,14 @@ import SwiftNumber
 
 @testable import Charter
 
+public enum SolanaFixtures {
+    public static let nonceAccount = Account.bob.solanaAddress
+    public static let nonceValue = Base58Data(
+        fromBase58: "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7"
+    )!
+    public static let feePayer = SolanaAddress("FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z")
+}
+
 public enum Account: Hashable, Equatable, Sendable {
     case alice
     case bob
@@ -30,7 +38,9 @@ public enum Account: Hashable, Equatable, Sendable {
         }
     }
 
-    public var address: EthAddress {
+    public var address: EthAddress { evmAddress }
+
+    public var evmAddress: EthAddress {
         switch self {
             case .alice:
                 return EthAddress("0x00000000000000000000000000000000000A11CE")
@@ -45,13 +55,48 @@ public enum Account: Hashable, Equatable, Sendable {
         }
     }
 
+    public var solanaAddress: SolanaAddress {
+        switch self {
+            case .alice:
+                return SolanaAddress("7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV")
+            case .bob:
+                return SolanaAddress("9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM")
+            case .carl:
+                return SolanaAddress("DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy")
+            case .stax:
+                return SolanaAddress("FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH")
+            case .unknownAccount:
+                return SolanaAddress("11111111111111111111111111111111")
+        }
+    }
+
+    /// Returns the appropriate ChainAddress for the given network.
+    /// EVM networks use the EVM address; Solana uses the Solana address.
+    public func chainAddress(on network: Network) -> ChainAddress {
+        switch network {
+            case .solana:
+                .solana(solanaAddress)
+            default:
+                evmAddress.on(network)
+        }
+    }
+
     public static func from(address: EthAddress) -> Account {
         for knownCase in Account.knownCases {
-            if address == knownCase.address {
+            if address == knownCase.evmAddress {
                 return knownCase
             }
         }
         return .unknownAccount(address)
+    }
+
+    public static func from(solanaAddress: SolanaAddress) -> Account {
+        for knownCase in Account.knownCases {
+            if solanaAddress == knownCase.solanaAddress {
+                return knownCase
+            }
+        }
+        return .unknownAccount(EthAddress("0x0000000000000000000000000000000000000000"))
     }
 
     public var nonceSecret: Hex {
@@ -653,11 +698,12 @@ public enum Token: Hashable, Equatable, Sendable {
     case whype
     case pol
     case wpol
+    case sol
     case unknownToken(EthAddress)
 
     public static let knownCases: [Token] = [
         .usdc, .eth, .weth, .link, .usdt, .wbtc, .degen, .cbeth, .cbbtc, .comp, .hype, .whype,
-        .pol, .wpol,
+        .pol, .wpol, .sol,
     ]
 
     public static let networkTokenAddress: [Network: [Token: EthAddress]] = [
@@ -777,6 +823,8 @@ public enum Token: Hashable, Equatable, Sendable {
                 return "POL"
             case .wpol:
                 return "WPOL"
+            case .sol:
+                return "SOL"
             case .unknownToken(let address):
                 return "UnknownToken(\(address.description))"
         }
@@ -790,6 +838,8 @@ public enum Token: Hashable, Equatable, Sendable {
                 return 8
             case .eth, .weth, .link, .degen, .cbeth, .comp, .hype, .whype, .pol, .wpol:
                 return 18
+            case .sol:
+                return 9
             case .unknownToken:
                 return 0
         }
@@ -813,6 +863,8 @@ public enum Token: Hashable, Equatable, Sendable {
                 return 25.0
             case .pol, .wpol:
                 return 0.5
+            case .sol:
+                return 150.0
             case .unknownToken:
                 return 0
         }

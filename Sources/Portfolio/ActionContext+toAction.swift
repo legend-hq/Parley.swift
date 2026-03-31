@@ -102,9 +102,8 @@ extension Charter.ActionContext.TransferActionContext: ActionConvertible {
         }
 
         let transferAmount = PricedAmount(amount, forAsset: asset, withPrice: price)
-        let recipient = ChainAddress(recipient, chain: asset.chain)
 
-        return TransferAction(transferAmount: transferAmount, recipient: recipient)
+        return TransferAction(transferAmount: transferAmount, recipient: self.recipient)
     }
 
     public func toAction(portfolios: [Portfolio]) -> Action? {
@@ -140,10 +139,7 @@ extension Charter.ActionContext.BridgeMintActionContext: ActionConvertible {
 
         let mintAmount = PricedAmount(outputAmount, forAsset: asset, withPrice: price)
         let feeAmount = PricedAmount(maxFee, forAsset: asset, withPrice: price)
-        let senderAddress = ChainAddress(
-            recipient,
-            chain: Network.fromChainId(sourceChainId)
-        )
+        let senderAddress = recipient.on(Network.fromChainId(sourceChainId))
 
         return BridgeMintAction(
             mintAmount: mintAmount,
@@ -181,10 +177,7 @@ extension Charter.ActionContext.BridgeActionContext: ActionConvertible {
 
         let bridgeAmount = PricedAmount(outputAmount, forAsset: asset, withPrice: price)
         let bridgeFee = PricedAmount(inputAmount - outputAmount, forAsset: asset, withPrice: price)
-        let recipient = ChainAddress(
-            recipient,
-            chain: Network.fromChainId(destinationChainId)
-        )
+        let recipient = recipient.on(Network.fromChainId(destinationChainId))
 
         return BridgeAction(
             bridgeAmount: bridgeAmount,

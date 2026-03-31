@@ -16,6 +16,18 @@ public func generateFolio(from givens: [Given]) -> Folio {
                 forKey: .nonceSecret(network: network, wallet: account.address)
             )
         }
+
+        // Inject Solana transaction context (durable nonce + fee payer) for all known wallets.
+        // Mirrors how EVM nonce secrets are injected above.
+        // Uses a deterministic test nonce account and value, plus the RFC 8032 test key as fee payer.
+        folio.solanaTransactionContext.updateValue(
+            Folio.SolanaTransactionContext(
+                nonceAccount: SolanaFixtures.nonceAccount,
+                nonceValue: SolanaFixtures.nonceValue,
+                feePayer: SolanaFixtures.feePayer
+            ),
+            forKey: .durableNonce(wallet: account.solanaAddress)
+        )
     }
 
     // Add default prices for all known tokens
@@ -97,7 +109,7 @@ public func applyGiven(folio: inout Folio, given: Given) {
                 forKey: .token(
                     network: network,
                     symbol: amount.token.symbol,
-                    wallet: account.address
+                    wallet: account.chainAddress(on: network)
                 )
             )
         case .prices(let prices):

@@ -107,7 +107,7 @@ extension BorrowIntentHandler {
     func validateIntent(_ intent: BorrowIntent, folio: Folio) -> Bool {
         let network = Network.fromChainId(getChainId(from: intent))
         guard
-            Atlas.getEvmAssetBySymbol(network: network, symbol: getBorrowAssetSymbol(from: intent))
+            Atlas.getAssetBySymbol(network: network, symbol: getBorrowAssetSymbol(from: intent))
                 != nil
         else {
             return false
@@ -208,7 +208,7 @@ extension BorrowIntentHandler {
         }
         let actualSymbol = getWrappedAssetSymbol(symbol, folio: folio, network: network)
 
-        guard let asset = Atlas.getEvmAssetBySymbol(network: network, symbol: actualSymbol) else {
+        guard let asset = Atlas.getAssetBySymbol(network: network, symbol: actualSymbol) else {
             return nil
         }
 
@@ -241,7 +241,7 @@ extension BorrowIntentHandler {
     private func createCollateralResources(
         symbol: String,
         folio: Folio,
-        actorWallet: EthAddress,
+        actorWallet: ChainAddress,
         earnMarketPolicy: EarnMarketPolicy
     ) -> Result<[Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError> {
         let factory = TradewindsResourceFactory(
@@ -270,7 +270,7 @@ extension BorrowIntentHandler {
         ), Charter.CharterError
     > {
         let borrowSymbol = getBorrowAssetSymbol(from: intent)
-        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: borrowSymbol)
+        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: borrowSymbol)
         else {
             return .failure(.unknownAsset(symbol: borrowSymbol, network: network, address: nil))
         }
@@ -293,9 +293,9 @@ extension BorrowIntentHandler {
 
         let targetNode = TradewindsLegendNode.tokenBalance(
             network: network,
-            address: borrowAsset.assetAddress,
+            address: borrowAsset.assetAddress.on(network),
             symbol: borrowAsset.symbol,
-            wallet: borrower
+            wallet: borrower.on(network)
         )
 
         let isMaxBorrow = getIsMaxBorrow(from: intent)
@@ -354,7 +354,7 @@ extension BorrowIntentHandler {
         switch createCollateralResources(
             symbol: collateralInfo.symbol,
             folio: folio,
-            actorWallet: borrower,
+            actorWallet: borrower.on(network),
             earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
@@ -375,7 +375,7 @@ extension BorrowIntentHandler {
             resources: resources,
             targetNode: targetNode,
             folio: folio,
-            actorWallet: borrower,
+            actorWallet: borrower.on(network),
             logger: logger
         )
 
@@ -411,7 +411,7 @@ extension BorrowIntentHandler {
                 network: network,
                 folio: folio
             ),
-            let borrowAsset = Atlas.getEvmAssetBySymbol(
+            let borrowAsset = Atlas.getAssetBySymbol(
                 network: network,
                 symbol: getBorrowAssetSymbol(from: intent)
             )
@@ -430,7 +430,7 @@ extension BorrowIntentHandler {
         switch createCollateralResources(
             symbol: collateralInfo.symbol,
             folio: folio,
-            actorWallet: borrower,
+            actorWallet: borrower.on(network),
             earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
@@ -451,7 +451,7 @@ extension BorrowIntentHandler {
             resources: resources,
             targetNode: targetNode,
             folio: folio,
-            actorWallet: borrower,
+            actorWallet: borrower.on(network),
             logger: logger
         )
 
@@ -483,7 +483,7 @@ extension BorrowIntentHandler {
         resources: [Tradewinds.Resource<TradewindsLegendNode>],
         targetNode: TradewindsLegendNode,
         folio: Folio,
-        actorWallet: EthAddress,
+        actorWallet: ChainAddress,
         logger: Charter.Logger?
     ) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
         let allNodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -538,18 +538,19 @@ extension BorrowIntentHandler {
     }
 
     private func extractUserWallets(from resources: [Tradewinds.Resource<TradewindsLegendNode>])
-        -> Set<EthAddress>
+        -> Set<ChainAddress>
     {
         Set(
-            resources.compactMap { resource -> EthAddress? in
+            resources.compactMap { resource -> ChainAddress? in
                 switch resource.node {
-                    case .tokenBalance(_, _, _, let wallet),
-                        .cometSupplyBalance(_, _, _, let wallet),
-                        .cometCollateralBalance(_, _, _, let wallet),
-                        .morphoCollateralBalance(_, _, _, let wallet),
-                        .morphoVaultSupplyBalance(_, _, _, let wallet),
-                        .aaveSupplyBalance(_, _, _, let wallet):
+                    case .tokenBalance(_, _, _, let wallet):
                         return wallet
+                    case .cometSupplyBalance(let network, _, _, let wallet),
+                        .cometCollateralBalance(let network, _, _, let wallet),
+                        .morphoCollateralBalance(let network, _, _, let wallet),
+                        .morphoVaultSupplyBalance(let network, _, _, let wallet),
+                        .aaveSupplyBalance(let network, _, _, let wallet):
+                        return wallet.on(network)
                     default:
                         return nil
                 }

@@ -59,9 +59,9 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -129,9 +129,9 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -192,15 +192,15 @@ struct CharterTradewindsLoopShortTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,  // Bridge to ETH on Base
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),  // Bridge to ETH on Base
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
@@ -217,15 +217,15 @@ struct CharterTradewindsLoopShortTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -250,9 +250,9 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -322,9 +322,9 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -507,9 +507,9 @@ struct CharterTradewindsLoopShortTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,

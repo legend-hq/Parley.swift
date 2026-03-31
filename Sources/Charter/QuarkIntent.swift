@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Prelude
 import SwiftNumber
@@ -764,7 +765,6 @@ extension Charter {
         public let recipient: ChainAddress
         public let earnMarketPolicy: EarnMarketPolicy
 
-        /// Derived from `sender.chain.chainId` for backward compatibility.
         public var chainId: Number {
             sender.chain.chainId
         }
@@ -808,9 +808,9 @@ extension Charter {
             let network = Network.fromChainId(chainId)
             self.assetSymbol = assetSymbol
             self.amount = amount
-            self.sender = ChainAddress(sender, chain: network)
-            self.recipient = ChainAddress(recipient, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
+            self.recipient = recipient.on(network)
         }
 
         // MARK: - Custom Codable (flat JSON for backward compat)
@@ -821,10 +821,34 @@ extension Charter {
             let network = Network.fromChainId(chainId)
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.amount = try container.decode(Number.self, forKey: .amount)
-            let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            let recipientAddress = try container.decode(EthAddress.self, forKey: .recipient)
-            self.sender = ChainAddress(senderAddress, chain: network)
-            self.recipient = ChainAddress(recipientAddress, chain: network)
+
+            if network == .solana {
+                // Solana: decode addresses as base58 strings
+                let senderStr = try container.decode(String.self, forKey: .sender)
+                let recipientStr = try container.decode(String.self, forKey: .recipient)
+                guard let senderAddr = SolanaAddress(fromBase58: senderStr) else {
+                    throw DecodingError.dataCorruptedError(
+                        forKey: .sender,
+                        in: container,
+                        debugDescription: "Invalid Solana address: \(senderStr)"
+                    )
+                }
+                guard let recipientAddr = SolanaAddress(fromBase58: recipientStr) else {
+                    throw DecodingError.dataCorruptedError(
+                        forKey: .recipient,
+                        in: container,
+                        debugDescription: "Invalid Solana address: \(recipientStr)"
+                    )
+                }
+                self.sender = .solana(senderAddr)
+                self.recipient = .solana(recipientAddr)
+            } else {
+                // EVM: decode addresses as hex
+                let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
+                let recipientAddress = try container.decode(EthAddress.self, forKey: .recipient)
+                self.sender = senderAddress.on(network)
+                self.recipient = recipientAddress.on(network)
+            }
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -833,8 +857,9 @@ extension Charter {
             try container.encode(chainId, forKey: .chainId)
             try container.encode(assetSymbol, forKey: .assetSymbol)
             try container.encode(amount, forKey: .amount)
-            try container.encode(sender.ethAddress, forKey: .sender)
-            try container.encode(recipient.ethAddress, forKey: .recipient)
+            // Use displayString which returns hex for EVM, base58 for Solana
+            try container.encode(sender.displayString, forKey: .sender)
+            try container.encode(recipient.displayString, forKey: .recipient)
             try container.encode(earnMarketPolicy, forKey: .earnMarketPolicy)
         }
     }
@@ -887,8 +912,8 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.comet = comet
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -899,7 +924,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.comet = try container.decode(EthAddress.self, forKey: .comet)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -962,8 +987,8 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.aavePool = aavePool
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -974,7 +999,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.aavePool = try container.decode(EthAddress.self, forKey: .aavePool)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1032,7 +1057,7 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.aavePool = aavePool
-            self.withdrawer = ChainAddress(withdrawer, chain: network)
+            self.withdrawer = withdrawer.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1043,7 +1068,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.aavePool = try container.decode(EthAddress.self, forKey: .aavePool)
             let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
-            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+            self.withdrawer = withdrawerAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -1116,8 +1141,8 @@ extension Charter {
             self.marketId = marketId
             self.amount = amount
             self.isShort = isShort
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1130,7 +1155,7 @@ extension Charter {
             self.amount = try container.decode(Number.self, forKey: .amount)
             self.isShort = try container.decode(Bool.self, forKey: .isShort)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1204,7 +1229,7 @@ extension Charter {
             let network = Network.fromChainId(chainId)
             self.amount = amount
             self.assetSymbol = assetSymbol
-            self.borrower = ChainAddress(borrower, chain: network)
+            self.borrower = borrower.on(network)
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.comet = comet
@@ -1218,7 +1243,7 @@ extension Charter {
             self.amount = try container.decode(Number.self, forKey: .amount)
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             let borrowerAddress = try container.decode(EthAddress.self, forKey: .borrower)
-            self.borrower = ChainAddress(borrowerAddress, chain: network)
+            self.borrower = borrowerAddress.on(network)
             self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
             self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
             self.comet = try container.decode(EthAddress.self, forKey: .comet)
@@ -1302,8 +1327,8 @@ extension Charter {
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.comet = comet
-            self.repayer = ChainAddress(repayer, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.repayer = repayer.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1316,7 +1341,7 @@ extension Charter {
             self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
             self.comet = try container.decode(EthAddress.self, forKey: .comet)
             let repayerAddress = try container.decode(EthAddress.self, forKey: .repayer)
-            self.repayer = ChainAddress(repayerAddress, chain: network)
+            self.repayer = repayerAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1380,7 +1405,7 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.comet = comet
-            self.withdrawer = ChainAddress(withdrawer, chain: network)
+            self.withdrawer = withdrawer.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1391,7 +1416,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.comet = try container.decode(EthAddress.self, forKey: .comet)
             let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
-            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+            self.withdrawer = withdrawerAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -1482,8 +1507,8 @@ extension Charter {
             self.maxSwapBackingAmount = maxSwapBackingAmount
             self.maxProvidedBackingAmount = maxProvidedBackingAmount
             self.poolFee = poolFee
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1499,7 +1524,7 @@ extension Charter {
             self.maxProvidedBackingAmount = try container.decode(Number.self, forKey: .maxProvidedBackingAmount)
             self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1597,8 +1622,8 @@ extension Charter {
             self.minSwapBackingAmount = minSwapBackingAmount
             self.providedBackingAmount = providedBackingAmount
             self.poolFee = poolFee
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1614,7 +1639,7 @@ extension Charter {
             self.providedBackingAmount = try container.decode(Number.self, forKey: .providedBackingAmount)
             self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1714,7 +1739,7 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.marketId = marketId
-            self.borrower = ChainAddress(borrower, chain: network)
+            self.borrower = borrower.on(network)
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.earnMarketPolicy = earnMarketPolicy
@@ -1728,7 +1753,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.marketId = try container.decode(Hex.self, forKey: .marketId)
             let borrowerAddress = try container.decode(EthAddress.self, forKey: .borrower)
-            self.borrower = ChainAddress(borrowerAddress, chain: network)
+            self.borrower = borrowerAddress.on(network)
             self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
             self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
@@ -1809,7 +1834,7 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.marketId = marketId
-            self.repayer = ChainAddress(repayer, chain: network)
+            self.repayer = repayer.on(network)
             self.collateralAmount = collateralAmount
             self.collateralAssetSymbol = collateralAssetSymbol
             self.earnMarketPolicy = earnMarketPolicy
@@ -1823,7 +1848,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.marketId = try container.decode(Hex.self, forKey: .marketId)
             let repayerAddress = try container.decode(EthAddress.self, forKey: .repayer)
-            self.repayer = ChainAddress(repayerAddress, chain: network)
+            self.repayer = repayerAddress.on(network)
             self.collateralAmount = try container.decode(Number.self, forKey: .collateralAmount)
             self.collateralAssetSymbol = try container.decode(String.self, forKey: .collateralAssetSymbol)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
@@ -1909,8 +1934,8 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.morphoVault = morphoVault
-            self.sender = ChainAddress(sender, chain: network)
             self.earnMarketPolicy = earnMarketPolicy
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1921,7 +1946,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.morphoVault = try container.decode(EthAddress.self, forKey: .morphoVault)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
         }
 
@@ -1979,7 +2004,7 @@ extension Charter {
             self.amount = amount
             self.assetSymbol = assetSymbol
             self.morphoVault = morphoVault
-            self.withdrawer = ChainAddress(withdrawer, chain: network)
+            self.withdrawer = withdrawer.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -1990,7 +2015,7 @@ extension Charter {
             self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
             self.morphoVault = try container.decode(EthAddress.self, forKey: .morphoVault)
             let withdrawerAddress = try container.decode(EthAddress.self, forKey: .withdrawer)
-            self.withdrawer = ChainAddress(withdrawerAddress, chain: network)
+            self.withdrawer = withdrawerAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -2058,7 +2083,7 @@ extension Charter {
             self.buyToken = buyToken
             self.buyAmount = buyAmount
             self.interval = interval
-            self.sender = ChainAddress(sender, chain: network)
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -2071,7 +2096,7 @@ extension Charter {
             self.buyAmount = try container.decode(Number.self, forKey: .buyAmount)
             self.interval = try container.decode(Number.self, forKey: .interval)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -2386,7 +2411,7 @@ extension Charter {
             self.swapQuoteBuyAmount = swapQuoteBuyAmount
             self.feeToken = feeToken
             self.feeAmount = feeAmount
-            self.sender = ChainAddress(sender, chain: network)
+            self.sender = sender.on(network)
             self.isExactOut = isExactOut
             self.isBuy = isBuy
             self.earnMarketPolicy = earnMarketPolicy
@@ -2405,7 +2430,7 @@ extension Charter {
             self.feeToken = try container.decode(EthAddress.self, forKey: .feeToken)
             self.feeAmount = try container.decode(Number.self, forKey: .feeAmount)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
             self.isExactOut = try container.decode(Bool.self, forKey: .isExactOut)
             self.isBuy = try container.decode(Bool.self, forKey: .isBuy)
             self.earnMarketPolicy = try container.decodeIfPresent(EarnMarketPolicy.self, forKey: .earnMarketPolicy) ?? .none
@@ -2535,7 +2560,7 @@ extension Charter {
             self.backingAmountToExit = backingAmountToExit
             self.minSwapBackingAmount = minSwapBackingAmount
             self.poolFee = poolFee
-            self.sender = ChainAddress(sender, chain: network)
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -2550,7 +2575,7 @@ extension Charter {
             self.minSwapBackingAmount = try container.decode(Number.self, forKey: .minSwapBackingAmount)
             self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -2634,7 +2659,7 @@ extension Charter {
             self.backingAmountToExit = backingAmountToExit
             self.maxSwapBackingAmount = maxSwapBackingAmount
             self.poolFee = poolFee
-            self.sender = ChainAddress(sender, chain: network)
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -2649,7 +2674,7 @@ extension Charter {
             self.maxSwapBackingAmount = try container.decode(Number.self, forKey: .maxSwapBackingAmount)
             self.poolFee = try container.decode(UInt.self, forKey: .poolFee)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -2721,7 +2746,7 @@ extension Charter {
             self.marketId = marketId
             self.amount = amount
             self.isShort = isShort
-            self.sender = ChainAddress(sender, chain: network)
+            self.sender = sender.on(network)
         }
 
         public init(from decoder: Decoder) throws {
@@ -2734,7 +2759,7 @@ extension Charter {
             self.amount = try container.decode(Number.self, forKey: .amount)
             self.isShort = try container.decode(Bool.self, forKey: .isShort)
             let senderAddress = try container.decode(EthAddress.self, forKey: .sender)
-            self.sender = ChainAddress(senderAddress, chain: network)
+            self.sender = senderAddress.on(network)
         }
 
         public func encode(to encoder: Encoder) throws {

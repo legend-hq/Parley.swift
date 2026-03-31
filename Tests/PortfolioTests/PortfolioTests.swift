@@ -1219,7 +1219,7 @@ struct PortfolioTests {
                 Prelude.Folio.BalanceType.token(
                     network: Eth.Network.sepolia,
                     symbol: "COMP",
-                    wallet: EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d")
+                    wallet: .sepolia(EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"))
                 ):
                     Prelude.Amount(underlying: Number("249.151405001160504216e18"), decimals: 18),
                 Prelude.Folio.BalanceType.borrowMarketCollateral(
@@ -1263,7 +1263,7 @@ struct PortfolioTests {
                 Prelude.Folio.BalanceType.token(
                     network: Eth.Network.sepolia,
                     symbol: "ETH",
-                    wallet: EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d")
+                    wallet: .sepolia(EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"))
                 ):
                     Prelude.Amount(underlying: Number("0.049432775921948220e18"), decimals: 18),
                 Prelude.Folio.BalanceType.reward(
@@ -1315,7 +1315,7 @@ struct PortfolioTests {
                 Prelude.Folio.BalanceType.token(
                     network: Eth.Network.sepolia,
                     symbol: "USDC",
-                    wallet: EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d")
+                    wallet: .sepolia(EthAddress("0xf6f148cfb92dd3baf399b0ecd1a8561b7f16487d"))
                 ):
                     Prelude.Amount(underlying: Number("12.443468e6"), decimals: 6),
             ],

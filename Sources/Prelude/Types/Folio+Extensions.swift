@@ -1,6 +1,7 @@
 import Atlas
 import Eth
 import Foundation
+import SwiftNumber
 
 extension Folio {
     public var asJson: String {
@@ -34,7 +35,7 @@ extension Folio {
     }
 
     public func getAsset(symbol: String, chain: Network) -> Asset? {
-        if let atlasAsset = Atlas.getEvmAssetBySymbol(network: chain, symbol: symbol),
+        if let atlasAsset = Atlas.getAssetBySymbol(network: chain, symbol: symbol),
             let price = getAssetPrice(symbol: symbol)
         {
             return Asset(
@@ -69,10 +70,11 @@ extension Folio {
     public func getAssetBalances(network: Network, symbol: String) -> [Asset.Balance] {
         return self.balances.compactMap({ type, balance in
             if case .token(let tokenNetwork, let tokenSymbol, let wallet) = type,
-                tokenNetwork == network && tokenSymbol.equalIgnoringCase(symbol)
+                tokenNetwork == network && tokenSymbol.equalIgnoringCase(symbol),
+                wallet.isEVM
             {
                 return Asset.Balance(
-                    wallet: wallet,
+                    wallet: wallet.ethAddress,
                     balance: balance,
                     underlyingAssetBalance: getUnderlyingAssetBalance(
                         network: network,
@@ -89,8 +91,9 @@ extension Folio {
     public func getAssetBalance(network: Network, symbol: String, wallet: EthAddress) -> Amount? {
         return self.balances
             .compactMap({ type, balance in
-                if case .token(let tokenNetwork, let tokenSymbol, let wallet_) = type,
-                    wallet_ == wallet && tokenNetwork == network
+                if case .token(let tokenNetwork, let tokenSymbol, let tokenWallet) = type,
+                    tokenWallet.isEVM,
+                    tokenWallet.ethAddress == wallet && tokenNetwork == network
                         && tokenSymbol.equalIgnoringCase(symbol)
                 {
                     return balance
@@ -278,7 +281,7 @@ extension Folio {
         network: Network,
         operationType: String
     ) -> Amount? {
-        if let atlasAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: symbol),
+        if let atlasAsset = Atlas.getAssetBySymbol(network: network, symbol: symbol),
             let assetQuote = getAssetQuote(symbol: symbol),
             let getNetworkOperationFee = getNetworkOperationFee(
                 network: network,
@@ -375,35 +378,44 @@ extension Folio {
         return Set([assetSymbol] + relatedSymbols)
     }
 
-    public func getRelevantWallets() -> Set<EthAddress> {
+    public func getRelevantWallets() -> Set<ChainAddress> {
         return Set(
-            self.balances.compactMap { type, balance in
+            self.balances.compactMap { type, _ -> ChainAddress? in
                 switch type {
                     case .token(_, _, let wallet):
                         return wallet
-                    case .yieldMarket(_, let wallet):
-                        return wallet
-                    case .borrowMarket(_, let wallet):
-                        return wallet
-                    case .borrowMarketCollateral(_, _, let wallet):
-                        return wallet
+                    case .yieldMarket(let yieldMarket, let wallet):
+                        let (_, network) = yieldMarket.underlyingSymbolAndNetwork
+                        return wallet.on(network)
+                    case .borrowMarket(let borrowMarket, let wallet):
+                        let (_, network) = borrowMarket.underlyingSymbolAndNetwork
+                        return wallet.on(network)
+                    case .borrowMarketCollateral(let borrowMarket, _, let wallet):
+                        let (_, network) = borrowMarket.underlyingSymbolAndNetwork
+                        return wallet.on(network)
                     case .reward(let rewardType):
-                        switch rewardType {
-                            case .cometReward(_, _, _, _, let wallet):
-                                return wallet
-                            case .morphoReward(_, _, _, let wallet):
-                                return wallet
-                        }
+                        let (_, network) = rewardType.underlyingSymbolAndNetwork
+                        return rewardType.wallet.on(network)
                     case .lockedReward(let rewardType):
-                        switch rewardType {
-                            case .cometReward(_, _, _, _, let wallet):
-                                return wallet
-                            case .morphoReward(_, _, _, let wallet):
-                                return wallet
-                        }
+                        let (_, network) = rewardType.underlyingSymbolAndNetwork
+                        return rewardType.wallet.on(network)
                 }
             }
         )
+    }
+
+    public func getSolanaBalance(
+        network: Network,
+        symbol: String,
+        wallet: SolanaAddress
+    ) -> Number? {
+        balances[.token(network: network, symbol: symbol, wallet: .solana(wallet))]?.underlying
+    }
+
+    /// Returns the Solana transaction context for a wallet, if present in the Folio.
+    /// Contains the durable nonce data and fee payer address.
+    public func getSolanaTransactionContext(wallet: SolanaAddress) -> SolanaTransactionContext? {
+        solanaTransactionContext[.durableNonce(wallet: wallet)]
     }
 
     public func getQuoteId(symbol: String) -> Hex? {
@@ -426,7 +438,7 @@ extension Folio {
         sourceSymbol: String,
         sinkSymbol: String
     ) -> Folio.BridgeHint? {
-        let ethExists = Atlas.getEvmAssetBySymbol(network: sinkNetwork, symbol: "ETH") != nil
+        let ethExists = Atlas.getAssetBySymbol(network: sinkNetwork, symbol: "ETH") != nil
         let isSinkETH = sinkSymbol == "ETH"
         let isSinkWETH = sinkSymbol == "WETH"
 
@@ -473,7 +485,7 @@ extension Folio {
             return nil
         })
     }
-    
+
     public func getCCTPv2Quote(
         sourceNetwork: Network,
         sinkNetwork: Network,
@@ -576,22 +588,22 @@ extension Folio.BalanceType {
     public var atlasAsset: Atlas.EvmAsset? {
         switch self {
             case .token(let network, let symbol, _):
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: symbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: symbol)
             case .yieldMarket(let yieldMarket, _):
                 let (underlyingSymbol, network) = yieldMarket.underlyingSymbolAndNetwork
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .borrowMarket(let borrowMarket, _):
                 let (underlyingSymbol, network) = borrowMarket.underlyingSymbolAndNetwork
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .borrowMarketCollateral(let borrowMarket, let tokenSymbol, _):
                 let (_, network) = borrowMarket.underlyingSymbolAndNetwork
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: tokenSymbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: tokenSymbol)
             case .reward(let rewardType):
                 let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
             case .lockedReward(let rewardType):
                 let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
-                return Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
+                return Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
         }
     }
 }

@@ -33,4 +33,11 @@ struct NetworkTests {
         let networks: [Network] = [.arbitrum, .optimism, .base, .scrollSepolia]
         #expect(networks.sortedByPriority() == [.base, .arbitrum, .optimism, .scrollSepolia])
     }
+
+    @Test
+    func testSolanaIdentifiers() throws {
+        #expect(Network.solana.networkIdent == "solana")
+        #expect(try Network(fromIdent: "solana") == .solana)
+        #expect(Network.solana.caip2Identifier == SolanaConstants.CAIP2_IDENTIFIER)
+    }
 }

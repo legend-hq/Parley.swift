@@ -42,9 +42,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -91,15 +91,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -116,9 +116,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -174,9 +174,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -227,9 +227,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -272,9 +272,9 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .cometSupplyCollateral(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -322,15 +322,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: "990000000000000000"),  // 0.99 (1% fee)
                                 fees: [
@@ -346,15 +346,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -371,9 +371,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -432,9 +432,9 @@ struct CharterTradewindsCometBorrowTests {
                                     network: Eth.Network.worldChain,
                                     address: EthAddress(
                                         "0x4200000000000000000000000000000000000006"
-                                    ),  // WETH on WorldChain
+                                    ).on(Eth.Network.worldChain),  // WETH on WorldChain
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.worldChain)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -449,15 +449,15 @@ struct CharterTradewindsCometBorrowTests {
                                     network: Eth.Network.worldChain,
                                     address: EthAddress(
                                         "0x4200000000000000000000000000000000000006"
-                                    ),  // WETH on WorldChain
+                                    ).on(Eth.Network.worldChain),  // WETH on WorldChain
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.worldChain)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 1% bridge fee
                                 minFlow: "0",
@@ -470,15 +470,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -495,9 +495,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -548,9 +548,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -600,9 +600,9 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .cometSupplyCollateral(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -656,9 +656,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -709,15 +709,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.ETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.ETH.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -731,15 +731,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
@@ -759,15 +759,15 @@ struct CharterTradewindsCometBorrowTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(Eth.Network.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -785,9 +785,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .cometCollateralBalance(
                                     network: Eth.Network.base,
@@ -843,9 +843,9 @@ struct CharterTradewindsCometBorrowTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",

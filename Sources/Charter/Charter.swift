@@ -135,7 +135,8 @@ public enum Charter {
         target: Tradewinds.Target<TradewindsLegendNode>?
     ) {
         logger?.logValue("Intent", intent)
-        let operationsAndActionsResult = constructOperationsAndActionsExtended(
+
+        let operationsResult = constructOperationsAndActionsExtended(
             intent: intent.type,
             folio: folio,
             addMaxAmountBuffers: false,
@@ -143,38 +144,47 @@ public enum Charter {
             logger: logger
         )
 
-        switch operationsAndActionsResult.result {
-            case .success(let (quarkOperationActions, steps)):
-                logger?.log("Quark Operation Actions: \(String(describing: quarkOperationActions))")
-                guard let eip712Data = quarkOperationActions.eip712Data else {
-                    return (
-                        result: .failure(.error("Failed to construct EIP-712 data")),
-                        flowResult: nil,
-                        routes: nil,
-                        resources: nil,
-                        target: nil
-                    )
+        switch operationsResult.result {
+            case .success(let (operationActions, steps)):
+                // Derive legacy quarkOperationActions and EIP-712 data from EVM operations
+                let quarkOperationActions = operationActions.compactMap {
+                    $0.toLegacyQuarkOperationAction()
                 }
+                let eip712Data = quarkOperationActions.eip712Data
+
+                // Derive Solana signing data from Solana operations + Folio nonce data.
+                // Mirrors EIP-712: signing data is computed after operations are built.
+                let solanaSigningData = solanaSigningData(
+                    operationActions: operationActions,
+                    folio: folio
+                )
+
                 let chart = Chart(
                     version: version,
+                    operationActions: operationActions,
+                    signingData: Chart.SigningData(
+                        quark: eip712Data,
+                        solana: solanaSigningData
+                    ),
                     quarkOperationActions: quarkOperationActions,
                     steps: steps,
-                    eip712Data: eip712Data,
+                    eip712Data: eip712Data
                 )
+
                 return (
                     result: .success(chart),
-                    flowResult: operationsAndActionsResult.flowResult,
-                    routes: operationsAndActionsResult.routes,
-                    resources: operationsAndActionsResult.resources,
-                    target: operationsAndActionsResult.target
+                    flowResult: operationsResult.flowResult,
+                    routes: operationsResult.routes,
+                    resources: operationsResult.resources,
+                    target: operationsResult.target
                 )
             case .failure(let error):
                 return (
                     result: .failure(error),
-                    flowResult: operationsAndActionsResult.flowResult,
-                    routes: operationsAndActionsResult.routes,
-                    resources: operationsAndActionsResult.resources,
-                    target: operationsAndActionsResult.target
+                    flowResult: operationsResult.flowResult,
+                    routes: operationsResult.routes,
+                    resources: operationsResult.resources,
+                    target: operationsResult.target
                 )
         }
     }
@@ -195,8 +205,8 @@ public enum Charter {
         )
 
         switch result.result {
-            case .success(let (quarkOperationActions, _)):
-                return .success(quarkOperationActions)
+            case .success(let (operationActions, _)):
+                return .success(operationActions.compactMap { $0.toLegacyQuarkOperationAction() })
             case .failure(let error):
                 return .failure(error)
         }
@@ -249,15 +259,18 @@ public enum Charter {
 
     public static func totalAvailableBalance(
         assetSymbol: String,
-        destinationChain: Network,
         folio: Folio,
-        actorWallet: EthAddress,
+        actorWallet: ChainAddress,
         earnMarketPolicy: EarnMarketPolicy
     ) -> Number {
-        guard let asset = Atlas.getEvmAssetBySymbol(network: destinationChain, symbol: assetSymbol)
+        let destinationChain = actorWallet.chain
+
+        guard let chainNetwork = Atlas.getNetwork(network: destinationChain),
+            let asset = Atlas.getAssetBySymbol(network: chainNetwork, symbol: assetSymbol)
         else {
             return Number(0)
         }
+        let assetAddress = asset.chainAddress(on: destinationChain)
 
         let resourceFactory = TradewindsResourceFactory(
             folio: folio,
@@ -282,7 +295,7 @@ public enum Charter {
 
         let tokenNode = TradewindsLegendNode.tokenBalance(
             network: destinationChain,
-            address: asset.assetAddress,
+            address: assetAddress,
             symbol: assetSymbol,
             wallet: actorWallet
         )
@@ -300,7 +313,7 @@ public enum Charter {
 
         let tokenBalanceNode = TradewindsLegendNode.tokenBalance(
             network: destinationChain,
-            address: asset.assetAddress,
+            address: assetAddress,
             symbol: assetSymbol,
             wallet: actorWallet
         )
@@ -330,10 +343,7 @@ public enum Charter {
         blockTimestamp: Number,
         logger: Charter.Logger?
     ) -> (
-        result: Result<
-            (quarkOperationActions: [Charter.QuarkOperationAction], steps: [Chart.Step]),
-            CharterError
-        >,
+        result: Result<(operationActions: [Chart.OperationAction], steps: [Chart.Step]), CharterError>,
         flowResult: Tradewinds.FlowResult<TradewindsLegendNode, LegendRouteType>?,
         routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]?,
         resources: [Tradewinds.Resource<TradewindsLegendNode>]?,
@@ -382,7 +392,6 @@ public enum Charter {
                 )
         }
 
-        var quarkOperationActions: [Charter.QuarkOperationAction] = []
         guard let flowResult = flowResult else {
             return (
                 result: .failure(.error("No flow result available")),
@@ -395,44 +404,26 @@ public enum Charter {
 
         logger?.log("Flow Result: \(String(describing: flowResult))")
 
-        // Aggregate swap hint flows with the same venue into single operations
-        let aggregatedFlows = SwapHints.aggregateFlows(flowResult.flows)
-        let displayInfo = DisplayInfo.from(intent: intent)
+        // Phase 1: Build all operations (Solana + EVM), dispatch by chain type.
+        // Steps are NOT generated here — they are produced in a single unified pass
+        // after all operations are built, enabling cross-chain dependencies.
+        var operationActions: [Chart.OperationAction] = []
+        var solanaFlows: [Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>] = []
+        var evmFlows: [Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>] = []
 
-        for flow in aggregatedFlows {
-            guard
-                let sourceNetwork = flow.route.source.network,
-                let sourceWallet = flow.route.source.wallet,
-                let nonceSecret = folio.getNonceSecret(
-                    network: sourceNetwork,
-                    wallet: sourceWallet
-                )
-            else {
-                return (
-                    result: .failure(
-                        .nonceSecretNotFound(
-                            network: flow.route.source.network,
-                            account: flow.route.source.wallet
-                        )
-                    ),
-                    flowResult: nil,
-                    routes: routes,
-                    resources: resources,
-                    target: target
-                )
+        for flow in flowResult.flows {
+            if flow.route.source.wallet.isSolana {
+                solanaFlows.append(flow)
+            } else {
+                evmFlows.append(flow)
             }
+        }
 
-            switch flow.getQuarkOperationActions(
-                folio: folio,
-                nonceSecret: nonceSecret,
-                blockTimestamp: blockTimestamp,
-                isCappedMax: intent.isMaxIntent,
-                displayInfo: displayInfo,
-                logger: logger
-            )
-            {
-                case .success(let quarkOperationActionsList):
-                    quarkOperationActions.append(contentsOf: quarkOperationActionsList)
+        // Solana flows currently map 1:1, but keep the same batch entry point shape as EVM.
+        if !solanaFlows.isEmpty {
+            switch mapSolanaFlows(solanaFlows, intent: intent, folio: folio) {
+                case .success(let solanaOps):
+                    operationActions.append(contentsOf: solanaOps)
                 case .failure(let err):
                     return (
                         result: .failure(err),
@@ -444,41 +435,50 @@ public enum Charter {
             }
         }
 
-        let mergeResult = Charter.mergeSameChainOperations(
-            operationActions: quarkOperationActions
-        )
-
-        switch mergeResult {
-            case .success((let operations, let actions, let steps)):
-                let mergedQuarkOperationActions = zip(operations, actions)
-                    .map { (op, act) in
-                        QuarkOperationAction(operation: op, action: act)
-                    }
-
-                return (
-                    result: .success(
-                        (quarkOperationActions: mergedQuarkOperationActions, steps: steps)
-                    ),
-                    flowResult: flowResult,
-                    routes: routes,
-                    resources: resources,
-                    target: target
-                )
-            case .failure(let error):
-                return (
-                    result: .failure(error),
-                    flowResult: flowResult,
-                    routes: routes,
-                    resources: resources,
-                    target: target
-                )
+        // EVM flows need batch processing (swap aggregation + Multicall merging)
+        if !evmFlows.isEmpty {
+            switch mapEVMFlows(evmFlows, intent: intent, folio: folio, blockTimestamp: blockTimestamp, logger: logger) {
+                case .success(let evmOps):
+                    operationActions.append(contentsOf: evmOps)
+                case .failure(let err):
+                    return (
+                        result: .failure(err),
+                        flowResult: flowResult,
+                        routes: routes,
+                        resources: resources,
+                        target: target
+                    )
+            }
         }
+
+        guard !operationActions.isEmpty else {
+            return (
+                result: .failure(.error("No operations produced")),
+                flowResult: flowResult,
+                routes: routes,
+                resources: resources,
+                target: target
+            )
+        }
+
+        // Phase 2: Generate the execution DAG (steps) from the complete operation list.
+        // This runs AFTER all operations are built so that cross-chain dependencies
+        // (e.g., Solana bridge → EVM receive) can be expressed naturally.
+        let steps = generateStepsFromOperationActions(operationActions)
+
+        return (
+            result: .success((operationActions: operationActions, steps: steps)),
+            flowResult: flowResult,
+            routes: routes,
+            resources: resources,
+            target: target
+        )
     }
 
     private static func mergeSameChainOperations(
         operationActions: [QuarkOperationAction]
     ) -> Result<
-        (operations: [Chart.LegacyQuarkOperation], actions: [Chart.EVMAction], steps: [Chart.Step]),
+        (operations: [Chart.LegacyQuarkOperation], actions: [Chart.EVMAction]),
         CharterError
     > {
         var groupedOperations: [Number: [Chart.LegacyQuarkOperation]] = [:]
@@ -579,14 +579,10 @@ public enum Charter {
         let sortedOperations = sorted.map { $0.0 }
         let sortedActions = sorted.map { $0.1 }
 
-        // Generate steps from the sorted operations/actions
-        let steps = generateSteps(actions: sortedActions)
-
         return .success(
             (
                 operations: sortedOperations,
-                actions: sortedActions,
-                steps: steps
+                actions: sortedActions
             )
         )
     }
@@ -601,39 +597,181 @@ public enum Charter {
         return actions.last!.executionType
     }
 
-    /// Generates steps from sorted operations/actions.
+    // MARK: - Per-Flow Chain Mapping Helpers
+
+    /// Maps a batch of Solana flows to Chart.OperationActions.
+    /// Solana flows currently map independently, but using a batch entry point keeps
+    /// the top-level orchestration symmetric with EVM and leaves room for future batching.
+    private static func mapSolanaFlows(
+        _ flows: [Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>],
+        intent: QuarkIntent.Type_,
+        folio: Folio
+    ) -> Result<[Chart.OperationAction], CharterError> {
+        var operationActions: [Chart.OperationAction] = []
+
+        for flow in flows {
+            switch mapSolanaFlow(flow, intent: intent, folio: folio) {
+                case .success(let opAction):
+                    operationActions.append(opAction)
+                case .failure(let err):
+                    return .failure(err)
+            }
+        }
+
+        return .success(operationActions)
+    }
+
+    /// Maps a single Solana flow to a Chart.OperationAction.
+    /// Steps are generated later in `generateStepsFromOperationActions` after all operations are built.
+    private static func mapSolanaFlow(
+        _ flow: Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>,
+        intent: QuarkIntent.Type_,
+        folio: Folio
+    ) -> Result<Chart.OperationAction, CharterError> {
+        guard case .transfer(let transferIntent) = intent else {
+            return .failure(.error("Expected transfer intent for Solana flow"))
+        }
+        guard flow.route.source.wallet.isSolana,
+            flow.route.sink.wallet.isSolana
+        else {
+            return .failure(.error("Solana flow missing sender or recipient wallet"))
+        }
+        let senderWallet = flow.route.source.wallet.solanaAddress
+        let recipientWallet = flow.route.sink.wallet.solanaAddress
+
+        // Read fee payer from Folio's transaction context (injected by backend)
+        guard let txContext = folio.getSolanaTransactionContext(wallet: senderWallet) else {
+            return .failure(.error(
+                "No Solana transaction context in Folio for wallet \(senderWallet.base58). "
+                + "Backend must inject solana_transaction_context before charting."
+            ))
+        }
+
+        let symbol = transferIntent.assetSymbol
+        guard let solAsset = Atlas.Solana.getAssetBySymbol(symbol) else {
+            return .failure(.unknownAsset(symbol: symbol, network: .solana, address: nil))
+        }
+        let mint: SolanaAddress? = solAsset.isNativeAsset ? nil : solAsset.assetAddress
+        let decimals = Int(solAsset.decimals)
+        let price = folio.getAssetPrice(symbol: symbol)?.underlying ?? Number(0)
+
+        return .success(SolanaOperationBuilder.transfer(
+            sender: senderWallet,
+            recipient: recipientWallet,
+            assetSymbol: symbol,
+            mint: mint,
+            amount: flow.amount,
+            decimals: decimals,
+            price: price,
+            feePayer: txContext.feePayer
+        ))
+    }
+
+    /// Maps a batch of EVM flows to Chart.OperationActions.
+    /// EVM flows require batch processing: swap hint aggregation, nonce secrets, and Multicall merging.
+    /// Steps are generated later in `generateStepsFromOperationActions` after all operations are built.
+    private static func mapEVMFlows(
+        _ flows: [Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>],
+        intent: QuarkIntent.Type_,
+        folio: Folio,
+        blockTimestamp: Number,
+        logger: Charter.Logger?
+    ) -> Result<[Chart.OperationAction], CharterError> {
+        let aggregatedFlows = SwapHints.aggregateFlows(flows)
+        let displayInfo = DisplayInfo.from(intent: intent)
+        var quarkOperationActions: [Charter.QuarkOperationAction] = []
+
+        for flow in aggregatedFlows {
+            guard let sourceNetwork = flow.route.source.network,
+                  flow.route.source.wallet.isEVM
+            else {
+                return .failure(.invalidNode)
+            }
+            let sourceWallet = flow.route.source.wallet.ethAddress
+
+            guard let nonceSecret = folio.getNonceSecret(
+                network: sourceNetwork,
+                wallet: sourceWallet
+            ) else {
+                return .failure(
+                    .nonceSecretNotFound(
+                        network: sourceNetwork,
+                        account: sourceWallet
+                    )
+                )
+            }
+
+            switch flow.getQuarkOperationActions(
+                folio: folio,
+                nonceSecret: nonceSecret,
+                blockTimestamp: blockTimestamp,
+                isCappedMax: intent.isMaxIntent,
+                displayInfo: displayInfo,
+                logger: logger
+            ) {
+                case .success(let list):
+                    quarkOperationActions.append(contentsOf: list)
+                case .failure(let err):
+                    return .failure(err)
+            }
+        }
+
+        switch Charter.mergeSameChainOperations(operationActions: quarkOperationActions) {
+            case .success((let operations, let actions)):
+                let merged = zip(operations, actions)
+                    .map { QuarkOperationAction(operation: $0.0, action: $0.1) }
+                return .success(merged.map { Chart.OperationAction.fromQuarkOperationAction($0) })
+            case .failure(let error):
+                return .failure(error)
+        }
+    }
+
+    /// Generates the execution DAG (steps) from the complete list of operation actions.
     ///
-    /// For each operation (index `i`):
-    /// - Creates a `quark_operation` step with `operationIndex: i`
+    /// Runs AFTER all operations (Solana + EVM) are built. This unified pass enables
+    /// cross-chain dependencies (e.g., Solana bridge → EVM receive → EVM operation).
+    ///
+    /// For each operation action at index `i`:
+    /// - Creates a step (quark_operation or solana_operation) with `operationIndex: i`
     /// - Extracts expected actions from the action's context
-    /// - For IMMEDIATE operations: `dependsOn: []`
     ///
-    /// For each bridge action found in a step:
-    /// - Creates an `exogenous` step for the bridge receive
+    /// For each bridge action found:
+    /// - Creates an `exogenous` step for the bridge receive on the destination chain
     /// - `dependsOn` references the step that sends the bridge
     ///
-    /// For each CONTINGENT quark_operation step:
+    /// For any operation step whose chain has pending exogenous receives:
     /// - Sets `dependsOn` to the exogenous step index(es) for its chain
-    static func generateSteps(
-        actions: [Chart.EVMAction]
+    static func generateStepsFromOperationActions(
+        _ operationActions: [Chart.OperationAction]
     ) -> [Chart.Step] {
         var steps: [Chart.Step] = []
         // Maps destination chainId -> exogenous step indices for bridge receives
         var exogenousStepIndicesByChain: [Number: [Int]] = [:]
 
-        for (operationIndex, action) in actions.enumerated() {
-            // Extract expected actions from the action context
-            let expectedActions = extractExpectedActions(from: action)
+        for (operationIndex, opAction) in operationActions.enumerated() {
+            let action = opAction.action
 
-            // Create evm_operation step (dependsOn filled in second pass for CONTINGENT)
-            let qoStep = Chart.Step.OperationStep(
+            // Extract expected actions from the action context
+            let expectedActions = extractExpectedActionsFromAction(action)
+
+            // Determine step type based on operation type
+            let stepType: (Chart.Step.OperationStep) -> Chart.Step
+            switch opAction.operation {
+                case .quark:
+                    stepType = { .quarkOperation($0) }
+                case .solana:
+                    stepType = { .solanaOperation($0) }
+            }
+
+            // Create operation step (dependsOn filled in second pass for contingent ops)
+            let opStep = Chart.Step.OperationStep(
                 chainId: action.chainId,
                 operationIndex: operationIndex,
                 expectedActions: expectedActions,
-                dependsOn: []  // placeholder, filled below for CONTINGENT
+                dependsOn: []  // placeholder, filled below
             )
-            let qoStepIndex = steps.count
-            steps.append(.quarkOperation(qoStep))
+            let opStepIndex = steps.count
+            steps.append(stepType(opStep))
 
             // For each bridge action, create an exogenous step
             let bridgeContexts = extractBridgeContexts(from: action.actionContext)
@@ -659,7 +797,7 @@ public enum Charter {
                     chainId: bridgeContext.destinationChainId,
                     executionType: .bridgeReceive,
                     expectedActions: [bridgeReceiveExpectedAction],
-                    dependsOn: [qoStepIndex]
+                    dependsOn: [opStepIndex]
                 )
                 let exoStepIndex = steps.count
                 steps.append(.exogenous(exoStep))
@@ -668,33 +806,90 @@ public enum Charter {
             }
         }
 
-        // Second pass: wire dependsOn for quark_operation steps that have
-        // exogenous dependencies on their chain (e.g. bridge receives).
-        // dependsOn is the source of truth for ordering — executionType is not
-        // consulted here. An empty dependsOn means the step fires immediately.
-        steps = steps.enumerated()
-            .map { (index, step) in
-                switch step {
-                    case .quarkOperation(let qoStep):
-                        if let exoIndices = exogenousStepIndicesByChain[qoStep.chainId],
-                            !exoIndices.isEmpty
-                        {
-                            return .quarkOperation(
-                                Chart.Step.OperationStep(
-                                    chainId: qoStep.chainId,
-                                    operationIndex: qoStep.operationIndex,
-                                    expectedActions: qoStep.expectedActions,
-                                    dependsOn: qoStep.dependsOn + exoIndices
-                                )
+        // Second pass: wire dependsOn for operation steps whose chain has pending
+        // exogenous receives (e.g., bridge receives). Works across all operation types —
+        // a Solana operation can depend on an EVM bridge receive, and vice versa.
+        // dependsOn is the source of truth for ordering; an empty dependsOn fires immediately.
+        steps = steps.map { step in
+            switch step {
+                case .quarkOperation(let opStep):
+                    if let exoIndices = exogenousStepIndicesByChain[opStep.chainId],
+                        !exoIndices.isEmpty
+                    {
+                        return .quarkOperation(
+                            Chart.Step.OperationStep(
+                                chainId: opStep.chainId,
+                                operationIndex: opStep.operationIndex,
+                                expectedActions: opStep.expectedActions,
+                                dependsOn: opStep.dependsOn + exoIndices
                             )
-                        }
-                        return step
-                    case .solanaOperation, .exogenous:
-                        return step
-                }
+                        )
+                    }
+                    return step
+                case .solanaOperation(let opStep):
+                    if let exoIndices = exogenousStepIndicesByChain[opStep.chainId],
+                        !exoIndices.isEmpty
+                    {
+                        return .solanaOperation(
+                            Chart.Step.OperationStep(
+                                chainId: opStep.chainId,
+                                operationIndex: opStep.operationIndex,
+                                expectedActions: opStep.expectedActions,
+                                dependsOn: opStep.dependsOn + exoIndices
+                            )
+                        )
+                    }
+                    return step
+                case .exogenous:
+                    return step
             }
+        }
 
         return steps
+    }
+
+    /// Extracts expected actions from a unified Chart.Action.
+    static func extractExpectedActionsFromAction(
+        _ action: Charter.Chart.Action
+    ) -> [Chart.ExpectedAction] {
+        switch action.actionContext {
+            case .multiAction(let contexts):
+                return contexts.map { context in
+                    Chart.ExpectedAction(
+                        actionType: context.actionType,
+                        actionContext: context
+                    )
+                }
+            default:
+                return [
+                    Chart.ExpectedAction(
+                        actionType: action.actionType,
+                        actionContext: action.actionContext
+                    )
+                ]
+        }
+    }
+
+    /// Convenience wrapper: generates steps from EVM-only actions by converting to OperationActions.
+    /// Used by tests and backward-compatible callers.
+    static func generateSteps(
+        actions: [Chart.EVMAction]
+    ) -> [Chart.Step] {
+        let operationActions = actions.enumerated().map { (_, action) in
+            let qoa = QuarkOperationAction(
+                operation: Chart.LegacyQuarkOperation(
+                    nonce: action.nonceSecret,
+                    isReplayable: false,
+                    scriptAddress: EthAddress("0x0000000000000000000000000000000000000000"),
+                    scriptSources: [],
+                    scriptCalldata: Hex("0x"),
+                    expiry: Number(0)
+                ),
+                action: action
+            )
+            return Chart.OperationAction.fromQuarkOperationAction(qoa)
+        }
+        return generateStepsFromOperationActions(operationActions)
     }
 
     /// Extracts expected actions from a Chart.EVMAction.
@@ -737,5 +932,58 @@ public enum Charter {
             default:
                 return []
         }
+    }
+
+    // MARK: - Solana Signing Data
+
+    /// Computes Solana signing data from completed operation actions and Folio transaction context.
+    /// Mirrors the pattern of `[QuarkOperationAction].eip712Data` for EVM.
+    ///
+    /// Returns nil if there are no Solana operations.
+    /// Returns signing data with empty `serializedMessage` if transaction context is not in the Folio
+    /// (the backend can still construct the message from the instructions).
+    static func solanaSigningData(
+        operationActions: [Chart.OperationAction],
+        folio: Folio
+    ) -> Chart.SolanaSigningData? {
+        // Collect all Solana operations
+        let solanaOps = operationActions.compactMap { opAction -> (Chart.SolanaOperation, Chart.Action)? in
+            guard case .solana(let solOp) = opAction.operation else { return nil }
+            return (solOp, opAction.action)
+        }
+
+        guard !solanaOps.isEmpty else { return nil }
+
+        // For now, we support a single Solana operation per Chart.
+        let (solanaOp, action) = solanaOps[0]
+
+        guard action.account.isSolana else {
+            return Chart.SolanaSigningData(serializedMessage: "")
+        }
+        let senderWallet = action.account.solanaAddress
+
+        guard let txContext = folio.getSolanaTransactionContext(wallet: senderWallet) else {
+            // No transaction context in Folio — return empty message for backend to fill in
+            return Chart.SolanaSigningData(serializedMessage: "")
+        }
+
+        // Build the full instruction list: AdvanceNonceAccount + operation instructions
+        var allInstructions: [Chart.SolanaInstruction] = []
+        allInstructions.append(
+            SolanaOperationBuilder.advanceNonceAccount(
+                nonceAccount: txContext.nonceAccount,
+                nonceAuthority: senderWallet
+            )
+        )
+        allInstructions.append(contentsOf: solanaOp.instructions)
+
+        // Serialize the transaction message with Legend's fee payer
+        let messageBytes = SolanaOperationBuilder.serializeMessage(
+            instructions: allInstructions,
+            feePayer: txContext.feePayer,
+            recentBlockhash: txContext.nonceValue.data
+        )
+
+        return Chart.SolanaSigningData(serializedMessage: messageBytes.base64EncodedString())
     }
 }

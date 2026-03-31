@@ -44,9 +44,9 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage.one,
                                 minFlow: Number(0),
@@ -70,15 +70,15 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 // Rate = swap hint rate * slippage factor (0.99)
                                 rate: Percentage(fromDouble: 0.0003e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
@@ -94,9 +94,9 @@ struct CharterTradewindsSwapV2Tests {
                                 type: .swapSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .swapSettlement(wallet: Account.alice.address),
                                 rate: Percentage.one,
@@ -144,9 +144,9 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage.one,
                                 minFlow: Number(0),
@@ -169,15 +169,15 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 // Rate = base rate * SWAP_OUTPUT_BUFFER (1.015) * slippage (0.99)
                                 rate: Percentage(fromDouble: 0.0003e12) * Charter.SWAP_OUTPUT_BUFFER * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
@@ -191,9 +191,9 @@ struct CharterTradewindsSwapV2Tests {
                                 type: .swapSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .swapSettlement(wallet: Account.alice.address),
                                 rate: Percentage.one,
@@ -244,9 +244,9 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.arbitrum)
                                 ),
                                 rate: Percentage.one,
                                 minFlow: Number(0),
@@ -260,15 +260,15 @@ struct CharterTradewindsSwapV2Tests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 1% fee
                                 fees: [
@@ -295,15 +295,15 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 // Rate = swap hint rate * slippage factor (0.99)
                                 rate: Percentage(fromDouble: 0.0003e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
@@ -318,9 +318,9 @@ struct CharterTradewindsSwapV2Tests {
                                 type: .swapSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .swapSettlement(wallet: Account.alice.address),
                                 rate: Percentage.one,
@@ -373,9 +373,9 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage.one,
                                 minFlow: Number(0),
@@ -399,15 +399,15 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 // Rate = swap hint rate * slippage factor (0.99)
                                 rate: Percentage(fromDouble: 0.0004e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
@@ -432,15 +432,15 @@ struct CharterTradewindsSwapV2Tests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 // Rate = swap hint rate * slippage factor (0.99)
                                 rate: Percentage(fromDouble: 0.00035e12) * (Percentage.one - Charter.SWAP_MAX_SLIPPAGE),
@@ -455,9 +455,9 @@ struct CharterTradewindsSwapV2Tests {
                                 type: .swapSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: Account.alice.address
+                                    wallet: Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .swapSettlement(wallet: Account.alice.address),
                                 rate: Percentage.one,

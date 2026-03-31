@@ -41,9 +41,9 @@ struct CharterTradewindsAaveTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -82,9 +82,9 @@ struct CharterTradewindsAaveTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: Eth.Network.base,
@@ -137,9 +137,9 @@ struct CharterTradewindsAaveTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -152,15 +152,15 @@ struct CharterTradewindsAaveTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -200,15 +200,15 @@ struct CharterTradewindsAaveTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: "998000000000000000"),  // Bridge fee (0.998 as fixed point)
                                 fees: [
@@ -224,9 +224,9 @@ struct CharterTradewindsAaveTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: Eth.Network.base,
@@ -277,9 +277,9 @@ struct CharterTradewindsAaveTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: "1.00001e18"),
                                 minFlow: "0",
@@ -328,9 +328,9 @@ struct CharterTradewindsAaveTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -344,9 +344,9 @@ struct CharterTradewindsAaveTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: Eth.Network.base,

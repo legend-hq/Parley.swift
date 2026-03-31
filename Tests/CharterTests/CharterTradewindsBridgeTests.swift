@@ -38,15 +38,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .bridge(bridgeType: .cctpV2, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("995000000000000000")),  // 0.995
                                 fees: [
@@ -66,15 +66,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -117,15 +117,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .bridge(bridgeType: .cctpV2, isCappedMax: false),  // Should select CCTP v2 as it's cheaper
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("997000000000000000")),  // 0.997
                                 fees: [
@@ -145,15 +145,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -195,15 +195,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),  // Should select Across as it's cheaper
                                 source: .tokenBalance(
                                     network: Eth.Network.arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(Eth.Network.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("998000000000000000")),  // 0.998
                                 fees: [
@@ -223,15 +223,15 @@ struct CharterTradewindsBridgeTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",

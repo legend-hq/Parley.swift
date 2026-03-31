@@ -65,9 +65,9 @@ struct CharterTradewindsRoutingTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -81,15 +81,15 @@ struct CharterTradewindsRoutingTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -144,15 +144,15 @@ struct CharterTradewindsRoutingTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.optimism,
-                                    address: OptimismNetwork.Assets.USDC.assetAddress,
+                                    address: OptimismNetwork.Assets.USDC.assetAddress.on(Eth.Network.optimism),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.optimism)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
@@ -169,15 +169,15 @@ struct CharterTradewindsRoutingTests {
                                 type: .transferOut,
                                 source: .tokenBalance(
                                     network: Eth.Network.optimism,
-                                    address: OptimismNetwork.Assets.USDC.assetAddress,
+                                    address: OptimismNetwork.Assets.USDC.assetAddress.on(Eth.Network.optimism),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.optimism)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.optimism,
-                                    address: OptimismNetwork.Assets.USDC.assetAddress,
+                                    address: OptimismNetwork.Assets.USDC.assetAddress.on(Eth.Network.optimism),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b")
+                                    wallet: EthAddress("0x0000000000000000000000000000000000000b0b").on(Eth.Network.optimism)
                                 ),
                                 rate: .one,
                                 minFlow: "0",

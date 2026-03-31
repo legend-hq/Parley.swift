@@ -159,8 +159,8 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         }
 
         let sourceWalletRes: Result<EthAddress, Charter.CharterError>
-        if let sourceWallet = self.route.source.wallet {
-            sourceWalletRes = .success(sourceWallet)
+        if self.route.source.wallet.isEVM {
+            sourceWalletRes = .success(self.route.source.wallet.ethAddress)
         } else {
             sourceWalletRes = .failure(.invalidNode)
         }
@@ -173,8 +173,8 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         }
 
         let sinkWalletRes: Result<EthAddress, Charter.CharterError>
-        if let sinkWallet = self.route.sink.wallet {
-            sinkWalletRes = .success(sinkWallet)
+        if self.route.sink.wallet.isEVM {
+            sinkWalletRes = .success(self.route.sink.wallet.ethAddress)
         } else {
             sinkWalletRes = .failure(.invalidNode)
         }
@@ -780,13 +780,14 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 // The source is the token balance (repay token), sink is the borrow position
-                guard case .tokenBalance(_, let repayAssetAddress, _, _) = self.route.source else {
+                guard case .tokenBalance(_, let repayAssetChainAddr, _, _) = self.route.source else {
                     return .failure(
                         .error(
                             "Invalid source node for cometRepayAndWithdrawCollateral - expected tokenBalance"
                         )
                     )
                 }
+                let repayAssetAddress = repayAssetChainAddr.ethAddress
 
                 guard case .cometBorrowPosition(_, let comet, _, _) = self.route.sink else {
                     return .failure(
@@ -1227,13 +1228,14 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                 }
 
                 // The source is the token balance (repay token), sink is the borrow position
-                guard case .tokenBalance(_, let repayAssetAddress, _, _) = self.route.source else {
+                guard case .tokenBalance(_, let repayAssetChainAddr, _, _) = self.route.source else {
                     return .failure(
                         .error(
                             "Invalid source node for morphoRepayAndWithdrawCollateral - expected tokenBalance"
                         )
                     )
                 }
+                let repayAssetAddress = repayAssetChainAddr.ethAddress
 
                 guard case .morphoBorrowPosition(_, let marketId, _, _) = self.route.sink else {
                     return .failure(
@@ -1752,10 +1754,11 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
                     return .failure(.unpricedAsset(symbol: exposureAsset.symbol))
                 }
 
-                // Get wallet from source (loop venue node)
-                guard let wallet = self.route.source.wallet else {
+                // Get wallet from source (loop venue node — EVM only)
+                guard self.route.source.wallet.isEVM else {
                     return .failure(.invalidNode)
                 }
+                let wallet = self.route.source.wallet.ethAddress
 
                 // When exposureAmount is maxUint256 (full unloop), backingAmountToExit must be 0 (enforced by the smart contract)
                 // When backing exit is 0, Tradewinds uses 1 wei on the virtual route to force route selection,
@@ -1915,9 +1918,10 @@ extension Tradewinds.Flow<TradewindsLegendNode, LegendRouteType> {
         )
         logger?.log("Intermediate actions: \(String(describing: intermediateActions))")
 
-        guard let sourceWallet = self.route.source.wallet else {
+        guard self.route.source.wallet.isEVM else {
             return .failure(.invalidNode)
         }
+        let sourceWallet = self.route.source.wallet.ethAddress
 
         switch intermediateActions {
             case .success(let immediateActions):

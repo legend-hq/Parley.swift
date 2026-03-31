@@ -19,12 +19,12 @@ struct CharterTradewindsSwapHintTests {
     func testAggregationCombinesParallelSwapFlows() {
         let wallet = EthAddress("0x00000000000000000000000000000000000A11CE")
         let usdcSource = TradewindsLegendNode.tokenBalance(
-            network: .base, address: BaseNetwork.Assets.USDC.assetAddress,
-            symbol: "USDC", wallet: wallet
+            network: .base, address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
+            symbol: "USDC", wallet: wallet.on(.base)
         )
         let wethSink = TradewindsLegendNode.tokenBalance(
-            network: .base, address: BaseNetwork.Assets.WETH.assetAddress,
-            symbol: "WETH", wallet: wallet
+            network: .base, address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
+            symbol: "WETH", wallet: wallet.on(.base)
         )
 
         // Two swap flows from same venue (should be aggregated)
@@ -74,8 +74,8 @@ struct CharterTradewindsSwapHintTests {
                 type: .bridge(bridgeType: .across, isCappedMax: false),
                 source: usdcSource,
                 sink: .tokenBalance(
-                    network: .arbitrum, address: ArbitrumNetwork.Assets.USDC.assetAddress,
-                    symbol: "USDC", wallet: wallet
+                    network: .arbitrum, address: ArbitrumNetwork.Assets.USDC.assetAddress.on(.arbitrum),
+                    symbol: "USDC", wallet: wallet.on(.arbitrum)
                 ),
                 rate: Percentage(1),
                 minFlow: Number(0), maxFlow: Number.MAX_UINT_256
@@ -115,12 +115,12 @@ struct CharterTradewindsSwapHintTests {
     func testAggregationKeepsDifferentVenuesSeparate() {
         let wallet = EthAddress("0x00000000000000000000000000000000000A11CE")
         let usdcSource = TradewindsLegendNode.tokenBalance(
-            network: .base, address: BaseNetwork.Assets.USDC.assetAddress,
-            symbol: "USDC", wallet: wallet
+            network: .base, address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
+            symbol: "USDC", wallet: wallet.on(.base)
         )
         let wethSink = TradewindsLegendNode.tokenBalance(
-            network: .base, address: BaseNetwork.Assets.WETH.assetAddress,
-            symbol: "WETH", wallet: wallet
+            network: .base, address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
+            symbol: "WETH", wallet: wallet.on(.base)
         )
 
         let flow0x = Tradewinds.Flow<TradewindsLegendNode, LegendRouteType>(

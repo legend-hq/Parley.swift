@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import SwiftNumber
@@ -11,6 +12,7 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
     @PathDict public var swapHints: [SwapHintType: SwapHint]
     @PathDict public var bridgeHints: [BridgeHintType: BridgeHint]
     @PathDict public var hexData: [HexDataType: Hex]
+    @PathDict public var solanaTransactionContext: [SolanaTransactionContextType: SolanaTransactionContext]
     @PathDict public var completionStatuses: [CompletionStatusType: Bool]
     @PathDict public var patches: [CompletionStatusType: [Patch]]
 
@@ -23,6 +25,7 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         swapHints: [SwapHintType: SwapHint] = [:],
         bridgeHints: [BridgeHintType: BridgeHint] = [:],
         hexData: [HexDataType: Hex] = [:],
+        solanaTransactionContext: [SolanaTransactionContextType: SolanaTransactionContext] = [:],
         completionStatuses: [CompletionStatusType: Bool] = [:],
         patches: [CompletionStatusType: [Patch]] = [:]
     ) {
@@ -34,12 +37,13 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         self.swapHints = swapHints
         self.bridgeHints = bridgeHints
         self.hexData = hexData
+        self.solanaTransactionContext = solanaTransactionContext
         self.completionStatuses = completionStatuses
         self.patches = patches
     }
 
     public enum BalanceType: Codable, Equatable, Hashable, Sendable {
-        case token(network: Network, symbol: String, wallet: EthAddress)
+        case token(network: Network, symbol: String, wallet: ChainAddress)
         case yieldMarket(yieldMarket: YieldMarketType, wallet: EthAddress)
         case borrowMarket(borrowMarket: BorrowMarketType, wallet: EthAddress)
         case borrowMarketCollateral(
@@ -243,6 +247,36 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
         case nonceSecret(network: Network, wallet: EthAddress)
     }
 
+    /// Key type for Solana transaction context, keyed by the user's Solana wallet.
+    public enum SolanaTransactionContextType: Codable, Equatable, Hashable, Sendable {
+        case durableNonce(wallet: SolanaAddress)
+    }
+
+    /// Per-wallet Solana transaction context: everything Charter needs to build a Solana transaction.
+    /// Injected by the backend before charting, similar to how EVM nonce secrets are injected.
+    public struct SolanaTransactionContext: Codable, Equatable, Hashable, Sendable {
+        /// The on-chain durable nonce account (a Solana Pubkey).
+        public let nonceAccount: SolanaAddress
+        /// The current durable nonce value (a 32-byte hash derived from a blockhash).
+        /// Placed in the transaction's `recent_blockhash` field.
+        public let nonceValue: Base58Data
+        /// Legend's fee payer address for this transaction.
+        /// Used as the ATA creation payer and the transaction fee payer.
+        public let feePayer: SolanaAddress
+
+        public init(nonceAccount: SolanaAddress, nonceValue: Base58Data, feePayer: SolanaAddress) {
+            self.nonceAccount = nonceAccount
+            self.nonceValue = nonceValue
+            self.feePayer = feePayer
+        }
+
+        public enum CodingKeys: String, CodingKey {
+            case nonceAccount = "nonce_account"
+            case nonceValue = "nonce_value"
+            case feePayer = "fee_payer"
+        }
+    }
+
     public enum CompletionStatusType: Codable, Equatable, Hashable, Sendable {
         case quarkNonce(wallet: EthAddress, nonce: Hex)
         case acrossFill(wallet: EthAddress, relayHash: Hex)
@@ -295,6 +329,7 @@ extension Folio {
         case swapHints = "swap_hints"
         case bridgeHints = "bridge_hints"
         case hexData = "hex_data"
+        case solanaTransactionContext = "solana_transaction_context"
         case completionStatuses = "completion_statuses"
         case patches
     }

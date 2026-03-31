@@ -17,6 +17,8 @@ extension Network {
                 "Optimism"
             case .polygon:
                 "Polygon"
+            case .solana:
+                "Solana"
             case .sonic:
                 "Sonic"
             case .worldChain:
@@ -57,7 +59,12 @@ extension Network {
 
     /// A [CAIP-2](https://chainagnostic.org/CAIPs/caip-2) network identifier.
     public var caip2Identifier: String {
-        return "eip155:\(chainId.description)"
+        switch self {
+            case .solana:
+                SolanaConstants.CAIP2_IDENTIFIER
+            default:
+                "eip155:\(chainId.description)"
+        }
     }
 
     public func explorerUrl(address ethereumAddress: EthAddress) -> URL? {

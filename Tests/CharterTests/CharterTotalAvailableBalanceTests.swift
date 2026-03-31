@@ -18,9 +18,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
@@ -36,9 +35,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
@@ -55,9 +53,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
@@ -70,9 +67,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
@@ -88,9 +84,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .all
         )
 
@@ -108,9 +103,8 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "USDC",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
@@ -123,12 +117,44 @@ struct CharterTotalAvailableBalanceTests {
 
         let available = Charter.totalAvailableBalance(
             assetSymbol: "NONEXISTENT",
-            destinationChain: .base,
             folio: folio,
-            actorWallet: Account.alice.address,
+            actorWallet: Account.alice.address.on(.base),
             earnMarketPolicy: .none
         )
 
         #expect(available == Number(0))
+    }
+
+    @Test("Solana balance only uses the actor wallet")
+    func testSolanaUsesActorWalletOnly() {
+        let aliceSolana: SolanaAddress = "7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV"
+        let bobSolana: SolanaAddress = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+
+        let folio = Folio(
+            balances: [
+                .token(
+                    network: .solana,
+                    symbol: "USDC",
+                    wallet: .solana(aliceSolana)
+                ): Amount("1000000", decimals: 6),
+                .token(
+                    network: .solana,
+                    symbol: "USDC",
+                    wallet: .solana(bobSolana)
+                ): Amount("2000000", decimals: 6),
+            ],
+            prices: [
+                .token(symbol: "USDC"): Value("1e8")
+            ]
+        )
+
+        let available = Charter.totalAvailableBalance(
+            assetSymbol: "USDC",
+            folio: folio,
+            actorWallet: .solana(aliceSolana),
+            earnMarketPolicy: .none
+        )
+
+        #expect(available == "1e6")
     }
 }

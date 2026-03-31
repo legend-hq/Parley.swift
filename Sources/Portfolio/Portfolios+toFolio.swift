@@ -28,7 +28,7 @@ extension Array where Element == Portfolio {
                             forKey: .token(
                                 network: network,
                                 symbol: token.symbol,
-                                wallet: balance.wallet
+                                wallet: balance.wallet.on(network)
                             )
                         )
                     }

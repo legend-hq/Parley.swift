@@ -65,7 +65,7 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
         baseAsset: EthAddress,
         wallet: EthAddress
     )
-    case tokenBalance(network: Network, address: EthAddress, symbol: String, wallet: EthAddress)
+    case tokenBalance(network: Network, address: ChainAddress, symbol: String, wallet: ChainAddress)
     case loopVenue(
         network: Network,
         marketId: Hex,
@@ -102,7 +102,6 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
     // with zero backing exit). The node provides a "virtual resource" or "virtual target" to force
     // route selection in Tradewinds optimization.
     case virtualNode(network: Network, routeType: LegendRouteType, wallet: EthAddress)
-    case never
 
     var label: String {
         switch self {
@@ -140,7 +139,6 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
                 return "VirtualBalance(\(symbol))(\(wallet))"
             case .virtualNode(let network, let routeType, let wallet):
                 return "VirtualNode[\(routeType.identifier)](\(network))(\(wallet))"
-            case .never: return "Never [unexpected error]"
         }
     }
 
@@ -212,10 +210,8 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
                 let vaultSuffix = String(vaultAddress.suffix(4))  // Last 4 chars
                 return "Morpho[\(network)][\(vaultPrefix)...\(vaultSuffix)][0x\(walletSuffix)]"
             case .tokenBalance(let network, _, let symbol, let wallet):
-                // Show last 5 chars of wallet address (to include the last 4 hex digits plus one more)
-                let fullAddress = wallet.address.description
-                let walletSuffix = String(fullAddress.suffix(6))
-                return "\(symbol)[\(network)][0x\(walletSuffix)]"
+                let walletSuffix = String(wallet.displayString.suffix(6))
+                return "\(symbol)[\(network)][\(walletSuffix)]"
             case .loopVenue(
                 let network,
                 let marketId,
@@ -260,31 +256,28 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .virtualNode(let network, let routeType, let wallet):
                 let walletSuffix = String(wallet.address.description.suffix(6))
                 return "VirtualNode[\(routeType.identifier)][\(network)][0x\(walletSuffix)]"
-            case .never:
-                return "Never"
         }
     }
 
-    var wallet: EthAddress? {
+    var wallet: ChainAddress {
         switch self {
-            case .cometCollateralBalance(_, _, _, let wallet): wallet
-            case .cometSupplyBalance(_, _, _, let wallet): wallet
-            case .cometBorrowPosition(_, _, _, let wallet): wallet
-            case .cometBorrowCapacity(_, _, _, let wallet): wallet
-            case .morphoCollateralBalance(_, _, _, let wallet): wallet
-            case .morphoBorrowPosition(_, _, _, let wallet): wallet
-            case .morphoBorrowCapacity(_, _, _, let wallet): wallet
+            case .cometCollateralBalance(let network, _, _, let wallet): wallet.on(network)
+            case .cometSupplyBalance(let network, _, _, let wallet): wallet.on(network)
+            case .cometBorrowPosition(let network, _, _, let wallet): wallet.on(network)
+            case .cometBorrowCapacity(let network, _, _, let wallet): wallet.on(network)
+            case .morphoCollateralBalance(let network, _, _, let wallet): wallet.on(network)
+            case .morphoBorrowPosition(let network, _, _, let wallet): wallet.on(network)
+            case .morphoBorrowCapacity(let network, _, _, let wallet): wallet.on(network)
             case .tokenBalance(_, _, _, let wallet): wallet
-            case .aaveSupplyBalance(_, _, _, let wallet): wallet
-            case .morphoVaultSupplyBalance(_, _, _, let wallet): wallet
-            case .morphoReward(_, _, _, let wallet): wallet
-            case .cometReward(_, _, _, let wallet): wallet
-            case .rewardSettlement(let wallet): wallet
-            case .swapSettlement(let wallet): wallet
-            case .virtualBalance(_, let wallet): wallet
-            case .loopVenue(_, _, _, _, let wallet): wallet
-            case .virtualNode(_, _, let wallet): wallet
-            case .never: nil
+            case .aaveSupplyBalance(let network, _, _, let wallet): wallet.on(network)
+            case .morphoVaultSupplyBalance(let network, _, _, let wallet): wallet.on(network)
+            case .morphoReward(let network, _, _, let wallet): wallet.on(network)
+            case .cometReward(let network, _, _, let wallet): wallet.on(network)
+            case .rewardSettlement(let wallet): .ethereum(wallet)
+            case .swapSettlement(let wallet): .ethereum(wallet)
+            case .virtualBalance(_, let wallet): .ethereum(wallet)
+            case .loopVenue(let network, _, _, _, let wallet): wallet.on(network)
+            case .virtualNode(let network, _, let wallet): wallet.on(network)
         }
     }
 
@@ -308,34 +301,44 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
             case .swapSettlement: nil
             case .virtualBalance: nil  // Virtual node, no network
             case .virtualNode(let network, _, _): network
-            case .never: nil
         }
     }
 
-    var assetAddress: EthAddress? {
+    var assetAddress: ChainAddress? {
         switch self {
-            case .aaveSupplyBalance(_, _, let baseAsset, _): baseAsset
-            case .cometCollateralBalance(_, _, let collateralAsset, _): collateralAsset
-            case .cometSupplyBalance(_, _, let baseAsset, _): baseAsset
-            case .cometBorrowPosition(_, _, let borrowAsset, _): borrowAsset
-            case .cometBorrowCapacity(_, _, let borrowAsset, _): borrowAsset
-            case .morphoCollateralBalance(_, _, let collateralAsset, _): collateralAsset
-            case .morphoBorrowPosition(_, _, let borrowAsset, _): borrowAsset
-            case .morphoBorrowCapacity(_, _, let borrowAsset, _): borrowAsset
-            case .morphoVaultSupplyBalance(_, _, let baseAsset, _): baseAsset
+            case .aaveSupplyBalance(let network, _, let baseAsset, _): baseAsset.on(network)
+            case .cometCollateralBalance(let network, _, let collateralAsset, _): collateralAsset.on(network)
+            case .cometSupplyBalance(let network, _, let baseAsset, _): baseAsset.on(network)
+            case .cometBorrowPosition(let network, _, let borrowAsset, _): borrowAsset.on(network)
+            case .cometBorrowCapacity(let network, _, let borrowAsset, _): borrowAsset.on(network)
+            case .morphoCollateralBalance(let network, _, let collateralAsset, _): collateralAsset.on(network)
+            case .morphoBorrowPosition(let network, _, let borrowAsset, _): borrowAsset.on(network)
+            case .morphoBorrowCapacity(let network, _, let borrowAsset, _): borrowAsset.on(network)
+            case .morphoVaultSupplyBalance(let network, _, let baseAsset, _): baseAsset.on(network)
             case .tokenBalance(_, let address, _, _): address
-            case .loopVenue(_, _, let backingAsset, _, _): backingAsset
-            case .morphoReward(_, _, let token, _): token
-            case .cometReward(_, _, let token, _): token
+            case .loopVenue(let network, _, let backingAsset, _, _): backingAsset.on(network)
+            case .morphoReward(let network, _, let token, _): token.on(network)
+            case .cometReward(let network, _, let token, _): token.on(network)
             case .rewardSettlement(_): nil
             case .swapSettlement(_): nil
-            case .virtualBalance: nil  // Virtual node, no asset address
+            case .virtualBalance: nil
             case .virtualNode(_, _, _): nil
-            case .never: nil
         }
+    }
+
+    /// The EVM asset address, or nil for Solana/virtual nodes.
+    /// Use this in the EVM operation pipeline where EthAddress is required.
+    var evmAssetAddress: EthAddress? {
+        guard let addr = assetAddress, addr.isEVM else { return nil }
+        return addr.ethAddress
     }
 
     var symbol: String? {
+        // tokenBalance nodes store their symbol directly (works for all chains)
+        if case .tokenBalance(_, _, let symbol, _) = self {
+            return symbol
+        }
+        // EVM earn market nodes: look up symbol from Atlas via asset address
         switch asAtlasAsset {
             case .success(let atlasAsset):
                 return atlasAsset.symbol
@@ -345,6 +348,14 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
     }
 
     public var decimals: Int? {
+        // tokenBalance nodes: resolve decimals via Atlas (EVM or Solana)
+        if case .tokenBalance(_, let address, _, _) = self {
+            if let atlasAsset = Atlas.getAssetByAddress(address) {
+                return Int(atlasAsset.decimals)
+            }
+            return nil
+        }
+        // EVM earn market nodes
         if case .success(let atlasAsset) = asAtlasAsset {
             return Int(atlasAsset.decimals)
         } else {
@@ -354,12 +365,12 @@ public enum LegendNode: TradewindsNode, CustomStringConvertible, Hashable {
 
     var asAtlasAsset: Result<Atlas.EvmAsset, Charter.CharterError> {
         if let network,
-            let assetAddress,
-            let atlasAsset = Atlas.getEvmAssetByAddress(network: network, token: assetAddress)
+            let evmAssetAddress,
+            let atlasAsset = Atlas.getEvmAssetByAddress(network: network, token: evmAssetAddress)
         {
             return .success(atlasAsset)
         }
 
-        return .failure(.unknownAsset(symbol: nil, network: network, address: assetAddress))
+        return .failure(.unknownAsset(symbol: nil, network: network, address: evmAssetAddress))
     }
 }

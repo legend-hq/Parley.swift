@@ -18,7 +18,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -26,7 +26,7 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6"
                     )
                 ]
@@ -35,7 +35,7 @@ struct FolioResolvedTests {
 
         let resolved = folio.resolved()
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(50_000_000, decimals: 6)
         )
     }
@@ -48,7 +48,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -59,7 +59,7 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6"
                     )
                 ]
@@ -68,7 +68,7 @@ struct FolioResolvedTests {
 
         let resolved = folio.resolved()
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(100_000_000, decimals: 6)
         )
     }
@@ -83,7 +83,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -94,13 +94,13 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-30e6"
                     )
                 ],
                 .acrossFill(wallet: wallet, relayHash: relayHash): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-20e6"
                     )
                 ],
@@ -110,7 +110,7 @@ struct FolioResolvedTests {
         let resolved = folio.resolved()
         // quarkNonce satisfied → skip -30. acrossFill unsatisfied → apply -20. 100 - 20 = 80.
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(80_000_000, decimals: 6)
         )
     }
@@ -124,7 +124,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -132,13 +132,13 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce1): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-30e6"
                     )
                 ],
                 .quarkNonce(wallet: wallet, nonce: nonce2): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-20e6"
                     )
                 ],
@@ -148,7 +148,7 @@ struct FolioResolvedTests {
         let resolved = folio.resolved()
         // -30 + -20 = -50 from 100 → 50
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(50_000_000, decimals: 6)
         )
     }
@@ -163,7 +163,7 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "10e6"
                     )
                 ]
@@ -172,7 +172,7 @@ struct FolioResolvedTests {
 
         let resolved = folio.resolved()
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(10_000_000, decimals: 6)
         )
     }
@@ -185,7 +185,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     5_000_000,
                     decimals: 6
                 )
@@ -193,7 +193,7 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6"
                     )
                 ]
@@ -202,7 +202,7 @@ struct FolioResolvedTests {
 
         let resolved = folio.resolved()
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(0, decimals: 6)
         )
     }
@@ -217,11 +217,11 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 ),
-                .token(network: .arbitrum, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .arbitrum, symbol: "USDC", wallet: wallet.on(.arbitrum)): Amount(
                     200_000_000,
                     decimals: 6
                 ),
@@ -232,13 +232,13 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-100e6"
                     )
                 ],
                 .acrossFill(wallet: wallet, relayHash: relayHash): [
                     Folio.Patch(
-                        target: .token(network: .arbitrum, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .arbitrum, symbol: "USDC", wallet: wallet.on(.arbitrum)),
                         delta: "99e6"
                     )
                 ],
@@ -248,12 +248,12 @@ struct FolioResolvedTests {
         let resolved = folio.resolved()
         // Source: quarkNonce satisfied → skip, balance stays 100
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(100_000_000, decimals: 6)
         )
         // Dest: acrossFill unsatisfied → apply +99, 200 + 99 = 299
         #expect(
-            resolved.balances[.token(network: .arbitrum, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .arbitrum, symbol: "USDC", wallet: wallet.on(.arbitrum))]
                 == Amount(299_000_000, decimals: 6)
         )
     }
@@ -264,7 +264,7 @@ struct FolioResolvedTests {
     func noPatches() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -285,7 +285,7 @@ struct FolioResolvedTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     100_000_000,
                     decimals: 6
                 )
@@ -297,13 +297,13 @@ struct FolioResolvedTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6"
                     )
                 ],
                 .acrossFill(wallet: wallet, relayHash: relayHash): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "99e6"
                     )
                 ],
@@ -312,7 +312,7 @@ struct FolioResolvedTests {
 
         let resolved = folio.resolved()
         #expect(
-            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet)]
+            resolved.balances[.token(network: .base, symbol: "USDC", wallet: wallet.on(.base))]
                 == Amount(100_000_000, decimals: 6)
         )
     }

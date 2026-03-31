@@ -59,9 +59,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -129,9 +129,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -192,15 +192,15 @@ struct CharterTradewindsLoopLongTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),  // 0.99 (1% fee)
                                 fees: [
@@ -228,9 +228,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -297,9 +297,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -324,9 +324,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -386,15 +386,15 @@ struct CharterTradewindsLoopLongTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -419,9 +419,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -491,9 +491,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,
@@ -713,9 +713,9 @@ struct CharterTradewindsLoopLongTests {
                                 ),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .loopVenue(
                                     network: .base,

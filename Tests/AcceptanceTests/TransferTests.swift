@@ -1,4 +1,5 @@
 @preconcurrency import Eth
+import Prelude
 import SwiftNumber
 import TestHelpers
 import Testing
@@ -30,7 +31,7 @@ struct TransferTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .unknownAccount(
                                         "0x0000000000000000000000000000000000f00d1e"
@@ -66,7 +67,7 @@ struct TransferTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -95,7 +96,7 @@ struct TransferTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.06, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -188,7 +189,7 @@ struct TransferTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(98.460000, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -244,10 +245,10 @@ struct TransferTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -350,7 +351,7 @@ struct TransferTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(98, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -406,10 +407,10 @@ struct TransferTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -448,7 +449,7 @@ struct TransferTests {
                                 .unwrapWETHUpTo(
                                     tokenAmount: .amt(0.7, .weth)
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(0.7, .eth),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -519,10 +520,10 @@ struct TransferTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("8453"))),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                        )
+                                        ).on(Network.fromChainId(Number("8453")))
                                     )
                                 ),
                             ]
@@ -583,7 +584,7 @@ struct TransferTests {
                                         payee: .stax,
                                         quote: .basic
                                     ),
-                                    .transferNativeToken(
+                                    .transfer(
                                         tokenAmount: .amt(0.7, .eth),
                                         recipient: .bob,
                                         cappedMax: false,
@@ -666,10 +667,10 @@ struct TransferTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -728,7 +729,7 @@ struct TransferTests {
                                     quote: .basic
                                 ),
                                 // TODO: Transfer ERC20 or transfer native token?
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(0.3, .weth),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -799,10 +800,10 @@ struct TransferTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -837,7 +838,7 @@ struct TransferTests {
                                     payee: .stax,
                                     quote: .basic,
                                 ),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(49.960000, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -881,7 +882,7 @@ struct TransferTests {
                         ),
                         .multicall(
                             [
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(50.1, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -917,10 +918,10 @@ struct TransferTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                                 .quotePay(
@@ -1024,7 +1025,7 @@ struct TransferTests {
                                         ofToken: .weth
                                     )
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: TokenAmount(
                                         fromWei: "2959995000000000000",
                                         ofToken: .eth
@@ -1091,7 +1092,7 @@ struct TransferTests {
                                         ofToken: .weth
                                     )
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(0.25, .eth),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -1142,7 +1143,7 @@ struct TransferTests {
                                 ),
                                 // Only 10 USDC is available to transfer since payment has to be made on Arbitrum
                                 // due to unbridgeable funds on Base
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -1180,10 +1181,10 @@ struct TransferTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -1238,7 +1239,7 @@ struct TransferTests {
                                         payee: .stax,
                                         quote: .basic
                                     ),
-                                    .transferErc20(
+                                    .transfer(
                                         tokenAmount: .amt(0.70, .weth),
                                         recipient: .bob,
                                         cappedMax: false,
@@ -1310,10 +1311,10 @@ struct TransferTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("137"))),
                                         token: EthAddress(
                                             "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
-                                        )
+                                        ).on(Network.fromChainId(Number("137")))
                                     )
                                 ),
                             ]
@@ -1363,7 +1364,7 @@ struct TransferTests {
                                         payee: .stax,
                                         quote: .basic
                                     ),
-                                    .transferErc20(
+                                    .transfer(
                                         tokenAmount: .amt(0.70, .weth),
                                         recipient: .bob,
                                         cappedMax: false,
@@ -1420,10 +1421,10 @@ struct TransferTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("137"))),
                                         token: EthAddress(
                                             "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
-                                        )
+                                        ).on(Network.fromChainId(Number("137")))
                                     )
                                 ),
                             ]
@@ -1481,7 +1482,7 @@ struct TransferTests {
                                 .unwrapWETHUpTo(
                                     tokenAmount: .amt(1.5, .weth)
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(1.5, .eth),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -1524,7 +1525,7 @@ struct TransferTests {
                                 .unwrapWETHUpTo(
                                     tokenAmount: .amt(0.7, .whype)
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(0.7, .hype),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -1595,10 +1596,10 @@ struct TransferTests {
                                         price: Number("2500000000"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("999"))),
                                         token: EthAddress(
                                             "0x000000000000000000000000000000000000b49e"
-                                        )
+                                        ).on(Network.fromChainId(Number("999")))
                                     )
                                 ),
                             ]
@@ -1637,7 +1638,7 @@ struct TransferTests {
                                 .unwrapWETHUpTo(
                                     tokenAmount: .amt(0.7, .wpol)
                                 ),
-                                .transferNativeToken(
+                                .transfer(
                                     tokenAmount: .amt(0.7, .pol),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -1708,15 +1709,73 @@ struct TransferTests {
                                         price: Number("50000000"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("137"))),
                                         token: EthAddress(
                                             "0x0000000000000000000000000000000000001010"
-                                        )
+                                        ).on(Network.fromChainId(Number("137")))
                                     )
                                 ),
                             ]
                         )
                     ]
+                )
+            )
+        )
+    }
+
+    // MARK: - Solana Transfer Tests
+
+    @Test("Alice transfers 5 USDC to Bob on Solana")
+    func testSolanaUsdcTransfer() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(10, .usdc), .solana),
+                ],
+                when: .transfer(
+                    from: .alice,
+                    to: .bob,
+                    amount: .amt(5, .usdc),
+                    on: .solana
+                ),
+                expect: .success(
+                    .single(
+                        .transfer(
+                            tokenAmount: .amt(5, .usdc),
+                            recipient: .bob,
+                            cappedMax: false,
+                            network: .solana,
+                            executionType: .immediate
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    @Test("Alice transfers 1 SOL to Bob on Solana")
+    func testSolanaNativeSolTransfer() async throws {
+        try await testAcceptanceTests(
+            test: .init(
+                given: [
+                    .tokenBalance(.alice, .amt(2, .sol), .solana),
+                ],
+                when: .transfer(
+                    from: .alice,
+                    to: .bob,
+                    amount: .amt(1, .sol),
+                    on: .solana
+                ),
+                expect: .success(
+                    .single(
+                        .transfer(
+                            tokenAmount: .amt(1, .sol),
+                            recipient: .bob,
+                            cappedMax: false,
+                            network: .solana,
+                            executionType: .immediate
+                        )
+                    )
                 )
             )
         )

@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import SwiftNumber
@@ -204,7 +205,7 @@ extension Folio.BalanceType: StringListCodable {
     public func toStringList() -> [String] {
         switch self {
             case .token(let network, let symbol, let wallet):
-                return ["token", network.networkIdent, symbol, wallet.hex]
+                return ["token", network.networkIdent, symbol, wallet.displayString]
 
             case .yieldMarket(let yieldMarket, let wallet):
                 return ["yield_market"] + yieldMarket.toStringList() + [wallet.hex]
@@ -236,7 +237,19 @@ extension Folio.BalanceType: StringListCodable {
                     throw StringListCodableError.insufficientValues(expected: 4, got: values.count)
                 }
                 let network = try Network(fromIdent: values[1])
-                let wallet = try EthAddress.fromString(values[3])
+                let walletString = values[3]
+                let wallet: ChainAddress
+                if walletString.hasPrefix("0x") {
+                    let ethAddr = try EthAddress.fromString(walletString)
+                    wallet = ethAddr.on(network)
+                } else {
+                    guard let solAddr = SolanaAddress(fromBase58: walletString) else {
+                        throw StringListCodableError.invalidFormat(
+                            "Invalid Solana address: \(walletString)"
+                        )
+                    }
+                    wallet = .solana(solAddr)
+                }
                 return (
                     .token(network: network, symbol: values[2], wallet: wallet),
                     Array(values.dropFirst(4))
@@ -534,6 +547,36 @@ extension Folio.HexDataType: StringListCodable {
                 let network = try Network(fromIdent: values[1])
                 let wallet = try EthAddress.fromString(values[2])
                 return (.nonceSecret(network: network, wallet: wallet), Array(values.dropFirst(3)))
+
+            default:
+                throw StringListCodableError.unknownDiscriminator(values[0])
+        }
+    }
+}
+
+// MARK: - SolanaTransactionContextType
+extension Folio.SolanaTransactionContextType: StringListCodable {
+    public func toStringList() -> [String] {
+        switch self {
+            case .durableNonce(let wallet):
+                return ["durable_nonce", wallet.base58]
+        }
+    }
+
+    public static func fromStringList(_ values: [String]) throws -> (Folio.SolanaTransactionContextType, [String]) {
+        guard values.count >= 1 else {
+            throw StringListCodableError.insufficientValues(expected: 1, got: values.count)
+        }
+
+        switch values[0] {
+            case "durable_nonce":
+                guard values.count >= 2 else {
+                    throw StringListCodableError.insufficientValues(expected: 2, got: values.count)
+                }
+                guard let wallet = SolanaAddress(fromBase58: values[1]) else {
+                    throw StringListCodableError.unknownDiscriminator(values[1])
+                }
+                return (.durableNonce(wallet: wallet), Array(values.dropFirst(2)))
 
             default:
                 throw StringListCodableError.unknownDiscriminator(values[0])

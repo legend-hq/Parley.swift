@@ -151,7 +151,7 @@ struct BridgeRoutingTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(19, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -224,7 +224,7 @@ struct BridgeRoutingTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,

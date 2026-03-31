@@ -21,7 +21,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testDirectCallTokenTransfer() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("10.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("10.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -35,15 +35,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .tokenTransfer,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: bob
+                wallet: bob.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -90,8 +90,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                 assetSymbol: "USDC",
                                 chainId: 8453,
                                 price: Number("1.0e8"),
-                                recipient: bob,
-                                token: BaseNetwork.Assets.USDC.assetAddress
+                                recipient: bob.on(.base),
+                                token: BaseNetwork.Assets.USDC.assetAddress.on(.base)
                             )
                         ),
                         nonceSecret: nonceSecret,
@@ -108,7 +108,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testTokenTransfer() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("10.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("10.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -119,15 +119,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .tokenTransfer,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: bob
+                wallet: bob.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -160,8 +160,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     assetSymbol: "USDC",
                                     chainId: 8453,
                                     price: Number("1.0e8"),
-                                    recipient: bob,
-                                    token: BaseNetwork.Assets.USDC.assetAddress
+                                    recipient: bob.on(.base),
+                                    token: BaseNetwork.Assets.USDC.assetAddress.on(.base)
                                 )
                             ),
                             scriptAddress: Create2.getScriptAddress(TransferActions.creationCode),
@@ -186,7 +186,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("100.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -197,15 +197,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .transferOut,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: externalAddress
+                wallet: externalAddress.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -239,8 +239,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     assetSymbol: "USDC",
                                     chainId: 8453,
                                     price: Number("1.0e8"),
-                                    recipient: externalAddress,
-                                    token: BaseNetwork.Assets.USDC.assetAddress
+                                    recipient: externalAddress.on(.base),
+                                    token: BaseNetwork.Assets.USDC.assetAddress.on(.base)
                                 )
                             ),
                             scriptAddress: Create2.getScriptAddress(TransferActions.creationCode),
@@ -263,7 +263,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testNativeTokenTransfer() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "ETH", wallet: alice): Amount("1.0e18")
+                .token(network: .base, symbol: "ETH", wallet: alice.on(.base)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "ETH"): Value("4000e8")
@@ -274,15 +274,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .tokenTransfer,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.ETH.assetAddress,
+                address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                 symbol: "ETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.ETH.assetAddress,
+                address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                 symbol: "ETH",
-                wallet: bob
+                wallet: bob.on(.base)
             ),
             rate: .one,
             minFlow: Number(0),
@@ -335,8 +335,8 @@ struct LegendRouteType_getQuarkOperationActionsTests {
                                     assetSymbol: "ETH",
                                     chainId: 8453,
                                     price: Number("4000.0e8"),
-                                    recipient: bob,
-                                    token: BaseNetwork.Assets.ETH.assetAddress
+                                    recipient: bob.on(.base),
+                                    token: BaseNetwork.Assets.ETH.assetAddress.on(.base)
                                 )
                             ),
                             scriptAddress: Create2.getScriptAddress(TransferActions.creationCode),
@@ -358,7 +358,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testSimpleBridgeAction() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("100.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -384,15 +384,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .bridge(bridgeType: .across, isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .arbitrum,
-                address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                address: ArbitrumNetwork.Assets.USDC.assetAddress.on(.arbitrum),
                 symbol: "USDC",
-                wallet: bob
+                wallet: bob.on(.arbitrum)
             ),
             rate: Percentage(fromDouble: 0.9),
             minFlow: Number(0),
@@ -472,7 +472,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testWrapETHToWETH() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "ETH", wallet: alice): Amount("1.0e18")
+                .token(network: .base, symbol: "ETH", wallet: alice.on(.base)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "ETH"): Value("3000e8")
@@ -483,15 +483,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .wrap,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.ETH.assetAddress,
+                address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                 symbol: "ETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -544,7 +544,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testUnwrapWETHToETH() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("2.0e18")
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("2.0e18")
             ],
             prices: [
                 .token(symbol: "WETH"): Value("3000e8")
@@ -555,15 +555,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .unwrap,
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.ETH.assetAddress,
+                address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                 symbol: "ETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -617,7 +617,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testWrapStETHToWstETH() {
         let folio = Folio(
             balances: [
-                .token(network: .ethereum, symbol: "stETH", wallet: alice): Amount("1.0e18")
+                .token(network: .ethereum, symbol: "stETH", wallet: alice.on(.ethereum)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "stETH"): Value("3000e8")
@@ -628,15 +628,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .wrap,
             source: TradewindsLegendNode.tokenBalance(
                 network: .ethereum,
-                address: EthereumNetwork.Assets.stETH.assetAddress,
+                address: EthereumNetwork.Assets.stETH.assetAddress.on(.ethereum),
                 symbol: "stETH",
-                wallet: alice
+                wallet: alice.on(.ethereum)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .ethereum,
-                address: EthereumNetwork.Assets.wstETH.assetAddress,
+                address: EthereumNetwork.Assets.wstETH.assetAddress.on(.ethereum),
                 symbol: "wstETH",
-                wallet: alice
+                wallet: alice.on(.ethereum)
             ),
             rate: Percentage(fromDouble: 0.5),
             minFlow: Number(0),
@@ -690,7 +690,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
     func testSwapUSDCToETH() {
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8"),
@@ -711,15 +711,15 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.ETH.assetAddress,
+                address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                 symbol: "ETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 0.98),  // 2% slippage
             minFlow: Number(0),
@@ -799,7 +799,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -810,9 +810,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .cometSupply(isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometSupplyBalance(
                 network: .base,
@@ -903,9 +903,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -965,7 +965,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1.0e18")
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8"),
@@ -977,9 +977,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .cometSupplyCollateral(isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometCollateralBalance(
                 network: .base,
@@ -1081,9 +1081,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -1147,7 +1147,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6"),
                 .borrowMarket(
                     borrowMarket: .comet(
                         network: .base,
@@ -1166,9 +1166,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .cometRepay(isMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometBorrowPosition(
                 network: .base,
@@ -1242,7 +1242,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("2.0e18")
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("2.0e18")
             ],
             prices: [
                 .token(symbol: "WETH"): Value("3000e8"),
@@ -1254,9 +1254,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .morphoSupplyCollateral(isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoCollateralBalance(
                 network: .base,
@@ -1333,7 +1333,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -1344,9 +1344,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .morphoVaultSupply(isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoVaultSupplyBalance(
                 network: .base,
@@ -1437,9 +1437,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -1498,7 +1498,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -1509,9 +1509,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .aaveSupply(isCappedMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.aaveSupplyBalance(
                 network: .base,
@@ -1600,9 +1600,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -1660,7 +1660,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1.0e18")
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "WETH"): Value("3000e8"),
@@ -1676,9 +1676,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometCollateralBalance(
                 network: .base,
@@ -1752,7 +1752,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8"),
@@ -1768,9 +1768,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometBorrowPosition(
                 network: .base,
@@ -1859,9 +1859,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -1948,9 +1948,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -2024,7 +2024,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6")
             ],
             prices: [
                 .token(symbol: "USDC"): Value("1e8")
@@ -2035,9 +2035,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             type: .morphoRepay(isMax: false),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoBorrowPosition(
                 network: .base,
@@ -2132,9 +2132,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -2207,7 +2207,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1.0e18")
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1.0e18")
             ],
             prices: [
                 .token(symbol: "WETH"): Value("3000e8"),
@@ -2223,9 +2223,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoCollateralBalance(
                 network: .base,
@@ -2318,9 +2318,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoBorrowPosition(
                 network: .base,
@@ -2417,9 +2417,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.loopVenue(
                 network: .base,
@@ -2539,9 +2539,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -2652,9 +2652,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -2755,9 +2755,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.loopVenue(
                 network: .base,
@@ -2859,9 +2859,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -2957,9 +2957,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -3027,7 +3027,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6"),
                 .borrowMarketCollateral(
                     borrowMarket: .comet(
                         network: .base,
@@ -3052,9 +3052,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.cometBorrowPosition(
                 network: .base,
@@ -3155,9 +3155,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             sink: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.WETH.assetAddress,
+                address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                 symbol: "WETH",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             rate: Percentage(fromDouble: 1.0),
             minFlow: Number(0),
@@ -3230,7 +3230,7 @@ struct LegendRouteType_getQuarkOperationActionsTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000.0e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000.0e6"),
                 .borrowMarketCollateral(
                     borrowMarket: .morpho(
                         network: .base,
@@ -3255,9 +3255,9 @@ struct LegendRouteType_getQuarkOperationActionsTests {
             ),
             source: TradewindsLegendNode.tokenBalance(
                 network: .base,
-                address: BaseNetwork.Assets.USDC.assetAddress,
+                address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                 symbol: "USDC",
-                wallet: alice
+                wallet: alice.on(.base)
             ),
             sink: TradewindsLegendNode.morphoBorrowPosition(
                 network: .base,

@@ -80,7 +80,7 @@ struct FolioPathEncodingTests {
         let wallet: EthAddress = "0x1234567890abcdef1234567890abcdef12345678"
         let testFolio = TestFolio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     "3500000",
                     decimals: 6
                 )

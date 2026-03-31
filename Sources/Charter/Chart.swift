@@ -339,11 +339,15 @@ extension Charter {
                 public static let CONTINGENT = "CONTINGENT"
             }
 
-            public let chainId: Number
             public let account: ChainAddress
             public let actionType: String
             public let actionContext: Charter.ActionContext
             public let executionType: ExecutionType
+
+            /// Derived from `account.chain` for backward-compatible JSON encoding.
+            public var chainId: Number {
+                account.chain.chainId
+            }
 
             public enum CodingKeys: String, CodingKey {
                 case chainId = "chain_id"
@@ -354,17 +358,35 @@ extension Charter {
             }
 
             public init(
+                account: ChainAddress,
+                actionType: String,
+                actionContext: Charter.ActionContext,
+                executionType: ExecutionType
+            ) {
+                self.account = account
+                self.actionType = actionType
+                self.actionContext = actionContext
+                self.executionType = executionType
+            }
+
+            /// Backward-compatible convenience init that still accepts a flat `chainId`.
+            public init(
                 chainId: Number,
                 account: ChainAddress,
                 actionType: String,
                 actionContext: Charter.ActionContext,
                 executionType: ExecutionType
             ) {
-                self.chainId = chainId
-                self.account = account
-                self.actionType = actionType
-                self.actionContext = actionContext
-                self.executionType = executionType
+                precondition(
+                    account.chain.chainId == chainId,
+                    "Chart.Action chainId must match account.chain"
+                )
+                self.init(
+                    account: account,
+                    actionType: actionType,
+                    actionContext: actionContext,
+                    executionType: executionType
+                )
             }
 
             public func encode(to encoder: Encoder) throws {
@@ -381,7 +403,7 @@ extension Charter {
 
             public init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.chainId = try container.decode(Number.self, forKey: .chainId)
+                let chainId = try container.decode(Number.self, forKey: .chainId)
                 let accountString = try container.decode(String.self, forKey: .account)
                 let network = Network.fromChainId(chainId)
 
@@ -395,7 +417,7 @@ extension Charter {
                         )
                     }
                     if ChainAddress.supports(network) {
-                        self.account = ChainAddress(ethAddr, chain: network)
+                        self.account = ethAddr.on(network)
                     } else {
                         throw DecodingError.dataCorruptedError(
                             forKey: .account,
@@ -423,7 +445,7 @@ extension Charter {
             }
 
             var network: Network {
-                Network.fromChainId(chainId)
+                account.chain
             }
         }
 
@@ -459,13 +481,12 @@ extension Charter {
                 let network = qoa.action.network
                 let account: ChainAddress
                 if ChainAddress.supports(network) {
-                    account = ChainAddress(qoa.action.quarkAccount, chain: network)
+                    account = qoa.action.quarkAccount.on(network)
                 } else {
                     // Fallback for unknown EVM networks
                     account = .ethereum(qoa.action.quarkAccount)
                 }
                 let action = Action(
-                    chainId: qoa.action.chainId,
                     account: account,
                     actionType: qoa.action.actionType,
                     actionContext: qoa.action.actionContext,
@@ -474,6 +495,31 @@ extension Charter {
                 return OperationAction(
                     operation: .quark(quarkOp),
                     action: action
+                )
+            }
+
+            /// Convert back to the legacy `QuarkOperationAction` type.
+            /// Returns nil for Solana operations (which have no legacy equivalent).
+            public func toLegacyQuarkOperationAction() -> Charter.QuarkOperationAction? {
+                guard case .quark(let quarkOp) = operation else { return nil }
+                return QuarkOperationAction(
+                    operation: Chart.LegacyQuarkOperation(
+                        nonce: quarkOp.nonceSecret,
+                        isReplayable: quarkOp.isReplayable,
+                        scriptAddress: quarkOp.scriptAddress,
+                        scriptSources: quarkOp.scriptSources,
+                        scriptCalldata: quarkOp.scriptCalldata,
+                        expiry: quarkOp.expiry
+                    ),
+                    action: Chart.EVMAction(
+                        chainId: action.chainId,
+                        quarkAccount: action.account.ethAddress,
+                        actionType: action.actionType,
+                        actionContext: action.actionContext,
+                        nonceSecret: quarkOp.nonceSecret,
+                        totalPlays: quarkOp.totalPlays,
+                        executionType: action.executionType
+                    )
                 )
             }
 
@@ -519,7 +565,21 @@ extension Charter {
             }
         }
 
-        /// Solana signing data — serialized transaction message bytes.
+        /// Solana signing data — contains the serialized transaction message for signing.
+        ///
+        /// Solana transactions require two signatures: Legend's cannon signer (fee payer,
+        /// always at account index 0 per Solana spec) and the user's Solana wallet
+        /// (a Turnkey-custodied ed25519 key in the user's sub-org). Both sign the same
+        /// serialized message bytes; the signatures are position-indexed to match
+        /// `account_keys`, not order-dependent.
+        ///
+        /// The backend (`SolanaAdaptor.prepare_solana_operation()`) builds the transaction
+        /// from the instructions in `OperationAction.operation.solana`, fetches a blockhash,
+        /// collects both signatures, and submits.
+        ///
+        /// Charter computes `serializedMessage` client-side (using durable nonce data from Folio)
+        /// so the client can verify what will be signed. The backend may rebuild the message
+        /// with a fresh blockhash before signing.
         public struct SolanaSigningData: Codable, Sendable, Equatable {
             public let serializedMessage: String
 
@@ -843,6 +903,7 @@ extension Charter.QuarkOperationAction {
 
 extension Array where Element == Charter.QuarkOperationAction {
     var eip712Data: Charter.Chart.EIP712Data? {
+        guard !self.isEmpty else { return nil }
         if self.count == 1 {
             // Single quark operation
             return self[0].eip712Data

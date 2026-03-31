@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import SwiftNumber
@@ -50,6 +51,9 @@ struct FolioCodableTests {
               "rewards" : {
 
               },
+              "solana_transaction_context" : {
+
+              },
               "swap_hints" : {
 
               },
@@ -73,7 +77,7 @@ struct FolioCodableTests {
         let wallet: EthAddress = "0xaabbccddee1234567890abcdef1234567890abcd"
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     "52000000",
                     decimals: 6
                 )
@@ -107,6 +111,9 @@ struct FolioCodableTests {
 
               },
               "rewards" : {
+
+              },
+              "solana_transaction_context" : {
 
               },
               "swap_hints" : {
@@ -231,15 +238,15 @@ struct FolioCodableTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .ethereum, symbol: "ETH", wallet: wallet): Amount(
+                .token(network: .ethereum, symbol: "ETH", wallet: wallet.on(.ethereum)): Amount(
                     "1000000000000000000",
                     decimals: 18
                 ),
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     "1000000",
                     decimals: 6
                 ),
-                .token(network: .arbitrum, symbol: "ARB", wallet: wallet): Amount(
+                .token(network: .arbitrum, symbol: "ARB", wallet: wallet.on(.arbitrum)): Amount(
                     "5000000000000000000",
                     decimals: 18
                 ),
@@ -294,7 +301,7 @@ struct FolioCodableTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     "52000000",
                     decimals: 6
                 ),
@@ -419,6 +426,14 @@ struct FolioCodableTests {
                         "0xcafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe"
                 )
             ],
+            solanaTransactionContext: [
+                .durableNonce(wallet: SolanaAddress("7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV")):
+                    Folio.SolanaTransactionContext(
+                        nonceAccount: SolanaAddress("9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"),
+                        nonceValue: Base58Data(fromBase58: "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7")!,
+                        feePayer: SolanaAddress("FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z")
+                    )
+            ],
             completionStatuses: [
                 .quarkNonce(
                     wallet: wallet,
@@ -499,6 +514,13 @@ struct FolioCodableTests {
                   }
                 }
               },
+              "solana_transaction_context" : {
+                "durable_nonce/7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV" : {
+                  "fee_payer" : "FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z",
+                  "nonce_account" : "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+                  "nonce_value" : "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7"
+                }
+              },
               "swap_hints" : {
                 "swap/base/USDC/WETH/0x/100000000" : {
                   "exchange_rate" : "0.0004",
@@ -537,7 +559,7 @@ struct FolioCodableTests {
         let folio = Folio(
             balances: [
                 // Test escaping of forward slashes in token symbols
-                .token(network: .base, symbol: "USD/EUR", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USD/EUR", wallet: wallet.on(.base)): Amount(
                     "1000000",
                     decimals: 6
                 )
@@ -569,7 +591,7 @@ struct FolioCodableTests {
 
         let folio = Folio(
             balances: [
-                .token(network: unknownNetwork, symbol: "TEST", wallet: wallet): Amount(
+                .token(network: unknownNetwork, symbol: "TEST", wallet: wallet.on(unknownNetwork)): Amount(
                     "1000000",
                     decimals: 18
                 )

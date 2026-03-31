@@ -58,6 +58,8 @@ extension Network {
                 return "scroll_sepolia"
             case .sepolia:
                 return "sepolia"
+            case .solana:
+                return "solana"
             case .soneium:
                 return "soneium"
             case .sonic:
@@ -131,6 +133,8 @@ extension Network {
                 self = .scrollSepolia
             case "sepolia":
                 self = .sepolia
+            case "solana":
+                self = .solana
             case "soneium":
                 self = .soneium
             case "sonic":

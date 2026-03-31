@@ -91,7 +91,7 @@ extension Charter {
             let destAssetAddress: EthAddress
             if destAsset.isNativeAsset {
                 if let wrappedTokenSymbol = destAsset.crossChainAsset?.wrappedAssetSymbol,
-                    let wrappedOutputAsset = Atlas.getEvmAssetBySymbol(
+                    let wrappedOutputAsset = Atlas.getAssetBySymbol(
                         network: destNetwork,
                         symbol: wrappedTokenSymbol
                     )
@@ -136,7 +136,7 @@ extension Charter {
             // This is due to the comlexities of Across ambiguously sending either WETH or ETH
             // If ETH exists as an asset and we're sending "WETH", then we use `ETH` here.
             let destinationAssetSymbol =
-                Atlas.getEvmAssetBySymbol(network: destNetwork, symbol: "ETH") != nil
+                Atlas.getAssetBySymbol(network: destNetwork, symbol: "ETH") != nil
                     && srcAsset.symbol == "WETH" ? "ETH" : destAsset.symbol
 
             return .success([
@@ -184,7 +184,7 @@ extension Charter {
             if isNativeAsset {
                 // Optimistically unwrap WETH before native ETH transfers
                 if let wrappedSymbol = asset.crossChainAsset?.wrappedAssetSymbol,
-                    let wrappedAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: wrappedSymbol)
+                    let wrappedAsset = Atlas.getAssetBySymbol(network: network, symbol: wrappedSymbol)
                 {
                     switch unwrapSimple(
                         network: network,
@@ -221,10 +221,9 @@ extension Charter {
                 ActionContext.TransferActionContext(
                     amount: amount.underlying,
                     assetSymbol: asset.symbol,
-                    chainId: network.chainId,
                     price: price,
-                    recipient: recipient,
-                    token: asset.assetAddress
+                    recipient: recipient.on(network),
+                    token: asset.assetAddress.on(network)
                 )
             )
 
@@ -427,7 +426,7 @@ extension Charter {
 
             guard let crossChainUnderlyingAsset = underlyingAsset.crossChainAsset,
                 let wrappedAssetSymbol = crossChainUnderlyingAsset.wrappedAssetSymbol,
-                let wrappedAsset = Atlas.getEvmAssetBySymbol(
+                let wrappedAsset = Atlas.getAssetBySymbol(
                     network: network,
                     symbol: wrappedAssetSymbol
                 )
@@ -1914,7 +1913,7 @@ extension Charter {
 
             if asset.isNativeAsset {
                 guard let wrappedAssetSymbol = asset.crossChainAsset?.wrappedAssetSymbol,
-                    let wethAsset = Atlas.getEvmAssetBySymbol(
+                    let wethAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: wrappedAssetSymbol
                     )

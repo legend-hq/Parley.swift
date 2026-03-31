@@ -26,7 +26,7 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-10e18"
                     )
                 ]
@@ -54,11 +54,11 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-100e6"
                     ),
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "WETH", wallet: wallet),
+                        target: .token(network: .base, symbol: "WETH", wallet: wallet.on(.base)),
                         delta: "0.04e18"
                     ),
                 ]
@@ -81,7 +81,7 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "10e6",
                         metadata: Folio.PatchMetadata(
                             operationType: .slowRefund,
@@ -111,7 +111,7 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "10e6",
                         metadata: Folio.PatchMetadata(operationType: .slowRefund)
                     )
@@ -133,7 +133,7 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "10e6",
                         metadata: Folio.PatchMetadata(estimatedEta: 1_739_400_600)
                     )
@@ -158,7 +158,7 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6",
                         operationId: operationId
                     )
@@ -192,14 +192,14 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-100e6",
                         operationId: operationId
                     )
                 ],
                 .acrossFill(wallet: wallet, relayHash: relayHash): [
                     Folio.Patch(
-                        target: .token(network: .arbitrum, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .arbitrum, symbol: "USDC", wallet: wallet.on(.arbitrum)),
                         delta: "99e6",
                         operationId: operationId
                     )
@@ -243,11 +243,11 @@ struct FolioPatchTypeTests {
 
         let folio = Folio(
             balances: [
-                .token(network: .base, symbol: "USDC", wallet: wallet): Amount(
+                .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)): Amount(
                     "100000000",
                     decimals: 6
                 ),
-                .token(network: .base, symbol: "WETH", wallet: wallet): Amount(
+                .token(network: .base, symbol: "WETH", wallet: wallet.on(.base)): Amount(
                     "500000000000000000",
                     decimals: 18
                 ),
@@ -259,11 +259,11 @@ struct FolioPatchTypeTests {
             patches: [
                 .quarkNonce(wallet: wallet, nonce: nonce): [
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "USDC", wallet: wallet),
+                        target: .token(network: .base, symbol: "USDC", wallet: wallet.on(.base)),
                         delta: "-50e6"
                     ),
                     Folio.Patch(
-                        target: .token(network: .base, symbol: "WETH", wallet: wallet),
+                        target: .token(network: .base, symbol: "WETH", wallet: wallet.on(.base)),
                         delta: "0.02e18"
                     ),
                 ]

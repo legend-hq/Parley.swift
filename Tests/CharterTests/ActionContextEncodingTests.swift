@@ -1,5 +1,6 @@
 import Eth
 import Foundation
+import Prelude
 import SwiftNumber
 import Testing
 
@@ -26,8 +27,8 @@ struct ActionContextEncodingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),  // Base chain
                 price: Number("1e8"),
-                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
-                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913")
+                recipient: EthAddress("0x1234567890123456789012345678901234567890").on(Network.fromChainId(Number("8453"))),
+                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913").on(Network.fromChainId(Number("8453")))
             )
         )
 
@@ -137,8 +138,8 @@ struct ActionContextEncodingTests {
                 assetSymbol: "USDC",
                 chainId: Number("1"),
                 price: Number("1e8"),
-                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
-                token: EthAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
+                recipient: EthAddress("0x1234567890123456789012345678901234567890").on(Network.fromChainId(Number("1"))),
+                token: EthAddress("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48").on(Network.fromChainId(Number("1")))
             )
         )
 
@@ -263,8 +264,8 @@ struct ActionContextEncodingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),
                 price: Number("1e8"),
-                recipient: EthAddress("0x1234567890123456789012345678901234567890"),
-                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913")
+                recipient: EthAddress("0x1234567890123456789012345678901234567890").on(Network.fromChainId(Number("8453"))),
+                token: EthAddress("0x833589fcd6edb6e08f4c7c32d4f71b54bda02913").on(Network.fromChainId(Number("8453")))
             )
         )
 

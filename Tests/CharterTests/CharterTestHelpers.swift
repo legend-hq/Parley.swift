@@ -12,9 +12,9 @@ extension Atlas.EvmAsset {
         let network = Network.base  // Default for now, should be passed or inferred
         let node = TradewindsLegendNode.tokenBalance(
             network: network,
-            address: self.assetAddress,
+            address: self.assetAddress.on(network),
             symbol: self.symbol,
-            wallet: wallet
+            wallet: wallet.on(network)
         )
         return (amountWithDecimals, node)
     }
@@ -28,9 +28,9 @@ extension BaseNetwork.Assets {
         let amountWithDecimals = Number(amount, decimals: Int(asset.decimals))
         let node = TradewindsLegendNode.tokenBalance(
             network: BaseNetwork.network,
-            address: asset.assetAddress,
+            address: asset.assetAddress.on(BaseNetwork.network),
             symbol: asset.symbol,
-            wallet: wallet
+            wallet: wallet.on(BaseNetwork.network)
         )
         return (amountWithDecimals, node)
     }

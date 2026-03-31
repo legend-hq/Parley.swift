@@ -9,8 +9,7 @@ typealias BalanceType = Folio.BalanceType
 // MARK: - Helper Functions
 
 func getTokenSymbolByAddress(network: Network, token: EthAddress) throws -> String {
-    if let atlasNetwork = Atlas.getEvmNetwork(network: network),
-        let asset = atlasNetwork.getAssetByAddress(token)
+    if let asset = Atlas.getAssetByAddress(network: network, token: token)
     {
         return asset.symbol
     }
@@ -284,7 +283,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.amount
                 )
@@ -311,7 +310,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.inputAmount
                 )
@@ -323,7 +322,7 @@ extension Folio {
                         balanceType: .token(
                             network: Network.fromChainId(context.destinationChainId),
                             symbol: context.destinationAssetSymbol,
-                            wallet: context.recipient
+                            wallet: context.recipient.on(Network.fromChainId(context.destinationChainId))
                         ),
                         amount: context.outputAmount
                     )
@@ -338,7 +337,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.assetSymbol,
-                        wallet: context.recipient
+                        wallet: context.recipient.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.outputAmount
                 )
@@ -352,7 +351,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.inputAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.inputAmount
                 )
@@ -363,7 +362,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.outputAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.outputAmount
                 )
@@ -377,7 +376,7 @@ extension Folio {
                     balanceType: .token(
                         network: Network.fromChainId(context.chainId),
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                     ),
                     amount: context.amount
                 )
@@ -415,7 +414,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.fromAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: context.amount
                 )
@@ -426,7 +425,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.toAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: Number(context.amount / swapHint.exchangeRate)
                 )
@@ -464,7 +463,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.fromAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: context.amount
                 )
@@ -475,7 +474,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.toAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: Number(context.amount * swapHint.exchangeRate)
                 )
@@ -489,7 +488,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .aave(
@@ -511,7 +510,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .comet(
@@ -533,7 +532,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .morphoVault(
@@ -555,7 +554,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .aave(
@@ -577,7 +576,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .comet(
@@ -599,7 +598,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     yieldMarketBalanceType: .yieldMarket(
                         yieldMarket: .morphoVault(
@@ -634,7 +633,7 @@ extension Folio {
                         .token(
                             network: network,
                             symbol: $0.0,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         $0.1
                     )
@@ -645,7 +644,7 @@ extension Folio {
                     borrowTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -674,7 +673,7 @@ extension Folio {
                         .token(
                             network: network,
                             symbol: context.collateralAssetSymbol,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         context.collateralAmount
                     )
@@ -685,7 +684,7 @@ extension Folio {
                     borrowTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -718,7 +717,7 @@ extension Folio {
                         .token(
                             network: network,
                             symbol: $0.0,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         $0.1
                     )
@@ -729,7 +728,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -758,7 +757,7 @@ extension Folio {
                         .token(
                             network: network,
                             symbol: context.collateralAssetSymbol,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         context.collateralAmount
                     )
@@ -769,7 +768,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.assetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -787,7 +786,7 @@ extension Folio {
                         balanceType: .token(
                             network: Network.fromChainId(context.chainId),
                             symbol: context.assetSymbols[index],
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                         ),
                         amount: context.amounts[index]
                     )
@@ -801,7 +800,7 @@ extension Folio {
                         balanceType: .token(
                             network: Network.fromChainId(context.chainId),
                             symbol: context.assetSymbols[index],
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(Network.fromChainId(context.chainId))
                         ),
                         amount: context.amounts[index]
                     )
@@ -862,7 +861,7 @@ extension Folio {
                             .token(
                                 network: network,
                                 symbol: collateralTokenSymbol,
-                                wallet: quarkWalletAddress
+                                wallet: quarkWalletAddress.on(network)
                             ),
                             collateralAmount
                         )
@@ -874,7 +873,7 @@ extension Folio {
                         underlyingTokenBalanceType: .token(
                             network: network,
                             symbol: underlyingTokenSymbol,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         yieldMarketBalanceType: .yieldMarket(
                             yieldMarket: .comet(
@@ -894,7 +893,7 @@ extension Folio {
                         borrowTokenBalanceType: .token(
                             network: network,
                             symbol: underlyingTokenSymbol,
-                            wallet: quarkWalletAddress
+                            wallet: quarkWalletAddress.on(network)
                         ),
                         borrowMarketBalanceType: .borrowMarket(
                             borrowMarket: borrowMarket,
@@ -924,7 +923,7 @@ extension Folio {
                     underlyingTokenBalanceType: .token(
                         network: network,
                         symbol: context.backingAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -949,7 +948,7 @@ extension Folio {
                     borrowTokenBalanceType: .token(
                         network: network,
                         symbol: context.backingAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     borrowMarketBalanceType: .borrowMarket(
                         borrowMarket: borrowMarket,
@@ -974,7 +973,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.backingAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: context.maxProvidedBackingAmount
                 )
@@ -1015,7 +1014,7 @@ extension Folio {
                     balanceType: .token(
                         network: network,
                         symbol: context.backingAssetSymbol,
-                        wallet: quarkWalletAddress
+                        wallet: quarkWalletAddress.on(network)
                     ),
                     amount: context.backingAmountToExit
                 )

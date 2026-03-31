@@ -1435,7 +1435,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
 
             return OutboundTransferEvent(
                 transferAmount: amount,
-                recipient: ChainAddress(recipient, chain: network)
+                recipient: recipient.on(network)
             )
         }
 
@@ -1482,7 +1482,7 @@ public struct SemanticEventContext: Codable, Equatable, Sendable {
 
             return InboundTransferEvent(
                 transferAmount: amount,
-                sender: ChainAddress(sender, chain: network)
+                sender: sender.on(network)
             )
         }
 

@@ -171,7 +171,7 @@ extension RepayIntentHandler {
         let repayAmount = getRepayAmount(from: intent)
         let assetSymbol = getRepayAssetSymbol(from: intent)
 
-        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: assetSymbol) else {
+        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: assetSymbol) else {
             return .failure(.unknownAsset(symbol: assetSymbol, network: network, address: nil))
         }
 
@@ -180,7 +180,7 @@ extension RepayIntentHandler {
             folio: folio,
             primarySymbol: assetSymbol,
             earnMarketPolicy: earnMarketPolicy,
-            actorWallet: repayer,
+            actorWallet: repayer.on(network),
             network: nil  // Allow resources from any network for bridging
         )
         let resources: [Tradewinds.Resource<TradewindsLegendNode>]
@@ -202,9 +202,9 @@ extension RepayIntentHandler {
         // Create token balance node on target network
         let tokenNode = TradewindsLegendNode.tokenBalance(
             network: network,
-            address: borrowAsset.assetAddress,
+            address: borrowAsset.assetAddress.on(network),
             symbol: assetSymbol,
-            wallet: repayer
+            wallet: repayer.on(network)
         )
 
         // Get all unique nodes (don't include borrowPositionNode in generateRoutes)
@@ -216,7 +216,7 @@ extension RepayIntentHandler {
             nodes: allNodes,
             folio: folio,
             userWallets: folio.getRelevantWallets(),
-            actorWallet: repayer,
+            actorWallet: repayer.on(network),
             cappedMaxNodes: isMax ? Set(allNodes) : Set(),
             logger: logger
         )
@@ -237,9 +237,8 @@ extension RepayIntentHandler {
             // This accounts for bridge costs and source chain fees
             let maxAvailable = Charter.totalAvailableBalance(
                 assetSymbol: assetSymbol,
-                destinationChain: network,
                 folio: folio,
-                actorWallet: repayer,
+                actorWallet: repayer.on(network),
                 earnMarketPolicy: earnMarketPolicy
             )
             
@@ -322,7 +321,7 @@ extension RepayIntentHandler {
         guard !collateralSymbols.isEmpty,
             let collateralSymbol = collateralSymbols.first,
             let collateralAmount = collateralAmounts.first,
-            let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: collateralSymbol)
+            let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: collateralSymbol)
         else {
             return .failure(.error("Missing or invalid collateral information for withdrawal"))
         }
@@ -344,9 +343,9 @@ extension RepayIntentHandler {
 
         let tokenNode = TradewindsLegendNode.tokenBalance(
             network: network,
-            address: collateralAsset.assetAddress,
+            address: collateralAsset.assetAddress.on(network),
             symbol: collateralSymbol,
-            wallet: repayer
+            wallet: repayer.on(network)
         )
 
         // Determine if this is a max withdrawal based on the collateral amount
@@ -405,7 +404,7 @@ extension RepayIntentHandler {
     private func createRepayResources(
         symbol: String,
         folio: Folio,
-        actorWallet: EthAddress,
+        actorWallet: ChainAddress,
         earnMarketPolicy: EarnMarketPolicy
     ) -> Result<[Tradewinds.Resource<TradewindsLegendNode>], Charter.CharterError> {
         let resourceFactory = TradewindsResourceFactory(
@@ -424,11 +423,11 @@ extension RepayIntentHandler {
         resources: [Tradewinds.Resource<TradewindsLegendNode>],
         targetNode: TradewindsLegendNode,
         folio: Folio,
-        actorWallet: EthAddress,
+        actorWallet: ChainAddress,
         logger: Charter.Logger?
     ) -> [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>] {
         let allNodes = Array(Set([targetNode] + resources.map { $0.node }))
-        let userWallets = Set(resources.compactMap { $0.node.wallet })
+        let userWallets: Set<ChainAddress> = Set(resources.map { $0.node.wallet })
         let isMax = getIsMaxIntent(from: intent)
         return generateRoutes(
             nodes: allNodes,
@@ -512,10 +511,10 @@ extension RepayIntentHandler {
         let collateralSymbols = getCollateralAssetSymbols(from: intent)
         let collateralAmounts = getCollateralAmounts(from: intent)
 
-        guard let borrowAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: assetSymbol),
+        guard let borrowAsset = Atlas.getAssetBySymbol(network: network, symbol: assetSymbol),
             !collateralSymbols.isEmpty,
             let collateralSymbol = collateralSymbols.first,
-            let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: collateralSymbol)
+            let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: collateralSymbol)
         else {
             return .failure(.error("Missing or invalid assets for repay and collateral withdrawal"))
         }
@@ -527,7 +526,7 @@ extension RepayIntentHandler {
         switch createRepayResources(
             symbol: assetSymbol,
             folio: folio,
-            actorWallet: repayer,
+            actorWallet: repayer.on(network),
             earnMarketPolicy: earnMarketPolicy
         ) {
             case .success(let res):
@@ -550,7 +549,7 @@ extension RepayIntentHandler {
             resources: resources,
             targetNode: targetNode,
             folio: folio,
-            actorWallet: repayer,
+            actorWallet: repayer.on(network),
             logger: logger
         )
 

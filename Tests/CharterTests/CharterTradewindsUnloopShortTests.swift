@@ -71,9 +71,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(  // Sink is the token balance
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -144,9 +144,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -218,9 +218,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.cbBTC.assetAddress,
+                                    address: BaseNetwork.Assets.cbBTC.assetAddress.on(.base),
                                     symbol: "cbBTC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -293,9 +293,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -367,9 +367,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -442,9 +442,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -514,9 +514,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -588,9 +588,9 @@ struct CharterTradewindsUnloopShortTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",

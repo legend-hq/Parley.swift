@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import Prelude
@@ -1114,10 +1115,14 @@ extension Charter {
 
             public let amount: Number
             public let assetSymbol: String
-            public let chainId: Number
             public let price: Number
-            public let recipient: EthAddress
-            public let token: EthAddress
+            public let recipient: ChainAddress
+            public let token: ChainAddress
+
+            /// Derived from `token.chain` for backward-compatible JSON encoding.
+            public var chainId: Number {
+                token.chain.chainId
+            }
 
             public enum CodingKeys: String, CodingKey {
                 case amount
@@ -1131,32 +1136,112 @@ extension Charter {
             public init(
                 amount: Number,
                 assetSymbol: String,
-                chainId: Number,
                 price: Number,
-                recipient: EthAddress,
-                token: EthAddress
+                recipient: ChainAddress,
+                token: ChainAddress
             ) {
+                precondition(
+                    recipient.chain.chainId == token.chain.chainId,
+                    "TransferActionContext recipient and token must be on the same chain"
+                )
                 self.amount = amount
                 self.assetSymbol = assetSymbol
-                self.chainId = chainId
                 self.price = price
                 self.recipient = recipient
                 self.token = token
             }
 
-            public static func fromTransferActionContext(_ context: Actions.TransferActionContext)
-                -> TransferActionContext
-            {
-                return TransferActionContext(
-                    amount: context.amount,
-                    assetSymbol: context.assetSymbol,
-                    chainId: context.chainId,
-                    price: context.price,
-                    recipient: context.recipient,
-                    token: context.token
+            /// Backward-compatible convenience init that still accepts a flat `chainId`.
+            public init(
+                amount: Number,
+                assetSymbol: String,
+                chainId: Number,
+                price: Number,
+                recipient: ChainAddress,
+                token: ChainAddress
+            ) {
+                precondition(
+                    recipient.chain.chainId == chainId
+                        && token.chain.chainId == chainId,
+                    "TransferActionContext chainId must match recipient/token chain"
+                )
+                self.init(
+                    amount: amount,
+                    assetSymbol: assetSymbol,
+                    price: price,
+                    recipient: recipient,
+                    token: token
                 )
             }
+
+            // Custom Codable: encodes recipient/token as plain strings (hex for EVM, base58 for Solana).
+            // Uses chainId to decide address format on decode.
+
+            public init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.amount = try container.decode(Number.self, forKey: .amount)
+                self.assetSymbol = try container.decode(String.self, forKey: .assetSymbol)
+                let chainId = try container.decode(Number.self, forKey: .chainId)
+                self.price = try container.decode(Number.self, forKey: .price)
+
+                let recipientString = try container.decode(String.self, forKey: .recipient)
+                let tokenString = try container.decode(String.self, forKey: .token)
+                let network = Network.fromChainId(chainId)
+
+                if recipientString.hasPrefix("0x") {
+                    guard let ethAddr = EthAddress(fromHexString: recipientString) else {
+                        throw DecodingError.dataCorruptedError(
+                            forKey: .recipient, in: container,
+                            debugDescription: "Invalid EVM address: \(recipientString)"
+                        )
+                    }
+                    self.recipient = ethAddr.on(network)
+                } else {
+                    guard let solAddr = SolanaAddress(fromBase58: recipientString) else {
+                        throw DecodingError.dataCorruptedError(
+                            forKey: .recipient, in: container,
+                            debugDescription: "Invalid Solana address: \(recipientString)"
+                        )
+                    }
+                    self.recipient = .solana(solAddr)
+                }
+
+                if tokenString.hasPrefix("0x") {
+                    guard let ethAddr = EthAddress(fromHexString: tokenString) else {
+                        throw DecodingError.dataCorruptedError(
+                            forKey: .token, in: container,
+                            debugDescription: "Invalid EVM address: \(tokenString)"
+                        )
+                    }
+                    self.token = ethAddr.on(network)
+                } else {
+                    guard let solAddr = SolanaAddress(fromBase58: tokenString) else {
+                        throw DecodingError.dataCorruptedError(
+                            forKey: .token, in: container,
+                            debugDescription: "Invalid Solana address: \(tokenString)"
+                        )
+                    }
+                    self.token = .solana(solAddr)
+                }
+
+                precondition(
+                    recipient.chain.chainId == chainId
+                        && token.chain.chainId == chainId,
+                    "Decoded TransferActionContext chainId must match recipient/token chain"
+                )
+            }
+
+            public func encode(to encoder: Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(amount, forKey: .amount)
+                try container.encode(assetSymbol, forKey: .assetSymbol)
+                try container.encode(chainId, forKey: .chainId)
+                try container.encode(price, forKey: .price)
+                try container.encode(recipient.displayString, forKey: .recipient)
+                try container.encode(token.displayString, forKey: .token)
+            }
         }
+
 
         // ---
 

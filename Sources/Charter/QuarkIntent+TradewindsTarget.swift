@@ -9,8 +9,8 @@ internal func generateRoute(
     sourceNode: TradewindsLegendNode,
     sinkNode: TradewindsLegendNode,
     folio: Folio,
-    userWallets: Set<EthAddress>,
-    actorWallet: EthAddress,
+    userWallets: Set<ChainAddress>,
+    actorWallet: ChainAddress,
     cappedMaxNodes: Set<TradewindsLegendNode>,
     exactWithdrawalAmounts: [EthAddress: Number] = [:],  // Maps market address to exact withdrawal amount
     logger: Charter.Logger?
@@ -69,15 +69,17 @@ internal func generateRoute(
             && sourceWallet != sinkWallet:
 
             // Case 2: Same-chain transfer
-
             // Directional routing rules:
             // 1. Actor can transfer OUT to anyone (transferOut)
             // 2. Other userWallets can transfer TO actor (tokenTransfer)
-            // 3. Actor cannot transfer to other userWallets
+            // 3. No other transfers allowed
+            //
+            // sameAddress compares address bytes only (ignoring chain), so the actor
+            // is identified correctly across all chains including Solana.
 
-            if sourceWallet == actorWallet {
+            if sourceWallet.sameAddress(as: actorWallet) {
                 // Actor is sending - only allow if sink is NOT in userWallets (no transfers to other user wallets)
-                guard !userWallets.contains(sinkWallet) || sinkWallet == actorWallet else {
+                guard !userWallets.contains { $0.sameAddress(as: sinkWallet) } || sinkWallet.sameAddress(as: actorWallet) else {
                     return []
                 }
                 return [makeLegendRoute(
@@ -89,7 +91,7 @@ internal func generateRoute(
                     maxFlow: maxFlow,
                     folio: folio
                 )]
-            } else if userWallets.contains(sourceWallet) && sinkWallet == actorWallet {
+            } else if userWallets.contains(where: { $0.sameAddress(as: sourceWallet) }) && sinkWallet.sameAddress(as: actorWallet) {
                 // Other user wallets can send TO actor
                 return [makeLegendRoute(
                     type: .tokenTransfer,
@@ -113,7 +115,7 @@ internal func generateRoute(
             // Case 3: Cross-chain bridge (tokenBalance -> tokenBalance)
             // Supports both Across and CCTP v2 bridges
             // For bridges: only allow actor to bridge their own funds
-            if sourceWallet != actorWallet || sinkWallet != actorWallet {
+            if !sourceWallet.sameAddress(as: actorWallet) || !sinkWallet.sameAddress(as: actorWallet) {
                 return []
             }
 
@@ -176,7 +178,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .cometSupplyBalance(let cometNetwork, _, let baseAsset, let cometWallet)
         )
-        where network == cometNetwork && wallet == cometWallet && wallet == actorWallet
+        where network == cometNetwork && wallet == cometWallet && wallet.sameAddress(as: actorWallet)
             && address == baseAsset:
             // Token to Comet supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
@@ -230,7 +232,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .morphoVaultSupplyBalance(let vaultNetwork, _, let baseAsset, let vaultWallet)
         )
-        where network == vaultNetwork && wallet == vaultWallet && wallet == actorWallet
+        where network == vaultNetwork && wallet == vaultWallet && wallet.sameAddress(as: actorWallet)
             && address == baseAsset:
             // Token to Morpho vault supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
@@ -284,7 +286,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .aaveSupplyBalance(let aaveNetwork, _, let baseAsset, let aaveWallet)
         )
-        where network == aaveNetwork && wallet == aaveWallet && wallet == actorWallet
+        where network == aaveNetwork && wallet == aaveWallet && wallet.sameAddress(as: actorWallet)
             && address == baseAsset:
             // Token to Aave supply (must be same network, same wallet, same asset, only actor)
             // Use sink node maxness for supply operations (the supply venue determines maxness)
@@ -338,7 +340,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .cometCollateralBalance(let cometNetwork, _, let collateralAsset, let cometWallet)
         )
-        where network == cometNetwork && wallet == cometWallet && wallet == actorWallet
+        where network == cometNetwork && wallet == cometWallet && wallet.sameAddress(as: actorWallet)
             && address == collateralAsset:
             // Token to Comet collateral (must be same network, same wallet, same asset, only actor)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
@@ -356,7 +358,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .cometBorrowPosition(let borrowNetwork, _, let borrowAsset, let borrowWallet)
         )
-        where network == borrowNetwork && wallet == borrowWallet && wallet == actorWallet
+        where network == borrowNetwork && wallet == borrowWallet && wallet.sameAddress(as: actorWallet)
             && address == borrowAsset:
             // Token to Comet borrow position (repay) - must be same network, same wallet, same asset, only actor
             let isMax = cappedMaxNodes.contains(sourceNode)
@@ -374,7 +376,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .morphoBorrowPosition(let borrowNetwork, _, let borrowAsset, let borrowWallet)
         )
-        where network == borrowNetwork && wallet == borrowWallet && wallet == actorWallet
+        where network == borrowNetwork && wallet == borrowWallet && wallet.sameAddress(as: actorWallet)
             && address == borrowAsset:
             // Token to Morpho borrow position (repay) - must be same network, same wallet, same asset, only actor
             let isMax = cappedMaxNodes.contains(sourceNode)
@@ -392,7 +394,7 @@ internal func generateRoute(
             .tokenBalance(let network, let address, _, let wallet),
             .morphoCollateralBalance(let morphoNetwork, _, let collateralAsset, let morphoWallet)
         )
-        where network == morphoNetwork && wallet == morphoWallet && wallet == actorWallet
+        where network == morphoNetwork && wallet == morphoWallet && wallet.sameAddress(as: actorWallet)
             && address == collateralAsset:
             // Token to Morpho collateral (must be same network, same wallet, same asset, only actor)
             let isCappedMax = cappedMaxNodes.contains(sinkNode)
@@ -456,7 +458,7 @@ internal func generateRoute(
 /// Routes represent swap hint tiers (one per tier per hint).
 internal func createSwapHintNodesAndRoutes(
     folio: Folio,
-    actorWallet: EthAddress,
+    actorWallet: ChainAddress,
     isMaxIntent: Bool
 ) -> (nodes: [TradewindsLegendNode], routes: [Tradewinds.Route<TradewindsLegendNode, LegendRouteType>]) {
     var nodes: Set<TradewindsLegendNode> = []
@@ -476,13 +478,16 @@ internal func createSwapHintNodesAndRoutes(
             continue
         }
 
+        // Swap hints are EVM-only (from Atlas); skip for non-EVM actors
+        guard actorWallet.isEVM else { continue }
+        let walletOnNetwork = actorWallet.ethAddress.on(network)
         let sellNode = TradewindsLegendNode.tokenBalance(
-            network: network, address: sellAsset.assetAddress,
-            symbol: sellSymbol, wallet: actorWallet
+            network: network, address: sellAsset.assetAddress.on(network),
+            symbol: sellSymbol, wallet: walletOnNetwork
         )
         let buyNode = TradewindsLegendNode.tokenBalance(
-            network: network, address: buyAsset.assetAddress,
-            symbol: buySymbol, wallet: actorWallet
+            network: network, address: buyAsset.assetAddress.on(network),
+            symbol: buySymbol, wallet: walletOnNetwork
         )
         nodes.insert(sellNode)
         nodes.insert(buyNode)
@@ -520,8 +525,8 @@ internal func createSwapHintNodesAndRoutes(
 internal func generateRoutes(
     nodes: [TradewindsLegendNode],
     folio: Folio,
-    userWallets: Set<EthAddress>,
-    actorWallet: EthAddress,
+    userWallets: Set<ChainAddress>,
+    actorWallet: ChainAddress,
     cappedMaxNodes: Set<TradewindsLegendNode>,
     exactWithdrawalAmounts: [EthAddress: Number] = [:],  // Maps market address to exact withdrawal amount
     includeSwapHints: Bool = false,  // When true, also generate swap hint routes
@@ -584,7 +589,7 @@ internal func buildRewardClaimGraph(
     for (rewardType, amount) in rewardBalances {
         let (underlyingSymbol, network) = rewardType.underlyingSymbolAndNetwork
 
-        guard let asset = Atlas.getEvmAssetBySymbol(network: network, symbol: underlyingSymbol)
+        guard let asset = Atlas.getAssetBySymbol(network: network, symbol: underlyingSymbol)
         else {
             return .failure(.unknownAsset(symbol: underlyingSymbol, network: network, address: nil))
         }
@@ -595,9 +600,9 @@ internal func buildRewardClaimGraph(
 
         let rewardTokenNode = TradewindsLegendNode.tokenBalance(
             network: network,
-            address: asset.assetAddress,
+            address: asset.assetAddress.on(network),
             symbol: underlyingSymbol,
-            wallet: claimer
+            wallet: claimer.on(network)
         )
         sinkNodes.insert(rewardTokenNode)
 
@@ -749,11 +754,10 @@ extension Charter.QuarkIntent.Type_ {
         switch self {
             case .transfer(let transferIntent):
                 let targetNetwork = Network.fromChainId(transferIntent.chainId)
-                guard
-                    let destAsset = Atlas.getEvmAssetBySymbol(
-                        network: targetNetwork,
-                        symbol: transferIntent.assetSymbol
-                    )
+
+                // Resolve target token address via Atlas (unified EVM + Solana)
+                guard let chainNetwork = Atlas.getNetwork(network: targetNetwork),
+                    let targetAsset = Atlas.getAssetBySymbol(network: chainNetwork, symbol: transferIntent.assetSymbol)
                 else {
                     logger?
                         .log(
@@ -772,8 +776,16 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: transferIntent.assetSymbol,
                     earnMarketPolicy: transferIntent.earnMarketPolicy,
-                    actorWallet: transferIntent.sender.ethAddress,
-                    network: nil  // Transfer can use resources from any network
+                    actorWallet: transferIntent.sender,
+                    // `network` controls which source networks the resource factory may pull
+                    // balances from. `nil` means "consider all supported source networks",
+                    // while a concrete network means "only use balances already on that network".
+                    //
+                    // Today we only support cross-chain sourcing for EVM transfers, where
+                    // bridging routes can bring funds in from other EVM chains. Non-EVM
+                    // transfers stay restricted to the target network until equivalent
+                    // cross-chain routes exist for that transfer family.
+                    network: transferIntent.sender.isEVM ? nil : targetNetwork
                 )
 
                 let resources: [Tradewinds.Resource<TradewindsLegendNode>]
@@ -784,11 +796,12 @@ extension Charter.QuarkIntent.Type_ {
                         logger?.log("Failed to create resources for transfer: \(error)")
                         return .failure(error)
                 }
+                let targetAddress = targetAsset.chainAddress(on: targetNetwork)
                 let targetNode = TradewindsLegendNode.tokenBalance(
                     network: targetNetwork,
-                    address: destAsset.assetAddress,
+                    address: targetAddress,
                     symbol: transferIntent.assetSymbol,
-                    wallet: transferIntent.recipient.ethAddress
+                    wallet: transferIntent.recipient
                 )
 
                 let nodes = Array(Set([targetNode] + resources.map { $0.node }))
@@ -796,7 +809,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: transferIntent.sender.ethAddress,
+                    actorWallet: transferIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -823,7 +836,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let destAsset = Atlas.getEvmAssetBySymbol(
+                    let destAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -864,9 +877,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Target is the token balance
                 let targetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: destAsset.assetAddress,
+                    address: destAsset.assetAddress.on(network),
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer.ethAddress
+                    wallet: withdrawIntent.withdrawer.ethAddress.on(network)
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -878,7 +891,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer.ethAddress,
+                    actorWallet: withdrawIntent.withdrawer,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -927,7 +940,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getEvmAssetBySymbol(
+                    let asset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -945,7 +958,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: supplyIntent.earnMarketPolicy,
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -972,7 +985,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -992,7 +1005,7 @@ extension Charter.QuarkIntent.Type_ {
             case .morphoVaultSupply(let supplyIntent):
                 let network = Network.fromChainId(supplyIntent.chainId)
                 guard
-                    let asset = Atlas.getEvmAssetBySymbol(
+                    let asset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -1010,7 +1023,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: supplyIntent.earnMarketPolicy,
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -1035,7 +1048,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -1055,7 +1068,7 @@ extension Charter.QuarkIntent.Type_ {
             case .morphoVaultWithdraw(let withdrawIntent):
                 let network = Network.fromChainId(withdrawIntent.chainId)
                 guard
-                    let asset = Atlas.getEvmAssetBySymbol(
+                    let asset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -1096,9 +1109,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Target is the token balance
                 let targetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: asset.assetAddress,
+                    address: asset.assetAddress.on(network),
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer.ethAddress
+                    wallet: withdrawIntent.withdrawer.ethAddress.on(network)
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -1110,7 +1123,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer.ethAddress,
+                    actorWallet: withdrawIntent.withdrawer,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -1161,7 +1174,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getEvmAssetBySymbol(
+                    let asset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -1179,7 +1192,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyIntent.assetSymbol,
                     earnMarketPolicy: supplyIntent.earnMarketPolicy,
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     network: nil  // Can use resources from any network for bridging
                 )
 
@@ -1204,7 +1217,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     logger: logger
                 )
@@ -1232,7 +1245,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let asset = Atlas.getEvmAssetBySymbol(
+                    let asset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.assetSymbol
                     )
@@ -1273,9 +1286,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Target is the token balance
                 let targetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: asset.assetAddress,
+                    address: asset.assetAddress.on(network),
                     symbol: withdrawIntent.assetSymbol,
-                    wallet: withdrawIntent.withdrawer.ethAddress
+                    wallet: withdrawIntent.withdrawer.ethAddress.on(network)
                 )
 
                 // Don't constrain exact withdrawal amounts - let Tradewinds optimize
@@ -1287,7 +1300,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: withdrawIntent.withdrawer.ethAddress,
+                    actorWallet: withdrawIntent.withdrawer,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodes) : Set(),
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -1393,7 +1406,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
                     earnMarketPolicy: swapIntent.earnMarketPolicy,
-                    actorWallet: swapIntent.sender.ethAddress,
+                    actorWallet: swapIntent.sender,
                     network: nil
                 )
 
@@ -1410,17 +1423,17 @@ extension Charter.QuarkIntent.Type_ {
                 // Create sell token node
                 let sellTokenNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: swapIntent.sellToken,
+                    address: swapIntent.sellToken.on(network),
                     symbol: sellAsset.symbol,
-                    wallet: swapIntent.sender.ethAddress
+                    wallet: swapIntent.sender.ethAddress.on(network)
                 )
 
                 // Create buy token node (this is the output, not a resource)
                 let buyTokenNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: swapIntent.buyToken,
+                    address: swapIntent.buyToken.on(network),
                     symbol: buyAsset.symbol,
-                    wallet: swapIntent.sender.ethAddress
+                    wallet: swapIntent.sender.ethAddress.on(network)
                 )
 
                 // Build node set - includes buy token node but NOT in resources
@@ -1432,7 +1445,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender.ethAddress,
+                    actorWallet: swapIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     logger: logger
                 )
@@ -1488,7 +1501,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: swapIntentV2.sellAssetSymbol,
                     earnMarketPolicy: swapIntentV2.earnMarketPolicy,
-                    actorWallet: swapIntentV2.sender,
+                    actorWallet: .ethereum(swapIntentV2.sender),
                     network: nil  // All networks
                 )
                 let allResources: [Tradewinds.Resource<TradewindsLegendNode>]
@@ -1533,7 +1546,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(allNodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntentV2.sender,
+                    actorWallet: swapIntentV2.sender.on(network),
                     cappedMaxNodes: self.isMaxIntent ? allNodes : Set(),
                     includeSwapHints: true,
                     logger: logger
@@ -1621,11 +1634,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: loopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: loopIntent.exposureAssetSymbol
                     )
@@ -1689,9 +1702,9 @@ extension Charter.QuarkIntent.Type_ {
                     // Non-zero backing - use backing token as source
                     let backingAssetNode = TradewindsLegendNode.tokenBalance(
                         network: network,
-                        address: backingAsset.assetAddress,
+                        address: backingAsset.assetAddress.on(network),
                         symbol: loopIntent.backingAssetSymbol,
-                        wallet: loopIntent.sender.ethAddress
+                        wallet: loopIntent.sender.ethAddress.on(network)
                     )
                     sourceNode = backingAssetNode
 
@@ -1700,7 +1713,7 @@ extension Charter.QuarkIntent.Type_ {
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
                         earnMarketPolicy: loopIntent.earnMarketPolicy,
-                        actorWallet: loopIntent.sender.ethAddress,
+                        actorWallet: loopIntent.sender,
                         network: nil  // Can bridge from other networks
                     )
 
@@ -1726,7 +1739,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(nodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: loopIntent.sender.ethAddress,
+                    actorWallet: loopIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? nodes : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -1771,11 +1784,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: loopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: loopIntent.exposureAssetSymbol
                     )
@@ -1839,9 +1852,9 @@ extension Charter.QuarkIntent.Type_ {
                     // Non-zero backing - use backing token as source
                     let backingAssetNode = TradewindsLegendNode.tokenBalance(
                         network: network,
-                        address: backingAsset.assetAddress,
+                        address: backingAsset.assetAddress.on(network),
                         symbol: loopIntent.backingAssetSymbol,
-                        wallet: loopIntent.sender.ethAddress
+                        wallet: loopIntent.sender.ethAddress.on(network)
                     )
                     sourceNode = backingAssetNode
 
@@ -1850,7 +1863,7 @@ extension Charter.QuarkIntent.Type_ {
                         folio: folio,
                         primarySymbol: loopIntent.backingAssetSymbol,
                         earnMarketPolicy: loopIntent.earnMarketPolicy,
-                        actorWallet: loopIntent.sender.ethAddress,
+                        actorWallet: loopIntent.sender,
                         network: nil  // Can bridge from other networks
                     )
 
@@ -1876,7 +1889,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(nodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: loopIntent.sender.ethAddress,
+                    actorWallet: loopIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? nodes : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -1922,11 +1935,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.exposureAssetSymbol
                     )
@@ -1961,9 +1974,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Build node set - for unloop, we just need the venue and backing asset nodes
                 let backingAssetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: backingAsset.assetAddress,
+                    address: backingAsset.assetAddress.on(network),
                     symbol: unloopIntent.backingAssetSymbol,
-                    wallet: unloopIntent.sender.ethAddress
+                    wallet: unloopIntent.sender.ethAddress.on(network)
                 )
 
                 // When exposureAmount is max (full unloop), backingAmountToExit must be 0
@@ -2018,7 +2031,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: unloopIntent.sender.ethAddress,
+                    actorWallet: unloopIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -2068,11 +2081,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: unloopIntent.exposureAssetSymbol
                     )
@@ -2123,9 +2136,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Build node set - for unloop, we just need the venue and backing asset nodes
                 let backingAssetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: backingAsset.assetAddress,
+                    address: backingAsset.assetAddress.on(network),
                     symbol: unloopIntent.backingAssetSymbol,
-                    wallet: unloopIntent.sender.ethAddress
+                    wallet: unloopIntent.sender.ethAddress.on(network)
                 )
 
                 // When exposureAmount is max (full unloop), backingAmountToExit must be 0
@@ -2180,7 +2193,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: nodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: unloopIntent.sender.ethAddress,
+                    actorWallet: unloopIntent.sender,
                     cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                     exactWithdrawalAmounts: [:],
                     logger: logger
@@ -2230,11 +2243,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: addBackingIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: addBackingIntent.exposureAssetSymbol
                     )
@@ -2253,7 +2266,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: addBackingIntent.backingAssetSymbol,
                     earnMarketPolicy: addBackingIntent.earnMarketPolicy,
-                    actorWallet: addBackingIntent.sender.ethAddress,
+                    actorWallet: addBackingIntent.sender,
                     network: nil  // Can bridge from other networks
                 )
 
@@ -2281,9 +2294,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Ensure the backing asset node exists for the route
                 let backingAssetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: backingAsset.assetAddress,
+                    address: backingAsset.assetAddress.on(network),
                     symbol: addBackingIntent.backingAssetSymbol,
-                    wallet: addBackingIntent.sender.ethAddress
+                    wallet: addBackingIntent.sender.ethAddress.on(network)
                 )
                 nodes.insert(backingAssetNode)
 
@@ -2294,7 +2307,7 @@ extension Charter.QuarkIntent.Type_ {
                         nodes: nodesArray,
                         folio: folio,
                         userWallets: folio.getRelevantWallets(),
-                        actorWallet: addBackingIntent.sender.ethAddress,
+                        actorWallet: addBackingIntent.sender,
                         cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                         exactWithdrawalAmounts: [:],
                         logger: logger
@@ -2344,11 +2357,11 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Resolve assets
                 guard
-                    let backingAsset = Atlas.getEvmAssetBySymbol(
+                    let backingAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.backingAssetSymbol
                     ),
-                    let exposureAsset = Atlas.getEvmAssetBySymbol(
+                    let exposureAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: withdrawIntent.exposureAssetSymbol
                     )
@@ -2373,9 +2386,9 @@ extension Charter.QuarkIntent.Type_ {
 
                 let backingAssetNode = TradewindsLegendNode.tokenBalance(
                     network: network,
-                    address: backingAsset.assetAddress,
+                    address: backingAsset.assetAddress.on(network),
                     symbol: withdrawIntent.backingAssetSymbol,
-                    wallet: withdrawIntent.sender.ethAddress
+                    wallet: withdrawIntent.sender.ethAddress.on(network)
                 )
 
                 // Query folio for position balance
@@ -2426,7 +2439,7 @@ extension Charter.QuarkIntent.Type_ {
                         nodes: nodesArray,
                         folio: folio,
                         userWallets: folio.getRelevantWallets(),
-                        actorWallet: withdrawIntent.sender.ethAddress,
+                        actorWallet: withdrawIntent.sender,
                         cappedMaxNodes: self.isMaxIntent ? Set(nodesArray) : Set(),
                         exactWithdrawalAmounts: [:],
                         logger: logger
@@ -2502,7 +2515,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: supplyAssetSymbol,
                     earnMarketPolicy: .specific(earnMarketSources),
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     network: nil  // Allow cross-chain bridging if needed
                 )
 
@@ -2527,7 +2540,7 @@ extension Charter.QuarkIntent.Type_ {
 
                 // Get supply asset
                 guard
-                    let supplyAsset = Atlas.getEvmAssetBySymbol(
+                    let supplyAsset = Atlas.getAssetBySymbol(
                         network: network,
                         symbol: supplyAssetSymbol
                     )
@@ -2614,7 +2627,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(allNodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: supplyIntent.sender.ethAddress,
+                    actorWallet: supplyIntent.sender,
                     cappedMaxNodes: cappedMaxNodes,
                     exactWithdrawalAmounts: exactWithdrawalAmounts,
                     logger: logger
@@ -2738,7 +2751,7 @@ extension Charter.QuarkIntent.Type_ {
                     folio: folio,
                     primarySymbol: sellAsset.symbol,
                     earnMarketPolicy: intent.earnMarketPolicy,
-                    actorWallet: swapIntent.sender.ethAddress,
+                    actorWallet: swapIntent.sender,
                     network: nil  // Allow cross-chain bridging
                 )
 
@@ -2753,9 +2766,9 @@ extension Charter.QuarkIntent.Type_ {
 
                 let sellTokenNode = TradewindsLegendNode.tokenBalance(
                     network: swapNetwork,
-                    address: swapIntent.sellToken,
+                    address: swapIntent.sellToken.on(swapNetwork),
                     symbol: sellAsset.symbol,
-                    wallet: swapIntent.sender.ethAddress
+                    wallet: swapIntent.sender.ethAddress.on(swapNetwork)
                 )
 
                 // Create buy token nodes on MULTIPLE networks to allow cross-chain optimization
@@ -2764,9 +2777,9 @@ extension Charter.QuarkIntent.Type_ {
                 buyTokenNodes.insert(
                     TradewindsLegendNode.tokenBalance(
                         network: swapNetwork,
-                        address: swapIntent.buyToken,
+                        address: swapIntent.buyToken.on(swapNetwork),
                         symbol: buyAsset.symbol,
-                        wallet: swapIntent.sender.ethAddress
+                        wallet: swapIntent.sender.ethAddress.on(swapNetwork)
                     )
                 )
 
@@ -2778,15 +2791,15 @@ extension Charter.QuarkIntent.Type_ {
                     )
 
                     for symbol in relevantSymbols {
-                        if let assetOnSupplyNetwork = Atlas.getEvmAssetBySymbol(
+                        if let assetOnSupplyNetwork = Atlas.getAssetBySymbol(
                             network: supplyNetwork,
                             symbol: symbol
                         ) {
                             let node = TradewindsLegendNode.tokenBalance(
                                 network: supplyNetwork,
-                                address: assetOnSupplyNetwork.assetAddress,
+                                address: assetOnSupplyNetwork.assetAddress.on(supplyNetwork),
                                 symbol: symbol,
-                                wallet: swapIntent.sender.ethAddress
+                                wallet: swapIntent.sender.ethAddress.on(supplyNetwork)
                             )
                             buyTokenNodes.insert(node)
                         }
@@ -2794,7 +2807,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let supplyAsset = Atlas.getEvmAssetBySymbol(
+                    let supplyAsset = Atlas.getAssetBySymbol(
                         network: supplyNetwork,
                         symbol: supplyAssetSymbol
                     )
@@ -2817,9 +2830,9 @@ extension Charter.QuarkIntent.Type_ {
                 // Get buyTokenNodeOnSwapNetwork from the buyTokenNodes set
                 let buyTokenNodeOnSwapNetwork = TradewindsLegendNode.tokenBalance(
                     network: swapNetwork,
-                    address: swapIntent.buyToken,
+                    address: swapIntent.buyToken.on(swapNetwork),
                     symbol: buyAsset.symbol,
-                    wallet: swapIntent.sender.ethAddress
+                    wallet: swapIntent.sender.ethAddress.on(swapNetwork)
                 )
 
                 // Phase A: Generate routes for swap sub-intent (sellToken ecosystem)
@@ -2834,7 +2847,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: swapPhaseNodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender.ethAddress,
+                    actorWallet: swapIntent.sender,
                     cappedMaxNodes: swapIntent.sellAmount.isMaxUint256 ? Set(swapPhaseNodesArray) : Set(),
                     logger: logger
                 )
@@ -2852,7 +2865,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: supplyPhaseNodesArray,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: swapIntent.sender.ethAddress,
+                    actorWallet: swapIntent.sender,
                     cappedMaxNodes: supplyAmount.isMaxUint256 ? Set(supplyPhaseNodesArray) : Set(),
                     logger: logger
                 )
@@ -2982,6 +2995,7 @@ extension Charter.QuarkIntent.Type_ {
 
                 let supplyNetwork = Network.fromChainId(supplyIntent.chainId)
                 let sender = claimIntents[0].claimer
+                let senderChainAddr: ChainAddress = .ethereum(sender)
 
                 // Validate all senders match across claims, swaps, and supply
                 let allSendersMatch = claimIntents.allSatisfy { $0.claimer == sender }
@@ -2996,7 +3010,7 @@ extension Charter.QuarkIntent.Type_ {
                 }
 
                 guard
-                    let supplyAsset = Atlas.getEvmAssetBySymbol(
+                    let supplyAsset = Atlas.getAssetBySymbol(
                         network: supplyNetwork,
                         symbol: supplyIntent.assetSymbol
                     )
@@ -3142,17 +3156,17 @@ extension Charter.QuarkIntent.Type_ {
 
                     let swapSellTokenNode = TradewindsLegendNode.tokenBalance(
                         network: swapNetwork,
-                        address: swapIntent.sellToken,
+                        address: swapIntent.sellToken.on(swapNetwork),
                         symbol: swapConfig.sellAsset.symbol,
-                        wallet: sender
+                        wallet: sender.on(swapNetwork)
                     )
                     allSwapSellNodes.insert(swapSellTokenNode)
 
                     let swapBuyTokenNode = TradewindsLegendNode.tokenBalance(
                         network: swapNetwork,
-                        address: swapIntent.buyToken,
+                        address: swapIntent.buyToken.on(swapNetwork),
                         symbol: swapConfig.buyAsset.symbol,
-                        wallet: sender
+                        wallet: sender.on(swapNetwork)
                     )
                     allSwapBuyNodes.insert(swapBuyTokenNode)
 
@@ -3193,7 +3207,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: Array(claimPhaseNodes),
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: sender,
+                    actorWallet: senderChainAddr,
                     cappedMaxNodes: [],
                     logger: logger
                 )
@@ -3205,12 +3219,12 @@ extension Charter.QuarkIntent.Type_ {
                 let requiresBridgeToSupply = swapConfigs.contains { $0.network != supplyNetwork }
                 if requiresBridgeToSupply {
                     for symbol in folio.getRelevantSymbols(network: supplyNetwork, assetSymbol: supplyAsset.symbol) {
-                        if let asset = Atlas.getEvmAssetBySymbol(network: supplyNetwork, symbol: symbol) {
+                        if let asset = Atlas.getAssetBySymbol(network: supplyNetwork, symbol: symbol) {
                             buyTokenNodes.insert(.tokenBalance(
                                 network: supplyNetwork,
-                                address: asset.assetAddress,
+                                address: asset.assetAddress.on(supplyNetwork),
                                 symbol: symbol,
-                                wallet: sender
+                                wallet: sender.on(supplyNetwork)
                             ))
                         }
                     }
@@ -3224,7 +3238,7 @@ extension Charter.QuarkIntent.Type_ {
                     nodes: supplyPhaseNodes,
                     folio: folio,
                     userWallets: folio.getRelevantWallets(),
-                    actorWallet: sender,
+                    actorWallet: senderChainAddr,
                     cappedMaxNodes: supplyIntent.amount.isMaxUint256 ? Set(supplyPhaseNodes) : Set(),
                     logger: logger
                 )
@@ -3341,15 +3355,16 @@ extension Charter.QuarkIntent.Type_ {
             type,
             balance -> Tradewinds.Resource<TradewindsLegendNode>? in
             if case .token(let balanceNetwork, let symbol, let wallet) = type,
+                wallet.isEVM,
                 balanceNetwork == network,
                 assetSymbols.contains(symbol),
-                let asset = Atlas.getEvmAssetBySymbol(network: balanceNetwork, symbol: symbol)
+                let asset = Atlas.getAssetBySymbol(network: balanceNetwork, symbol: symbol)
             {
                 return Tradewinds.Resource(
                     amount: .exact(balance.underlying),
                     node: .tokenBalance(
                         network: balanceNetwork,
-                        address: asset.assetAddress,
+                        address: asset.assetAddress.on(balanceNetwork),
                         symbol: symbol,
                         wallet: wallet
                     )

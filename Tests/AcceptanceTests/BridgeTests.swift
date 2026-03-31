@@ -1,5 +1,6 @@
 import Charter
 @preconcurrency import Eth
+import Prelude
 import SwiftNumber
 import TestHelpers
 import Testing
@@ -59,7 +60,7 @@ struct BridgeTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(98.46, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -115,10 +116,10 @@ struct BridgeTests {
                                         price: Number("100000000"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -159,7 +160,7 @@ struct BridgeTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(98, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -215,10 +216,10 @@ struct BridgeTests {
                                         price: Number("100000000"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("42161"))),
                                         token: EthAddress(
                                             "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                        )
+                                        ).on(Network.fromChainId(Number("42161")))
                                     )
                                 ),
                             ]
@@ -253,7 +254,7 @@ struct BridgeTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(97.96, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -300,7 +301,7 @@ struct BridgeTests {
                                 ),
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
                                 // Bridge 100 -> 98 arrives on arbitrum - 0.04 quote pay -> 97.96 USDC transfer
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(97.96, .usdc),
                                     recipient: .bob,
                                     cappedMax: true,
@@ -374,10 +375,10 @@ struct BridgeTests {
                                     price: Number("1.0e8"),
                                     recipient: EthAddress(
                                         "0x00000000000000000000000000000000000b0b0b"
-                                    ),
+                                    ).on(Network.fromChainId(Number("42161"))),
                                     token: EthAddress(
                                         "0xaf88d065e77c8cc2239327c5edb3a432268e5831"
-                                    )
+                                    ).on(Network.fromChainId(Number("42161")))
                                 )
                             ),
                         ]),
@@ -436,7 +437,7 @@ struct BridgeTests {
                                     executionType: nil
                                 ),
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(5, .usdc),  // 5.04 - 0.04 quote pay = 5.0 USDC
                                     recipient: .bob,
                                     cappedMax: false,
@@ -513,10 +514,10 @@ struct BridgeTests {
                                     price: Number("1.0e8"),
                                     recipient: EthAddress(
                                         "0x00000000000000000000000000000000000b0b0b"
-                                    ),
+                                    ).on(Network.fromChainId(Number("42161"))),
                                     token: EthAddress(
                                         "0xaf88d065e77c8cc2239327c5edb3a432268e5831"  // USDC on Arbitrum
-                                    )
+                                    ).on(Network.fromChainId(Number("42161")))
                                 )
                             ),
                         ]),
@@ -555,7 +556,7 @@ struct BridgeTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(50, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -606,7 +607,7 @@ struct BridgeTests {
                                     executionType: nil
                                 ),
                                 .quotePay(payment: .amt(0.04, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(50, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -680,10 +681,10 @@ struct BridgeTests {
                                     price: Number("1.0e8"),
                                     recipient: EthAddress(
                                         "0x00000000000000000000000000000000000b0b0b"
-                                    ),
+                                    ).on(Network.fromChainId(Number("999"))),
                                     token: EthAddress(
                                         "0xb88339cb7199b77e23db6e890353e22632ba630f"  // USDC on HyperEVM
-                                    )
+                                    ).on(Network.fromChainId(Number("999")))
                                 )
                             ),
                         ]),

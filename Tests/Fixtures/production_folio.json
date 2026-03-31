@@ -2208,6 +2208,7 @@
       }
     }
   },
+  "solana_transaction_context": {},
   "swap_hints": {
     "wrapper/arbitrum/ETH/arbitrum/WETH": {
       "exchange_rate": "1",

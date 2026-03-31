@@ -50,9 +50,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -66,9 +66,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -121,9 +121,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -137,9 +137,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -197,9 +197,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -213,9 +213,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -275,9 +275,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -291,9 +291,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -355,9 +355,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -384,9 +384,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -400,9 +400,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -475,9 +475,9 @@ struct CharterTradewindsClaimRewardsTests {
                                         network: .ethereum,
                                         symbol: "USDC"
                                     )!
-                                    .assetAddress,
+                                    .assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -504,9 +504,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -524,9 +524,9 @@ struct CharterTradewindsClaimRewardsTests {
                                         network: .ethereum,
                                         symbol: "USDC"
                                     )!
-                                    .assetAddress,
+                                    .assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -543,9 +543,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -614,9 +614,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -644,9 +644,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -673,9 +673,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -689,9 +689,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -708,9 +708,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -868,9 +868,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -883,9 +883,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -940,9 +940,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -955,9 +955,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -1010,9 +1010,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1025,9 +1025,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -1093,9 +1093,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1127,9 +1127,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1143,9 +1143,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -1161,9 +1161,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: .ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(.ethereum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -1220,9 +1220,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.USDC.assetAddress,
+                                    address: EthereumNetwork.Assets.USDC.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1249,9 +1249,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1265,9 +1265,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.USDC.assetAddress,
+                                    address: EthereumNetwork.Assets.USDC.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.ethereum)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
@@ -1284,9 +1284,9 @@ struct CharterTradewindsClaimRewardsTests {
                                 type: .rewardSettlement,
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(Eth.Network.base)
                                 ),
                                 sink: .rewardSettlement(
                                     wallet: EthAddress("0x00000000000000000000000000000000000a11ce")

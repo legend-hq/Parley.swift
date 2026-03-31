@@ -1,3 +1,4 @@
+import Atlas
 import Eth
 import Foundation
 import Prelude
@@ -44,14 +45,7 @@ enum Call: CustomStringConvertible, Equatable {
         network: Network,
         executionType: Charter.Chart.Action.ExecutionType? = nil
     )
-    case transferErc20(
-        tokenAmount: TokenAmount,
-        recipient: TestHelpers.Account,
-        cappedMax: Bool,
-        network: Network,
-        executionType: Charter.Chart.Action.ExecutionType? = nil
-    )
-    case transferNativeToken(
+    case transfer(
         tokenAmount: TokenAmount,
         recipient: TestHelpers.Account,
         cappedMax: Bool,
@@ -291,7 +285,7 @@ enum Call: CustomStringConvertible, Equatable {
                     input: calldata
                 )
             {
-                return .transferErc20(
+                return .transfer(
                     tokenAmount: Token.getTokenAmount(
                         amount: amount,
                         network: network,
@@ -306,7 +300,7 @@ enum Call: CustomStringConvertible, Equatable {
                 try? TransferActions.transferNativeTokenDecode(input: calldata)
             {
                 let nativeToken: TestHelpers.Token = network == .hyperEVM ? .hype : network == .polygon ? .pol : .eth
-                return .transferNativeToken(
+                return .transfer(
                     tokenAmount: Token.getTokenAmount(
                         amount: amount,
                         network: network,
@@ -1000,6 +994,99 @@ enum Call: CustomStringConvertible, Equatable {
         return .unknownScriptCall(scriptAddress, calldata)
     }
 
+    /// Decodes a Solana operation into a Call by inspecting the raw instruction data.
+    /// Mirrors tryDecodeCall for EVM — decodes program-specific instruction formats
+    /// rather than relying on the action context.
+    static func tryDecodeSolanaOperation(
+        operation: Charter.Chart.SolanaOperation,
+        actionContext: Charter.ActionContext,
+        chainId: Number,
+        executionType: Charter.Chart.Action.ExecutionType
+    ) -> Call {
+        let network = Network.fromChainId(chainId)
+
+        for instruction in operation.instructions {
+            guard let data = Data(base64Encoded: instruction.data) else { continue }
+
+            // System Program Transfer: discriminator [2,0,0,0] + amount (u64 LE)
+            if instruction.programId == SolanaConstants.SYSTEM_PROGRAM,
+               data.count == 12,
+               data[0] == 2, data[1] == 0, data[2] == 0, data[3] == 0,
+               instruction.accounts.count >= 2
+            {
+                var amount: UInt64 = 0
+                for i in 0..<8 {
+                    amount |= UInt64(data[4 + i]) << (i * 8)
+                }
+                let recipient = Account.from(solanaAddress: instruction.accounts[1].pubkey)
+                return .transfer(
+                    tokenAmount: TokenAmount(fromWei: Number(amount), ofToken: .sol),
+                    recipient: recipient,
+                    cappedMax: false,
+                    network: network,
+                    executionType: executionType
+                )
+            }
+
+            // SPL Token TransferChecked: discriminator [12] + amount (u64 LE) + decimals (u8)
+            if instruction.programId == SolanaConstants.TOKEN_PROGRAM,
+               data.count == 10,
+               data[0] == 12,
+               instruction.accounts.count >= 4
+            {
+                var amount: UInt64 = 0
+                for i in 0..<8 {
+                    amount |= UInt64(data[1 + i]) << (i * 8)
+                }
+                let decimals = Int(data[9])
+                let mint = instruction.accounts[1].pubkey
+                let owner = instruction.accounts[3].pubkey  // sender/owner
+
+                // Resolve token from mint address
+                let token: TestHelpers.Token
+                if mint == Atlas.Solana.Assets.USDC.assetAddress {
+                    token = .usdc
+                } else {
+                    token = .unknownToken(EthAddress("0x0000000000000000000000000000000000000000"))
+                }
+
+                // Resolve recipient by reverse-deriving the wallet from the destination ATA.
+                // The dest ATA is accounts[2]. We compare against known accounts' ATAs
+                // to find the matching wallet.
+                let destATA = instruction.accounts[2].pubkey
+                let recipient: TestHelpers.Account = {
+                    for knownAccount in Account.knownCases {
+                        let expectedATA = SolanaConstants.getAssociatedTokenAddress(
+                            wallet: knownAccount.solanaAddress,
+                            mint: mint
+                        )
+                        if expectedATA == destATA {
+                            return knownAccount
+                        }
+                    }
+                    return .unknownAccount(EthAddress("0x0000000000000000000000000000000000000000"))
+                }()
+
+                return .transfer(
+                    tokenAmount: TokenAmount(fromWei: Number(amount), ofToken: token),
+                    recipient: recipient,
+                    cappedMax: false,
+                    network: network,
+                    executionType: executionType
+                )
+            }
+
+            // Future: Add more Solana program decoders here
+            // e.g., Jupiter swap program, Marinade staking, etc.
+        }
+
+        // Unknown Solana operation
+        return .unknownScriptCall(
+            EthAddress("0x0000000000000000000000000000000000000000"),
+            Hex("")
+        )
+    }
+
     var description: String {
         switch self {
             case .bridge(
@@ -1046,7 +1133,7 @@ enum Call: CustomStringConvertible, Equatable {
             ):
                 return
                     "claimMerklRewards(claiming \(rewardsClaimable.map { $0.token.symbol }.joined(separator: ", ")) from \(distributor.description) for \(accounts.map { $0.description }.joined(separator: ", ")) with proofs \(proofs.map { $0.description }.joined(separator: ", ")) on \(network.description))\(executionTypeDescription(executionType))"
-            case .transferErc20(
+            case .transfer(
                 let tokenAmount,
                 let recipient,
                 let cappedMax,
@@ -1054,16 +1141,7 @@ enum Call: CustomStringConvertible, Equatable {
                 let executionType
             ):
                 return
-                    "transferErc20(\(tokenAmount.amount) \(tokenAmount.token.symbol) to \(recipient.description) \(cappedMax ? "with" : "without") max on \(network.description))\(executionTypeDescription(executionType))"
-            case .transferNativeToken(
-                let tokenAmount,
-                let recipient,
-                let cappedMax,
-                let network,
-                let executionType
-            ):
-                return
-                    "transferNativeToken(\(tokenAmount) to \(recipient.description) \(cappedMax ? "with" : "without") max on \(network.description))\(executionTypeDescription(executionType))"
+                    "transfer(\(tokenAmount.amount) \(tokenAmount.token.symbol) to \(recipient.description) \(cappedMax ? "with" : "without") max on \(network.description))\(executionTypeDescription(executionType))"
             case .quotePay(let payment, let payee, let quoteId, let executionType):
                 return
                     "quotePay(\(payment.amount) \(payment.token.symbol) to \(payee.description), quoteId: \(quoteId))\(executionTypeDescription(executionType))"
@@ -1942,11 +2020,10 @@ class Context {
                     .init(
                         type: .transfer(
                             .init(
-                                chainId: Number(network.chainId),
                                 assetSymbol: amount.token.symbol,
                                 amount: Number(amount.amount),
-                                sender: from.address,
-                                recipient: to.address,
+                                sender: from.chainAddress(on: network),
+                                recipient: to.chainAddress(on: network)
                             )
                         ),
                         blockTimestamp: Number(1_000_000)
@@ -2468,16 +2545,30 @@ func chartResultToCallsAndActions(
 }
 
 func chartToCallsAndActions(_ chart: Charter.Chart) -> ([Call], [Charter.ActionContext]) {
-    let calls: [Call] = chart.quarkOperationActions.map { quarkOperationAction in
-        Call.tryDecodeCall(
-            scriptAddress: quarkOperationAction.operation.scriptAddress,
-            calldata: quarkOperationAction.operation.scriptCalldata,
-            network: Network.fromChainId(quarkOperationAction.action.chainId),
-            executionType: quarkOperationAction.action.executionType
-        )
-    }
+    var calls: [Call] = []
+    var actionContexts: [Charter.ActionContext] = []
 
-    let actionContexts = chart.quarkOperationActions.map { $0.action.actionContext }
+    for opAction in chart.operationActions {
+        let call: Call
+        switch opAction.operation {
+        case .quark(let quarkOp):
+            call = Call.tryDecodeCall(
+                scriptAddress: quarkOp.scriptAddress,
+                calldata: quarkOp.scriptCalldata,
+                network: Network.fromChainId(opAction.action.chainId),
+                executionType: opAction.action.executionType
+            )
+        case .solana(let solanaOp):
+            call = Call.tryDecodeSolanaOperation(
+                operation: solanaOp,
+                actionContext: opAction.action.actionContext,
+                chainId: opAction.action.chainId,
+                executionType: opAction.action.executionType
+            )
+        }
+        calls.append(call)
+        actionContexts.append(opAction.action.actionContext)
+    }
 
     return (calls, actionContexts)
 }

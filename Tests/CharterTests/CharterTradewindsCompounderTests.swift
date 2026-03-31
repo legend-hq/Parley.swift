@@ -75,9 +75,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -99,15 +99,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.0406e18").asSNumber,
@@ -123,9 +123,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .cometSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: Eth.Network.base,
@@ -210,9 +210,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -234,15 +234,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("2537.5e6").asSNumber,
@@ -258,9 +258,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .morphoVaultSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: Eth.Network.base,
@@ -341,9 +341,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -365,15 +365,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.203e18").asSNumber,
@@ -389,9 +389,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .aaveSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: Eth.Network.base,
@@ -475,9 +475,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -499,15 +499,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.0406e18").asSNumber,
@@ -523,15 +523,15 @@ struct CharterTradewindsCompounderTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.ETH.assetAddress,
+                                    address: EthereumNetwork.Assets.ETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "ETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 rate: Percentage(fromNumber: Number("0.99e18")),
                                 fees: [
@@ -547,15 +547,15 @@ struct CharterTradewindsCompounderTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.ETH.assetAddress,
+                                    address: EthereumNetwork.Assets.ETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "ETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -568,9 +568,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .cometSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.WETH.assetAddress,
+                                    address: EthereumNetwork.Assets.WETH.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: Eth.Network.ethereum,
@@ -652,9 +652,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -676,15 +676,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.0406e18").asSNumber,
@@ -700,9 +700,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .cometSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: Eth.Network.base,
@@ -791,9 +791,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -819,9 +819,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.USDC.assetAddress,
+                                    address: EthereumNetwork.Assets.USDC.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -834,15 +834,15 @@ struct CharterTradewindsCompounderTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: Eth.Network.ethereum,
-                                    address: EthereumNetwork.Assets.USDC.assetAddress,
+                                    address: EthereumNetwork.Assets.USDC.assetAddress.on(Eth.Network.ethereum),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.ethereum)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(0.99),
                                 minFlow: "10e6",
@@ -864,15 +864,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.056637e18").asSNumber,
@@ -888,9 +888,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .cometSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: Eth.Network.base,
@@ -1218,9 +1218,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1246,9 +1246,9 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1270,15 +1270,15 @@ struct CharterTradewindsCompounderTests {
                                 ),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(Eth.Network.base),
                                     symbol: "USDC",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 rate: Percentage(
                                     fromRatio: Number("0.0406e18").asSNumber,
@@ -1294,9 +1294,9 @@ struct CharterTradewindsCompounderTests {
                                 type: .cometSupply(isCappedMax: true),
                                 source: .tokenBalance(
                                     network: Eth.Network.base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(Eth.Network.base),
                                     symbol: "WETH",
-                                    wallet: TestHelpers.Account.alice.address
+                                    wallet: TestHelpers.Account.alice.address.on(Eth.Network.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: Eth.Network.base,

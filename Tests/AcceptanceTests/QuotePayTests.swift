@@ -1,4 +1,5 @@
 @preconcurrency import Eth
+import Prelude
 import SwiftNumber
 import TestHelpers
 import Testing
@@ -21,7 +22,7 @@ struct QuotePayTests {
                         .multicall(
                             [
                                 .quotePay(payment: .amt(0.10, .usdc), payee: .stax, quote: .basic),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(10, .usdc),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -59,10 +60,10 @@ struct QuotePayTests {
                                         price: Number("1e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("1"))),
                                         token: EthAddress(
                                             "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                                        )
+                                        ).on(Network.fromChainId(Number("1")))
                                     )
                                 ),
                             ]
@@ -94,7 +95,7 @@ struct QuotePayTests {
                                     payee: .stax,
                                     quote: .basic
                                 ),
-                                .transferErc20(
+                                .transfer(
                                     tokenAmount: .amt(0.5, .weth),
                                     recipient: .bob,
                                     cappedMax: false,
@@ -143,10 +144,10 @@ struct QuotePayTests {
                                         price: Number("4000e8"),
                                         recipient: EthAddress(
                                             "0x00000000000000000000000000000000000b0b0b"
-                                        ),
+                                        ).on(Network.fromChainId(Number("1"))),
                                         token: EthAddress(
                                             "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                                        )
+                                        ).on(Network.fromChainId(Number("1")))
                                     )
                                 ),
                             ]

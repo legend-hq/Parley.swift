@@ -66,9 +66,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -82,9 +82,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .cometSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: .base,
@@ -170,9 +170,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -192,9 +192,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -208,9 +208,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,
@@ -306,9 +306,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -328,9 +328,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -344,9 +344,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -422,9 +422,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromNumber: "1.00001e18"),
                                 minFlow: "0",
@@ -438,9 +438,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,
@@ -512,9 +512,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -528,9 +528,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -604,9 +604,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -620,9 +620,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,
@@ -678,9 +678,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -837,9 +837,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 // TODO: this should be the proper bridge rate, but it's not checked by tests
                                 rate: .one,
@@ -860,9 +860,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .optimism,
-                                    address: OptimismNetwork.Assets.USDC.assetAddress,
+                                    address: OptimismNetwork.Assets.USDC.assetAddress.on(.optimism),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.optimism)
                                 ),
                                 // TODO: this should be the proper bridge rate, but it's not checked by tests
                                 rate: .one,
@@ -877,15 +877,15 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .optimism,
-                                    address: OptimismNetwork.Assets.USDC.assetAddress,
+                                    address: OptimismNetwork.Assets.USDC.assetAddress.on(.optimism),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.optimism)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
@@ -902,15 +902,15 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.USDC.assetAddress,
+                                    address: ArbitrumNetwork.Assets.USDC.assetAddress.on(.arbitrum),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
@@ -927,9 +927,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,
@@ -1027,9 +1027,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1049,9 +1049,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .optimism,
-                                    address: OptimismNetwork.Assets.WETH.assetAddress,
+                                    address: OptimismNetwork.Assets.WETH.assetAddress.on(.optimism),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.optimism)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1065,15 +1065,15 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .arbitrum,
-                                    address: ArbitrumNetwork.Assets.WETH.assetAddress,
+                                    address: ArbitrumNetwork.Assets.WETH.assetAddress.on(.arbitrum),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.arbitrum)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
@@ -1094,15 +1094,15 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .bridge(bridgeType: .across, isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .optimism,
-                                    address: OptimismNetwork.Assets.WETH.assetAddress,
+                                    address: OptimismNetwork.Assets.WETH.assetAddress.on(.optimism),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.optimism)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: Percentage(fromDouble: 0.999),  // Bridge rate (slight fee)
                                 fees: [
@@ -1123,15 +1123,15 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .wrap,
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.ETH.assetAddress,
+                                    address: BaseNetwork.Assets.ETH.assetAddress.on(.base),
                                     symbol: "ETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1145,9 +1145,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.WETH.assetAddress,
+                                    address: BaseNetwork.Assets.WETH.assetAddress.on(.base),
                                     symbol: "WETH",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -1221,9 +1221,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 // Exact withdraw amount at source (net logic applies fee elsewhere)
@@ -1238,9 +1238,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .cometSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: .base,
@@ -1329,9 +1329,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "4000e6",  // Force exact withdrawal
@@ -1351,9 +1351,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "2000e6",  // Force exact withdrawal
@@ -1367,9 +1367,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,
@@ -1494,9 +1494,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1510,9 +1510,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -1663,9 +1663,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "2000e6",  // Force exact withdrawal from Comet
@@ -1685,9 +1685,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "2000e6",  // Force exact withdrawal from Morpho
@@ -1703,9 +1703,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .aaveSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .aaveSupplyBalance(
                                     network: .base,
@@ -1809,9 +1809,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1825,9 +1825,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .cometSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: .base,
@@ -1923,9 +1923,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -1939,9 +1939,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .cometSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: .base,
@@ -2020,9 +2020,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -2036,9 +2036,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .cometSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .cometSupplyBalance(
                                     network: .base,
@@ -2117,9 +2117,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 ),
                                 sink: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 rate: .one,
                                 minFlow: "0",
@@ -2134,9 +2134,9 @@ struct CharterTradewindsMigrateSuppliesTests {
                                 type: .morphoVaultSupply(isCappedMax: false),
                                 source: .tokenBalance(
                                     network: .base,
-                                    address: BaseNetwork.Assets.USDC.assetAddress,
+                                    address: BaseNetwork.Assets.USDC.assetAddress.on(.base),
                                     symbol: "USDC",
-                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce")
+                                    wallet: EthAddress("0x00000000000000000000000000000000000a11ce").on(.base)
                                 ),
                                 sink: .morphoVaultSupplyBalance(
                                     network: .base,

@@ -149,7 +149,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
 
             // Get the collateral asset to get its address
             guard
-                let collateralAsset = Atlas.getEvmAssetBySymbol(network: network, symbol: tokenSymbol)
+                let collateralAsset = Atlas.getAssetBySymbol(network: network, symbol: tokenSymbol)
             else {
                 continue
             }
@@ -175,7 +175,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         let network = Network.fromChainId(intent.chainId)
 
         // Validate the borrow asset exists
-        guard Atlas.getEvmAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
+        guard Atlas.getAssetBySymbol(network: network, symbol: intent.assetSymbol) != nil else {
             return .failure(
                 .unknownAsset(symbol: intent.assetSymbol, network: network, address: nil))
         }
@@ -183,7 +183,7 @@ struct MorphoRepayHandler: RepayIntentHandler {
         // Validate collateral asset if specified
         if !intent.collateralAssetSymbol.isEmpty {
             guard
-                Atlas.getEvmAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol)
+                Atlas.getAssetBySymbol(network: network, symbol: intent.collateralAssetSymbol)
                     != nil
             else {
                 return .failure(

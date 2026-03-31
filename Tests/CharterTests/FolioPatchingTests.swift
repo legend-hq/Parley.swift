@@ -31,8 +31,8 @@ struct FolioPatchingTests {
     @Test("Simple token transfer patching")
     func testTokenTransfer() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
-            .token(network: .base, symbol: "USDC", wallet: bob): Amount("500e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
+            .token(network: .base, symbol: "USDC", wallet: bob.on(.base)): Amount("500e6"),
         ]
 
         let transferContext = Charter.ActionContext.transfer(
@@ -41,8 +41,8 @@ struct FolioPatchingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),  // Base chain
                 price: Number("1e8"),
-                recipient: bob,
-                token: usdcToken
+                recipient: bob.on(.base),
+                token: usdcToken.on(.base)
             )
         )
 
@@ -55,8 +55,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("900e6"),
-                .token(network: .base, symbol: "USDC", wallet: bob): Amount("600e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("900e6"),
+                .token(network: .base, symbol: "USDC", wallet: bob.on(.base)): Amount("600e6"),
             ]
         )
     }
@@ -64,7 +64,7 @@ struct FolioPatchingTests {
     @Test("Handles missing recipient")
     func testMissingRecipient() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6")
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6")
         ]
 
         let transferContext = Charter.ActionContext.transfer(
@@ -73,8 +73,8 @@ struct FolioPatchingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),  // Base chain
                 price: Number("1e8"),
-                recipient: bob,
-                token: usdcToken
+                recipient: bob.on(.base),
+                token: usdcToken.on(.base)
             )
         )
 
@@ -88,13 +88,13 @@ struct FolioPatchingTests {
 
         // Verify Alice's balance was reduced
         #expect(
-            balances[.token(network: .base, symbol: "USDC", wallet: alice)]
+            balances[.token(network: .base, symbol: "USDC", wallet: alice.on(.base))]
                 == Amount("900e6")
         )
 
         // Verify Bob's balance was auto-created and credited
         #expect(
-            balances[.token(network: .base, symbol: "USDC", wallet: bob)]
+            balances[.token(network: .base, symbol: "USDC", wallet: bob.on(.base))]
                 == Amount("100e6")
         )
     }
@@ -102,8 +102,8 @@ struct FolioPatchingTests {
     @Test("Transfer with insufficient balance")
     func testTransferInsufficientBalance() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
-            .token(network: .base, symbol: "USDC", wallet: bob): Amount("0e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
+            .token(network: .base, symbol: "USDC", wallet: bob.on(.base)): Amount("0e6"),
         ]
 
         let transferContext = Charter.ActionContext.transfer(
@@ -112,8 +112,8 @@ struct FolioPatchingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),
                 price: Number("1e8"),
-                recipient: bob,
-                token: usdcToken
+                recipient: bob.on(.base),
+                token: usdcToken.on(.base)
             )
         )
 
@@ -127,13 +127,13 @@ struct FolioPatchingTests {
 
         // Verify Alice's balance was capped at 0 (had 100, tried to send 200)
         #expect(
-            balances[.token(network: .base, symbol: "USDC", wallet: alice)]
+            balances[.token(network: .base, symbol: "USDC", wallet: alice.on(.base))]
                 == Amount("0e6")
         )
 
         // Verify Bob received the full requested amount (200 USDC)
         #expect(
-            balances[.token(network: .base, symbol: "USDC", wallet: bob)]
+            balances[.token(network: .base, symbol: "USDC", wallet: bob.on(.base))]
                 == Amount("200e6")
         )
     }
@@ -143,8 +143,8 @@ struct FolioPatchingTests {
     @Test("Token swap patching")
     func testTokenSwap() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "USDC", wallet: alice): Amount("1000e6"),
-            .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .ethereum, symbol: "USDC", wallet: alice.on(.ethereum)): Amount("1000e6"),
+            .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("1e18"),
         ]
 
         let swapContext = Charter.ActionContext.swap(
@@ -179,8 +179,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .ethereum, symbol: "USDC", wallet: alice): Amount("500e6"),
-                .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("1.2e18"),
+                .token(network: .ethereum, symbol: "USDC", wallet: alice.on(.ethereum)): Amount("500e6"),
+                .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("1.2e18"),
             ]
         )
     }
@@ -190,8 +190,8 @@ struct FolioPatchingTests {
     @Test("Bridge operation patching")
     func testBridge() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
-            .token(network: .arbitrum, symbol: "USDC", wallet: alice): Amount("500e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
+            .token(network: .arbitrum, symbol: "USDC", wallet: alice.on(.arbitrum)): Amount("500e6"),
         ]
 
         let bridgeContext = Charter.ActionContext.bridge(
@@ -219,8 +219,8 @@ struct FolioPatchingTests {
         // Both source and destination balances should be affected
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("800e6"),
-                .token(network: .arbitrum, symbol: "USDC", wallet: alice): Amount("699e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("800e6"),
+                .token(network: .arbitrum, symbol: "USDC", wallet: alice.on(.arbitrum)): Amount("699e6"),
             ]
         )
     }
@@ -230,7 +230,7 @@ struct FolioPatchingTests {
     @Test("Aave supply patching")
     func testAaveSupply() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
             .yieldMarket(
                 yieldMarket: .aave(network: .base, pool: aavePool, underlyingSymbol: "USDC"),
                 wallet: alice
@@ -257,7 +257,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("700e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("700e6"),
                 .yieldMarket(
                     yieldMarket: Folio.YieldMarketType.aave(
                         network: .base,
@@ -273,7 +273,7 @@ struct FolioPatchingTests {
     @Test("Comet supply patching")
     func testCometSupply() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
             .yieldMarket(
                 yieldMarket: Folio.YieldMarketType.comet(
                     network: .base,
@@ -304,7 +304,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("600e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("600e6"),
                 .yieldMarket(
                     yieldMarket: Folio.YieldMarketType.comet(
                         network: .base,
@@ -322,7 +322,7 @@ struct FolioPatchingTests {
     @Test("Aave withdraw patching")
     func testAaveWithdraw() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
             .yieldMarket(
                 yieldMarket: .aave(network: .base, pool: aavePool, underlyingSymbol: "USDC"),
                 wallet: alice
@@ -349,7 +349,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("300e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("300e6"),
                 .yieldMarket(
                     yieldMarket: Folio.YieldMarketType.aave(
                         network: .base,
@@ -365,7 +365,7 @@ struct FolioPatchingTests {
     @Test("Aave withdraw max amount")
     func testAaveWithdrawMax() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
             .yieldMarket(
                 yieldMarket: .aave(network: .base, pool: aavePool, underlyingSymbol: "USDC"),
                 wallet: alice
@@ -392,7 +392,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("600e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("600e6"),
                 .yieldMarket(
                     yieldMarket: Folio.YieldMarketType.aave(
                         network: .base,
@@ -410,8 +410,8 @@ struct FolioPatchingTests {
     @Test("Comet borrow patching")
     func testCometBorrow() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("10e18"),
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("10e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
             .borrowMarketCollateral(
                 borrowMarket: .comet(network: .base, comet: cometAddress, underlyingSymbol: "USDC"),
                 tokenSymbol: "WETH",
@@ -448,8 +448,8 @@ struct FolioPatchingTests {
         // Should receive borrowed USDC, borrow balance, less collateral, plus collateral positions
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1100e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("9e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1100e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("9e18"),
                 .borrowMarketCollateral(
                     borrowMarket: .comet(
                         network: .base,
@@ -474,8 +474,8 @@ struct FolioPatchingTests {
     @Test("Comet repay patching")
     func testCometRepayNormal() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1500e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("2e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1500e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("2e18"),
             .borrowMarketCollateral(
                 borrowMarket: .comet(network: .base, comet: cometAddress, underlyingSymbol: "USDC"),
                 tokenSymbol: "WETH",
@@ -512,8 +512,8 @@ struct FolioPatchingTests {
         // USDC should be reduced by repay amount
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1250e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("2.3e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1250e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("2.3e18"),
                 .borrowMarketCollateral(
                     borrowMarket: .comet(
                         network: .base,
@@ -538,8 +538,8 @@ struct FolioPatchingTests {
     @Test("Comet repay max amount")
     func testCometRepayMax() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1500e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1500e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
             .borrowMarket(
                 borrowMarket: .comet(network: .base, comet: cometAddress, underlyingSymbol: "USDC"),
                 wallet: alice
@@ -576,8 +576,8 @@ struct FolioPatchingTests {
         // Should repay full borrow amount (1000e6)
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("500e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1.9e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("500e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1.9e18"),
                 .borrowMarket(
                     borrowMarket: .comet(
                         network: .base,
@@ -604,7 +604,7 @@ struct FolioPatchingTests {
     @Test("Comet claim rewards patching")
     func testCometClaimRewards() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "COMP", wallet: alice): Amount("10e18", decimals: 18)
+            .token(network: .base, symbol: "COMP", wallet: alice.on(.base)): Amount("10e18", decimals: 18)
         ]
 
         let claimContext = Charter.ActionContext.cometClaimRewards(
@@ -626,7 +626,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "COMP", wallet: alice): Amount("15e18")
+                .token(network: .base, symbol: "COMP", wallet: alice.on(.base)): Amount("15e18")
             ]
         )
     }
@@ -636,10 +636,10 @@ struct FolioPatchingTests {
     @Test("Multi-action patching")
     func testMultiAction() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
-            .token(network: .base, symbol: "DAI", wallet: alice): Amount("500e18"),
-            .token(network: .base, symbol: "USDC", wallet: bob): Amount("0e6"),
-            .token(network: .base, symbol: "DAI", wallet: bob): Amount("0e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
+            .token(network: .base, symbol: "DAI", wallet: alice.on(.base)): Amount("500e18"),
+            .token(network: .base, symbol: "USDC", wallet: bob.on(.base)): Amount("0e6"),
+            .token(network: .base, symbol: "DAI", wallet: bob.on(.base)): Amount("0e18"),
         ]
 
         // Create multiple sub-actions
@@ -649,8 +649,8 @@ struct FolioPatchingTests {
                 assetSymbol: "USDC",
                 chainId: Number("8453"),
                 price: Number("1e8"),
-                recipient: bob,
-                token: usdcToken
+                recipient: bob.on(.base),
+                token: usdcToken.on(.base)
             )
         )
 
@@ -660,8 +660,8 @@ struct FolioPatchingTests {
                 assetSymbol: "DAI",
                 chainId: Number("8453"),
                 price: Number("1e8"),
-                recipient: bob,
-                token: daiToken
+                recipient: bob.on(.base),
+                token: daiToken.on(.base)
             )
         )
 
@@ -678,10 +678,10 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("900e6"),
-                .token(network: .base, symbol: "DAI", wallet: alice): Amount("450e18"),
-                .token(network: .base, symbol: "USDC", wallet: bob): Amount("100e6"),
-                .token(network: .base, symbol: "DAI", wallet: bob): Amount("50e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("900e6"),
+                .token(network: .base, symbol: "DAI", wallet: alice.on(.base)): Amount("450e18"),
+                .token(network: .base, symbol: "USDC", wallet: bob.on(.base)): Amount("100e6"),
+                .token(network: .base, symbol: "DAI", wallet: bob.on(.base)): Amount("50e18"),
             ]
         )
     }
@@ -691,8 +691,8 @@ struct FolioPatchingTests {
     @Test("Wrap ETH to WETH 1:1")
     func testWrapEthToWeth() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "ETH", wallet: alice): Amount("5e18"),
-            .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .ethereum, symbol: "ETH", wallet: alice.on(.ethereum)): Amount("5e18"),
+            .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("1e18"),
         ]
 
         let swapHints: [Folio.SwapHintType: Folio.SwapHint] = [
@@ -727,8 +727,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .ethereum, symbol: "ETH", wallet: alice): Amount("3e18"),
-                .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("3e18"),
+                .token(network: .ethereum, symbol: "ETH", wallet: alice.on(.ethereum)): Amount("3e18"),
+                .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("3e18"),
             ]
         )
     }
@@ -736,8 +736,8 @@ struct FolioPatchingTests {
     @Test("Unwrap WETH to ETH 1:1")
     func testUnwrapWethToEth() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "ETH", wallet: alice): Amount("1e18"),
-            .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("3e18"),
+            .token(network: .ethereum, symbol: "ETH", wallet: alice.on(.ethereum)): Amount("1e18"),
+            .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("3e18"),
         ]
         let swapHints: [Folio.SwapHintType: Folio.SwapHint] = [
             .wrapper(
@@ -771,8 +771,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .ethereum, symbol: "ETH", wallet: alice): Amount("3e18"),
-                .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .ethereum, symbol: "ETH", wallet: alice.on(.ethereum)): Amount("3e18"),
+                .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("1e18"),
             ]
         )
     }
@@ -780,8 +780,8 @@ struct FolioPatchingTests {
     @Test("Unwrap wstETH to stETH 10:1")
     func testUnwrapWstETHToStETH() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "stETH", wallet: alice): Amount("1e18"),
-            .token(network: .ethereum, symbol: "wstETH", wallet: alice): Amount("3e18"),
+            .token(network: .ethereum, symbol: "stETH", wallet: alice.on(.ethereum)): Amount("1e18"),
+            .token(network: .ethereum, symbol: "wstETH", wallet: alice.on(.ethereum)): Amount("3e18"),
         ]
 
         let swapHints: [Folio.SwapHintType: Folio.SwapHint] = [
@@ -816,8 +816,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .ethereum, symbol: "stETH", wallet: alice): Amount("21e18"),
-                .token(network: .ethereum, symbol: "wstETH", wallet: alice): Amount("1e18"),
+                .token(network: .ethereum, symbol: "stETH", wallet: alice.on(.ethereum)): Amount("21e18"),
+                .token(network: .ethereum, symbol: "wstETH", wallet: alice.on(.ethereum)): Amount("1e18"),
             ]
         )
     }
@@ -825,8 +825,8 @@ struct FolioPatchingTests {
     @Test("Wrap stETH to wstETH 10:1")
     func testWrapStETHToWstETH() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "stETH", wallet: alice): Amount("21e18"),
-            .token(network: .ethereum, symbol: "wstETH", wallet: alice): Amount("1e18"),
+            .token(network: .ethereum, symbol: "stETH", wallet: alice.on(.ethereum)): Amount("21e18"),
+            .token(network: .ethereum, symbol: "wstETH", wallet: alice.on(.ethereum)): Amount("1e18"),
         ]
         let swapHints: [Folio.SwapHintType: Folio.SwapHint] = [
             .wrapper(
@@ -860,8 +860,8 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .ethereum, symbol: "stETH", wallet: alice): Amount("1e18"),
-                .token(network: .ethereum, symbol: "wstETH", wallet: alice): Amount("3e18"),
+                .token(network: .ethereum, symbol: "stETH", wallet: alice.on(.ethereum)): Amount("1e18"),
+                .token(network: .ethereum, symbol: "wstETH", wallet: alice.on(.ethereum)): Amount("3e18"),
             ]
         )
     }
@@ -869,8 +869,8 @@ struct FolioPatchingTests {
     @Test("Wrapping with missing swap hint")
     func testWrapMissingSwapHint() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .ethereum, symbol: "ETH", wallet: alice): Amount("5e18"),
-            .token(network: .ethereum, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .ethereum, symbol: "ETH", wallet: alice.on(.ethereum)): Amount("5e18"),
+            .token(network: .ethereum, symbol: "WETH", wallet: alice.on(.ethereum)): Amount("1e18"),
         ]
 
         let wrapContext = Charter.ActionContext.wrap(
@@ -909,7 +909,7 @@ struct FolioPatchingTests {
     @Test("Quote pay patching")
     func testQuotePay() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6")
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6")
         ]
 
         let quotePayContext = Charter.ActionContext.quotePay(
@@ -933,7 +933,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("750e6")
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("750e6")
             ]
         )
     }
@@ -943,7 +943,7 @@ struct FolioPatchingTests {
     @Test("Morpho vault supply patching")
     func testMorphoVaultSupply() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
             .yieldMarket(
                 yieldMarket: .morphoVault(
                     network: .base,
@@ -974,7 +974,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("800e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("800e6"),
                 .yieldMarket(
                     yieldMarket: .morphoVault(
                         network: .base,
@@ -990,7 +990,7 @@ struct FolioPatchingTests {
     @Test("Morpho vault withdraw patching")
     func testMorphoVaultWithdraw() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
             .yieldMarket(
                 yieldMarket: .morphoVault(
                     network: .base,
@@ -1021,7 +1021,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("250e6"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("250e6"),
                 .yieldMarket(
                     yieldMarket: .morphoVault(
                         network: .base,
@@ -1037,8 +1037,8 @@ struct FolioPatchingTests {
     @Test("Morpho borrow patching")
     func testMorphoBorrow() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("10e18"),
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("100e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("10e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("100e6"),
             .borrowMarketCollateral(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1084,8 +1084,8 @@ struct FolioPatchingTests {
         // Should receive borrowed USDC
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1100e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("8e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1100e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("8e18"),
                 .borrowMarketCollateral(
                     borrowMarket: .morpho(
                         network: .base,
@@ -1110,8 +1110,8 @@ struct FolioPatchingTests {
     @Test("Morpho repay patching")
     func testMorphoRepay() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1500e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("0e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1500e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("0e18"),
             .borrowMarketCollateral(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1157,8 +1157,8 @@ struct FolioPatchingTests {
         // USDC should be reduced by repay amount
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
                 .borrowMarketCollateral(
                     borrowMarket: .morpho(
                         network: .base,
@@ -1183,7 +1183,7 @@ struct FolioPatchingTests {
     @Test("Morpho claim rewards patching")
     func testMorphoClaimRewards() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "MORPHO", wallet: alice): Amount("100e18")
+            .token(network: .base, symbol: "MORPHO", wallet: alice.on(.base)): Amount("100e18")
         ]
 
         let claimContext = Charter.ActionContext.morphoClaimRewards(
@@ -1205,7 +1205,7 @@ struct FolioPatchingTests {
 
         #expect(
             balances == [
-                .token(network: .base, symbol: "MORPHO", wallet: alice): Amount("125e18")
+                .token(network: .base, symbol: "MORPHO", wallet: alice.on(.base)): Amount("125e18")
             ]
         )
     }
@@ -1215,8 +1215,8 @@ struct FolioPatchingTests {
     @Test("Add backing token patching")
     func testAddBackingToken() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("5000e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("5000e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
             .borrowMarket(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1262,8 +1262,8 @@ struct FolioPatchingTests {
         // Token should be reduced
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("4000e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("4000e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
                 .borrowMarket(
                     borrowMarket: .morpho(
                         network: .base,
@@ -1288,8 +1288,8 @@ struct FolioPatchingTests {
     @Test("Withdraw backing token patching")
     func testWithdrawBackingToken() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("1000e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1000e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
             .borrowMarket(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1335,8 +1335,8 @@ struct FolioPatchingTests {
         // Token should be increased
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("1500e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("1500e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
                 .borrowMarket(
                     borrowMarket: .morpho(
                         network: .base,
@@ -1361,8 +1361,8 @@ struct FolioPatchingTests {
     @Test("Loop long patching")
     func testLoopLong() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("8000e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("8000e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
             .borrowMarket(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1415,8 +1415,8 @@ struct FolioPatchingTests {
         // Token should be reduced
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("6000e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("6000e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
                 .borrowMarket(
                     borrowMarket: .morpho(
                         network: .base,
@@ -1441,8 +1441,8 @@ struct FolioPatchingTests {
     @Test("Unloop long patching")
     func testUnloopLong() throws {
         var balances: [Folio.BalanceType: Amount] = [
-            .token(network: .base, symbol: "USDC", wallet: alice): Amount("6000e6"),
-            .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+            .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("6000e6"),
+            .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
             .borrowMarket(
                 borrowMarket: .morpho(
                     network: .base,
@@ -1494,8 +1494,8 @@ struct FolioPatchingTests {
         // Token should be reduced
         #expect(
             balances == [
-                .token(network: .base, symbol: "USDC", wallet: alice): Amount("8000e6"),
-                .token(network: .base, symbol: "WETH", wallet: alice): Amount("1e18"),
+                .token(network: .base, symbol: "USDC", wallet: alice.on(.base)): Amount("8000e6"),
+                .token(network: .base, symbol: "WETH", wallet: alice.on(.base)): Amount("1e18"),
                 .borrowMarket(
                     borrowMarket: .morpho(
                         network: .base,
