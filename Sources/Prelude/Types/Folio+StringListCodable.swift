@@ -558,8 +558,8 @@ extension Folio.HexDataType: StringListCodable {
 extension Folio.SolanaTransactionContextType: StringListCodable {
     public func toStringList() -> [String] {
         switch self {
-            case .durableNonce(let wallet):
-                return ["durable_nonce", wallet.base58]
+            case .wallet(let wallet):
+                return [wallet.base58]
         }
     }
 
@@ -568,19 +568,11 @@ extension Folio.SolanaTransactionContextType: StringListCodable {
             throw StringListCodableError.insufficientValues(expected: 1, got: values.count)
         }
 
-        switch values[0] {
-            case "durable_nonce":
-                guard values.count >= 2 else {
-                    throw StringListCodableError.insufficientValues(expected: 2, got: values.count)
-                }
-                guard let wallet = SolanaAddress(fromBase58: values[1]) else {
-                    throw StringListCodableError.unknownDiscriminator(values[1])
-                }
-                return (.durableNonce(wallet: wallet), Array(values.dropFirst(2)))
-
-            default:
-                throw StringListCodableError.unknownDiscriminator(values[0])
+        guard let wallet = SolanaAddress(fromBase58: values[0]) else {
+            throw StringListCodableError.unknownDiscriminator(values[0])
         }
+
+        return (.wallet(wallet), Array(values.dropFirst(1)))
     }
 }
 

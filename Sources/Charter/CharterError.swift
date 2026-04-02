@@ -15,6 +15,7 @@ extension Charter {
         case assetQuoteNotFound(symbol: String)
         case invalidSwapQuoteSellAmountIsZero
         case nonceSecretNotFound(network: Network?, account: EthAddress?)
+        case solanaTransactionContextNotFound(wallet: SolanaAddress)
         case unknownAtlasNetwork(network: Network)
         case rewardProofNotFound(rewardType: String, network: Network, symbol: String)
         case notWrappable(symbol: String, network: Network, address: EthAddress, noScript: Bool)
@@ -66,6 +67,7 @@ extension Charter {
             case balanceNeeded = "balance_needed"
             case balanceAvailable = "balance_available"
             case wallet
+            case solanaWallet = "solana_wallet"
             case bridgeFees = "bridge_fees"
             case totalQuotePayAmount = "total_quote_pay_amount"
             case srcNetwork = "src_network"
@@ -116,6 +118,9 @@ extension Charter {
                     let network = try container.decode(Network.self, forKey: .network)
                     let account = try container.decode(EthAddress.self, forKey: .address)
                     self = .nonceSecretNotFound(network: network, account: account)
+                case "solanaTransactionContextNotFound":
+                    let wallet = try container.decode(SolanaAddress.self, forKey: .solanaWallet)
+                    self = .solanaTransactionContextNotFound(wallet: wallet)
                 case "unknownAtlasNetwork":
                     let network = try container.decode(Network.self, forKey: .network)
                     self = .unknownAtlasNetwork(network: network)
@@ -277,6 +282,9 @@ extension Charter {
                     try container.encode("nonceSecretNotFound", forKey: .type)
                     try container.encode(network, forKey: .network)
                     try container.encode(account, forKey: .address)
+                case .solanaTransactionContextNotFound(let wallet):
+                    try container.encode("solanaTransactionContextNotFound", forKey: .type)
+                    try container.encode(wallet, forKey: .solanaWallet)
                 case .unknownAtlasNetwork(let network):
                     try container.encode("unknownAtlasNetwork", forKey: .type)
                     try container.encode(network, forKey: .network)

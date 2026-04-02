@@ -234,4 +234,35 @@ struct SolanaOperationBuilderTests {
         #expect(decoded.eip712Data == nil)
         #expect(decoded.quarkOperationActions.isEmpty)
     }
+
+    @Test("Solana chart fails when Folio transaction context is missing")
+    func solanaChartRequiresTransactionContext() {
+        let amount = TokenAmount.amt(5, .usdc)
+        let intent = Charter.QuarkIntent(
+            type: .transfer(
+                Charter.TransferIntent(
+                    assetSymbol: amount.token.symbol,
+                    amount: amount.toAmount.underlying,
+                    sender: Account.alice.chainAddress(on: .solana),
+                    recipient: Account.bob.chainAddress(on: .solana)
+                )
+            ),
+            blockTimestamp: Number("1700000000")
+        )
+
+        let folio = Folio(
+            balances: [
+                .token(network: .solana, symbol: "USDC", wallet: .solana(Account.alice.solanaAddress)):
+                    amount.toAmount
+            ],
+            prices: [.token(symbol: "USDC"): Value(double: 1.0)]
+        )
+
+        guard case .failure(let error) = Charter.chart(intent: intent, folio: folio) else {
+            Issue.record("Expected chart construction to fail")
+            return
+        }
+
+        #expect(error == .solanaTransactionContextNotFound(wallet: Account.alice.solanaAddress))
+    }
 }

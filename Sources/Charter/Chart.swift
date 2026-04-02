@@ -565,7 +565,7 @@ extension Charter {
             }
         }
 
-        /// Solana signing data — contains the serialized transaction message for signing.
+        /// Solana signing data — contains the serialized transaction message and committed fee payer.
         ///
         /// Solana transactions require two signatures: Legend's cannon signer (fee payer,
         /// always at account index 0 per Solana spec) and the user's Solana wallet
@@ -573,22 +573,21 @@ extension Charter {
         /// serialized message bytes; the signatures are position-indexed to match
         /// `account_keys`, not order-dependent.
         ///
-        /// The backend (`SolanaAdaptor.prepare_solana_operation()`) builds the transaction
-        /// from the instructions in `OperationAction.operation.solana`, fetches a blockhash,
-        /// collects both signatures, and submits.
-        ///
-        /// Charter computes `serializedMessage` client-side (using durable nonce data from Folio)
-        /// so the client can verify what will be signed. The backend may rebuild the message
-        /// with a fresh blockhash before signing.
+        /// Charter computes the exact serialized message client-side using the Folio's durable
+        /// nonce transaction context. The backend must submit that same message with the
+        /// committed fee payer so the user signature remains valid.
         public struct SolanaSigningData: Codable, Sendable, Equatable {
             public let serializedMessage: String
+            public let feePayer: SolanaAddress?
 
             public enum CodingKeys: String, CodingKey {
                 case serializedMessage = "serialized_message"
+                case feePayer = "fee_payer"
             }
 
-            public init(serializedMessage: String) {
+            public init(serializedMessage: String, feePayer: SolanaAddress? = nil) {
                 self.serializedMessage = serializedMessage
+                self.feePayer = feePayer
             }
         }
 

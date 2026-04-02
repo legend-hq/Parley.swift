@@ -144,22 +144,33 @@ public enum Charter {
             logger: logger
         )
 
-        switch operationsResult.result {
-            case .success(let (operationActions, steps)):
-                // Derive legacy quarkOperationActions and EIP-712 data from EVM operations
-                let quarkOperationActions = operationActions.compactMap {
-                    $0.toLegacyQuarkOperationAction()
-                }
-                let eip712Data = quarkOperationActions.eip712Data
+        let chartResult: Result<Chart, CharterError> = operationsResult.result.flatMap {
+            operationActions,
+            steps in
+            // Derive legacy quarkOperationActions and EIP-712 data from EVM operations
+            let quarkOperationActions = operationActions.compactMap {
+                $0.toLegacyQuarkOperationAction()
+            }
+            let eip712Data = quarkOperationActions.eip712Data
 
-                // Derive Solana signing data from Solana operations + Folio nonce data.
-                // Mirrors EIP-712: signing data is computed after operations are built.
-                let solanaSigningData = solanaSigningData(
-                    operationActions: operationActions,
-                    folio: folio
-                )
+            // Derive Solana signing data from Solana operations + Folio nonce data.
+            // Mirrors EIP-712: signing data is computed after operations are built.
+            let solanaSigningDataResult = solanaSigningData(
+                operationActions: operationActions,
+                folio: folio
+            )
 
-                let chart = Chart(
+            let solanaSigningData: Chart.SolanaSigningData?
+
+            switch solanaSigningDataResult {
+                case .success(let value):
+                    solanaSigningData = value
+                case .failure(let error):
+                    return .failure(error)
+            }
+
+            return .success(
+                Chart(
                     version: version,
                     operationActions: operationActions,
                     signingData: Chart.SigningData(
@@ -170,23 +181,16 @@ public enum Charter {
                     steps: steps,
                     eip712Data: eip712Data
                 )
-
-                return (
-                    result: .success(chart),
-                    flowResult: operationsResult.flowResult,
-                    routes: operationsResult.routes,
-                    resources: operationsResult.resources,
-                    target: operationsResult.target
-                )
-            case .failure(let error):
-                return (
-                    result: .failure(error),
-                    flowResult: operationsResult.flowResult,
-                    routes: operationsResult.routes,
-                    resources: operationsResult.resources,
-                    target: operationsResult.target
-                )
+            )
         }
+
+        return (
+            result: chartResult,
+            flowResult: operationsResult.flowResult,
+            routes: operationsResult.routes,
+            resources: operationsResult.resources,
+            target: operationsResult.target
+        )
     }
 
     public static func constructOperationsAndActions(
@@ -204,11 +208,8 @@ public enum Charter {
             logger: logger
         )
 
-        switch result.result {
-            case .success(let (operationActions, _)):
-                return .success(operationActions.compactMap { $0.toLegacyQuarkOperationAction() })
-            case .failure(let error):
-                return .failure(error)
+        return result.result.map { operationActions, _ in
+            operationActions.compactMap { $0.toLegacyQuarkOperationAction() }
         }
     }
 
@@ -641,10 +642,7 @@ public enum Charter {
 
         // Read fee payer from Folio's transaction context (injected by backend)
         guard let txContext = folio.getSolanaTransactionContext(wallet: senderWallet) else {
-            return .failure(.error(
-                "No Solana transaction context in Folio for wallet \(senderWallet.base58). "
-                + "Backend must inject solana_transaction_context before charting."
-            ))
+            return .failure(.solanaTransactionContextNotFound(wallet: senderWallet))
         }
 
         let symbol = transferIntent.assetSymbol
@@ -940,38 +938,35 @@ public enum Charter {
     /// Mirrors the pattern of `[QuarkOperationAction].eip712Data` for EVM.
     ///
     /// Returns nil if there are no Solana operations.
-    /// Returns signing data with empty `serializedMessage` if transaction context is not in the Folio
-    /// (the backend can still construct the message from the instructions).
     static func solanaSigningData(
         operationActions: [Chart.OperationAction],
         folio: Folio
-    ) -> Chart.SolanaSigningData? {
+    ) -> Result<Chart.SolanaSigningData?, CharterError> {
         // Collect all Solana operations
         let solanaOps = operationActions.compactMap { opAction -> (Chart.SolanaOperation, Chart.Action)? in
             guard case .solana(let solOp) = opAction.operation else { return nil }
             return (solOp, opAction.action)
         }
 
-        guard !solanaOps.isEmpty else { return nil }
+        guard !solanaOps.isEmpty else { return .success(nil) }
 
         // For now, we support a single Solana operation per Chart.
         let (solanaOp, action) = solanaOps[0]
 
         guard action.account.isSolana else {
-            return Chart.SolanaSigningData(serializedMessage: "")
+            return .failure(.error("Expected Solana sender account for Solana signing data"))
         }
         let senderWallet = action.account.solanaAddress
 
         guard let txContext = folio.getSolanaTransactionContext(wallet: senderWallet) else {
-            // No transaction context in Folio — return empty message for backend to fill in
-            return Chart.SolanaSigningData(serializedMessage: "")
+            return .failure(.solanaTransactionContextNotFound(wallet: senderWallet))
         }
 
         // Build the full instruction list: AdvanceNonceAccount + operation instructions
         var allInstructions: [Chart.SolanaInstruction] = []
         allInstructions.append(
             SolanaOperationBuilder.advanceNonceAccount(
-                nonceAccount: txContext.nonceAccount,
+                nonceAccount: txContext.durableNonceAccount,
                 nonceAuthority: senderWallet
             )
         )
@@ -981,9 +976,14 @@ public enum Charter {
         let messageBytes = SolanaOperationBuilder.serializeMessage(
             instructions: allInstructions,
             feePayer: txContext.feePayer,
-            recentBlockhash: txContext.nonceValue.data
+            recentBlockhash: txContext.durableNonceValue.data
         )
 
-        return Chart.SolanaSigningData(serializedMessage: messageBytes.base64EncodedString())
+        return .success(
+            Chart.SolanaSigningData(
+                serializedMessage: messageBytes.base64EncodedString(),
+                feePayer: txContext.feePayer
+            )
+        )
     }
 }

@@ -415,7 +415,7 @@ extension Folio {
     /// Returns the Solana transaction context for a wallet, if present in the Folio.
     /// Contains the durable nonce data and fee payer address.
     public func getSolanaTransactionContext(wallet: SolanaAddress) -> SolanaTransactionContext? {
-        solanaTransactionContext[.durableNonce(wallet: wallet)]
+        solanaTransactionContext[.wallet(wallet)]
     }
 
     public func getQuoteId(symbol: String) -> Hex? {

@@ -249,30 +249,34 @@ public struct Folio: Codable, Equatable, Hashable, Sendable {
 
     /// Key type for Solana transaction context, keyed by the user's Solana wallet.
     public enum SolanaTransactionContextType: Codable, Equatable, Hashable, Sendable {
-        case durableNonce(wallet: SolanaAddress)
+        case wallet(SolanaAddress)
     }
 
     /// Per-wallet Solana transaction context: everything Charter needs to build a Solana transaction.
     /// Injected by the backend before charting, similar to how EVM nonce secrets are injected.
     public struct SolanaTransactionContext: Codable, Equatable, Hashable, Sendable {
         /// The on-chain durable nonce account (a Solana Pubkey).
-        public let nonceAccount: SolanaAddress
+        public let durableNonceAccount: SolanaAddress
         /// The current durable nonce value (a 32-byte hash derived from a blockhash).
         /// Placed in the transaction's `recent_blockhash` field.
-        public let nonceValue: Base58Data
+        public let durableNonceValue: Base58Data
         /// Legend's fee payer address for this transaction.
         /// Used as the ATA creation payer and the transaction fee payer.
         public let feePayer: SolanaAddress
 
-        public init(nonceAccount: SolanaAddress, nonceValue: Base58Data, feePayer: SolanaAddress) {
-            self.nonceAccount = nonceAccount
-            self.nonceValue = nonceValue
+        public init(
+            durableNonceAccount: SolanaAddress,
+            durableNonceValue: Base58Data,
+            feePayer: SolanaAddress
+        ) {
+            self.durableNonceAccount = durableNonceAccount
+            self.durableNonceValue = durableNonceValue
             self.feePayer = feePayer
         }
 
         public enum CodingKeys: String, CodingKey {
-            case nonceAccount = "nonce_account"
-            case nonceValue = "nonce_value"
+            case durableNonceAccount = "durable_nonce_account"
+            case durableNonceValue = "durable_nonce_value"
             case feePayer = "fee_payer"
         }
     }

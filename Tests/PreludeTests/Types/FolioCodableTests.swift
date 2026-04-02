@@ -427,10 +427,10 @@ struct FolioCodableTests {
                 )
             ],
             solanaTransactionContext: [
-                .durableNonce(wallet: SolanaAddress("7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV")):
+                .wallet(SolanaAddress("7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV")):
                     Folio.SolanaTransactionContext(
-                        nonceAccount: SolanaAddress("9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"),
-                        nonceValue: Base58Data(fromBase58: "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7")!,
+                        durableNonceAccount: SolanaAddress("9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"),
+                        durableNonceValue: Base58Data(fromBase58: "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7")!,
                         feePayer: SolanaAddress("FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z")
                     )
             ],
@@ -515,10 +515,10 @@ struct FolioCodableTests {
                 }
               },
               "solana_transaction_context" : {
-                "durable_nonce/7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV" : {
-                  "fee_payer" : "FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z",
-                  "nonce_account" : "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
-                  "nonce_value" : "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7"
+                "7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV" : {
+                  "durable_nonce_account" : "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+                  "durable_nonce_value" : "F7vmkY3DTaxfagttWjQweib42b6ZHADSx94Tw8gHx3W7",
+                  "fee_payer" : "FVen3X669xLzsi6N2V91DoiyzHzg1uAgqiT8jZ9nS96Z"
                 }
               },
               "swap_hints" : {

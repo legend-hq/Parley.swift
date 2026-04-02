@@ -22,11 +22,11 @@ public func generateFolio(from givens: [Given]) -> Folio {
         // Uses a deterministic test nonce account and value, plus the RFC 8032 test key as fee payer.
         folio.solanaTransactionContext.updateValue(
             Folio.SolanaTransactionContext(
-                nonceAccount: SolanaFixtures.nonceAccount,
-                nonceValue: SolanaFixtures.nonceValue,
+                durableNonceAccount: SolanaFixtures.nonceAccount,
+                durableNonceValue: SolanaFixtures.nonceValue,
                 feePayer: SolanaFixtures.feePayer
             ),
-            forKey: .durableNonce(wallet: account.solanaAddress)
+            forKey: .wallet(account.solanaAddress)
         )
     }
 
