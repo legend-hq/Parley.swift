@@ -57,7 +57,7 @@ WASM_OPT=${git_root}/wasm-opt.sh \
 # if there are no changes, there is nothing to stage; abort
 if [[ ${UNCHANGED:-} != ok ]] && [[ -z $(git status --porcelain ${git_root}/Parley.swift) ]]; then
   >&2 printf "‼ Release is pointless.\n"
-  >&2 printf "    %s\n" "Parley.swift is already up-to-date." "Target: ${revision}"
+  >&2 printf "    %s\n" "Parley.swift is already up-to-date."
   exit 1
 fi
 
