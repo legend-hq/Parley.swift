@@ -579,15 +579,28 @@ extension Charter {
         public struct SolanaSigningData: Codable, Sendable, Equatable {
             public let serializedMessage: String
             public let feePayer: SolanaAddress?
+            /// The durable nonce account address used in this transaction.
+            public let nonceAccount: SolanaAddress?
+            /// The durable nonce value (blockhash) baked into the serialized message.
+            public let nonceValue: String?
 
             public enum CodingKeys: String, CodingKey {
                 case serializedMessage = "serialized_message"
                 case feePayer = "fee_payer"
+                case nonceAccount = "nonce_account"
+                case nonceValue = "nonce_value"
             }
 
-            public init(serializedMessage: String, feePayer: SolanaAddress? = nil) {
+            public init(
+                serializedMessage: String,
+                feePayer: SolanaAddress? = nil,
+                nonceAccount: SolanaAddress? = nil,
+                nonceValue: String? = nil
+            ) {
                 self.serializedMessage = serializedMessage
                 self.feePayer = feePayer
+                self.nonceAccount = nonceAccount
+                self.nonceValue = nonceValue
             }
         }
 

@@ -982,7 +982,9 @@ public enum Charter {
         return .success(
             Chart.SolanaSigningData(
                 serializedMessage: messageBytes.base64EncodedString(),
-                feePayer: txContext.feePayer
+                feePayer: txContext.feePayer,
+                nonceAccount: txContext.durableNonceAccount,
+                nonceValue: txContext.durableNonceValue.base58
             )
         )
     }
