@@ -265,4 +265,54 @@ struct SolanaOperationBuilderTests {
 
         #expect(error == .solanaTransactionContextNotFound(wallet: Account.alice.solanaAddress))
     }
+
+    // MARK: - Message Serialization
+
+    private func durableNonceTransferInstructions() -> [Charter.Chart.SolanaInstruction] {
+        [
+            Charter.SolanaOperationBuilder.advanceNonceAccount(
+                nonceAccount: SolanaFixtures.nonceAccount,
+                nonceAuthority: Account.alice.solanaAddress
+            ),
+            Charter.SolanaOperationBuilder.nativeSolTransfer(
+                sender: Account.alice.solanaAddress,
+                recipient: Account.carl.solanaAddress,
+                lamports: Number("1000")
+            ),
+        ]
+    }
+
+    @Test("serializeMessage produces canonical bytes for a durable-nonce transfer")
+    func serializeMessageDurableNonceTransfer() {
+        let message = Charter.SolanaOperationBuilder.serializeMessage(
+            instructions: durableNonceTransferInstructions(),
+            feePayer: SolanaFixtures.feePayer,
+            recentBlockhash: SolanaFixtures.nonceValue.data
+        )
+
+        // Account keys are lex-sorted by raw 32-byte address within each
+        // permission bucket, with the fee payer forced to index 0, matching
+        // solana-sdk's CompiledKeys ordering. This expectation locks in the
+        // deterministic ordering; any change indicates a regression.
+        #expect(
+            message.base64EncodedString()
+                == "AgACBtdamAGCsQq31Uv+08lkBzoO4XLz2qYjJa8CGmj3B1EaAZje3wBv0xmBEPap8r5uNCs6ffXoHJL+1Mu4GXazTvZ+jAiHYL/eHd3PMsF/IJuCQu5SqvEx+s2I0OosbQsG8rin/f/4ixjMJZhSnQ2tm/lpeoogjulo1E5hiwMuBGUQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGp9UXGSxWjuCKhF9z0peIzwNcMUWyGrNE2AYuqUAAANHJ5souwRraBtUl6hHoOeUvLYjM14rDeXsvQwlGUa6YAgQDAgUBBAQAAAAEAgEDDAIAAADoAwAAAAAAAA=="
+        )
+    }
+
+    @Test("serializeMessage is deterministic across repeated calls")
+    func serializeMessageIsDeterministic() {
+        let instructions = durableNonceTransferInstructions()
+        let first = Charter.SolanaOperationBuilder.serializeMessage(
+            instructions: instructions,
+            feePayer: SolanaFixtures.feePayer,
+            recentBlockhash: SolanaFixtures.nonceValue.data
+        )
+        let second = Charter.SolanaOperationBuilder.serializeMessage(
+            instructions: instructions,
+            feePayer: SolanaFixtures.feePayer,
+            recentBlockhash: SolanaFixtures.nonceValue.data
+        )
+        #expect(first == second)
+    }
 }

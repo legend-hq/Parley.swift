@@ -262,14 +262,22 @@ extension Charter {
 
             // 2. Sort accounts into 4 groups per Solana spec
             // Order: writable signers, readonly signers, writable non-signers, readonly non-signers
-            // Fee payer is always first
-            var writableSigners: [SolanaAddress] = [feePayer]
+            // Fee payer is always first.
+            //
+            // Within each bucket, accounts are sorted lexicographically by their
+            // 32-byte address. This matches the canonical ordering used by
+            // solana-sdk (BTreeMap<Pubkey> in CompiledKeys::try_into_message_components)
+            // and @solana/web3.js (localeCompare on base58 in Transaction.compileMessage).
+            // Swift's Dictionary has randomized iteration order, so iterating
+            // `accountMap` directly into bucket arrays would produce non-deterministic
+            // byte output across calls.
+            var writableSigners: [SolanaAddress] = []
             var readonlySigners: [SolanaAddress] = []
             var writableNonSigners: [SolanaAddress] = []
             var readonlyNonSigners: [SolanaAddress] = []
 
             for (address, perms) in accountMap {
-                if address == feePayer { continue }  // Already placed first
+                if address == feePayer { continue }  // Forced to index 0 below
                 if perms.isSigner && perms.isWritable {
                     writableSigners.append(address)
                 } else if perms.isSigner && !perms.isWritable {
@@ -280,6 +288,16 @@ extension Charter {
                     readonlyNonSigners.append(address)
                 }
             }
+
+            let addressLess: (SolanaAddress, SolanaAddress) -> Bool = {
+                $0.data.lexicographicallyPrecedes($1.data)
+            }
+            writableSigners.sort(by: addressLess)
+            readonlySigners.sort(by: addressLess)
+            writableNonSigners.sort(by: addressLess)
+            readonlyNonSigners.sort(by: addressLess)
+
+            writableSigners.insert(feePayer, at: 0)
 
             let orderedAccounts = writableSigners + readonlySigners + writableNonSigners + readonlyNonSigners
 
