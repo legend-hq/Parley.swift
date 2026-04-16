@@ -21,6 +21,8 @@ extension Network {
                 "Solana"
             case .sonic:
                 "Sonic"
+            case .tempo:
+                "Tempo"
             case .worldChain:
                 "WorldChain"
             case .unichain:

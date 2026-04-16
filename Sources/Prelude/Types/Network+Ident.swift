@@ -64,6 +64,8 @@ extension Network {
                 return "soneium"
             case .sonic:
                 return "sonic"
+            case .tempo:
+                return "tempo"
             case .unichain:
                 return "unichain"
             case .worldChain:
@@ -139,6 +141,8 @@ extension Network {
                 self = .soneium
             case "sonic":
                 self = .sonic
+            case "tempo":
+                self = .tempo
             case "unichain":
                 self = .unichain
             case "world_chain":
