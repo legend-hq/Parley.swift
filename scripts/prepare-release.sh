@@ -21,11 +21,6 @@ if [[ $(${git_root}/semver.sh validate "${target_version}") == invalid ]]; then
   exit 1
 fi
 
-if [[ -n $(git status --porcelain ${git_root}/Parley.swift) ]]; then
-  >&2 printf "‼ Working tree is dirty. Stash or commit your changes.\n"
-  exit 1
-fi
-
 if ! (cd ${git_root}/Parley.swift && ${swiftly} run swift build --build-tests --force-resolved-versions); then
   >&2 printf "‼ Parley.swift failed to build. Do not release broken code.\n"
   exit 1
