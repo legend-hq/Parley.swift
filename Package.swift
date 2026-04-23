@@ -39,7 +39,8 @@ let package = Package(
             exact: "1.0.0"
         ),
         .package(
-            path: "../Atlas.swift"
+            url: "git@github.com:legend-hq/Atlas.swift.git",
+            exact: "1.5.7"
         ),
         .package(
             url: "https://github.com/hayesgm/SwiftKeccak.git",
